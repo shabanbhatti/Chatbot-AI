@@ -13,7 +13,7 @@ class ImagePickerUtils {
     required this.imageCropper,
   });
 
-  Future<String?> takeImage(ImageSource imageSource, String name) async {
+  Future<String?> takeImage(ImageSource imageSource, ) async {
     try {
       final pickedFile = await imagePicker.pickImage(source: imageSource);
       if (pickedFile == null) return null;

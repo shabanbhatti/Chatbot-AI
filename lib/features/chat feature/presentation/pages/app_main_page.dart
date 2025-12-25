@@ -1,38 +1,49 @@
-import 'dart:io';
-
-import 'package:chatbot_ai/features/initial%20features/presentation/bloc/user%20bloc/user_bloc.dart';
-import 'package:chatbot_ai/features/initial%20features/presentation/bloc/user%20bloc/user_state.dart';
+import 'package:chatbot_ai/features/chat%20feature/presentation/pages/chat%20page/chat_page.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 
-class AppMainPage extends StatelessWidget {
+class AppMainPage extends StatefulWidget {
   const AppMainPage({super.key});
   static const String pageName = '/app_main_page';
+
+  @override
+  State<AppMainPage> createState() => _AppMainPageState();
+}
+
+class _AppMainPageState extends State<AppMainPage> {
+  late AdvancedDrawerController advancedDrawerController;
+  @override
+  void initState() {
+    super.initState();
+    advancedDrawerController = AdvancedDrawerController();
+  }
+
+  @override
+  void dispose() {
+    advancedDrawerController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      child: Center(
-        child: Column(
-          mainAxisAlignment: .center,
-          children: [
-            BlocBuilder<UserBloc, UserState>(
-              builder: (context, state) {
-                if (state is UserLoaded) {
-                  return Column(
-                    children: [
-                      Text(state.user.country),
-                      Image.file(File(state.user.userImg)),
-                      Text(state.user.dateOfBirth),
-                    ],
-                  );
-                } else {
-                  return Text('data');
-                }
-              },
-            ),
-          ],
-        ),
+    return AdvancedDrawer(
+      drawer: SizedBox(),
+      backdrop: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(color: CupertinoColors.systemGrey5),
       ),
+      controller: advancedDrawerController,
+      animationCurve: Curves.easeInOut,
+      animationDuration: const Duration(milliseconds: 300),
+      animateChildDecoration: true,
+      rtlOpening: false,
+      disabledGestures: false,
+      childDecoration: const BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(20)),
+      ),
+
+      child: ChatPage(advancedDrawerController: advancedDrawerController),
     );
   }
 }

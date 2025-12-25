@@ -1,0 +1,71 @@
+import 'package:chatbot_ai/core/typedefs/typedefs.dart';
+import 'package:flutter/cupertino.dart';
+
+class ChatTextfieldWidget extends StatelessWidget {
+  const ChatTextfieldWidget({
+    super.key,
+    required this.controller,
+    required this.chatNotifier,
+    this.onChanged,
+    required this.onSend,
+    required this.onMic,
+  });
+  final TextEditingController controller;
+  final OnChangedOfTextField? onChanged;
+  final ValueNotifier<String> chatNotifier;
+  final OnPressed onSend;
+  final OnPressed onMic;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsetsGeometry.symmetric(horizontal: 10),
+      child: SizedBox(
+        child: CupertinoTextField(
+          controller: controller,
+          onChanged: onChanged ?? (v) {},
+          maxLines: 10,
+          minLines: 1,
+          placeholder: 'Ask anything',
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+
+          style: const TextStyle(fontSize: 16, color: CupertinoColors.black),
+          placeholderStyle: const TextStyle(
+            fontSize: 16,
+            color: CupertinoColors.systemGrey,
+          ),
+          suffix: ValueListenableBuilder(
+            valueListenable: chatNotifier,
+            builder: (context, value, child) {
+              return (value.isEmpty)
+                  ? Padding(
+                      padding: EdgeInsetsGeometry.symmetric(horizontal: 5),
+                      child: CupertinoButton(
+                        onPressed: onMic,
+                        child: Icon(
+                          CupertinoIcons.mic,
+                          size: 25,
+                          color: CupertinoColors.systemGrey,
+                        ),
+                      ),
+                    )
+                  : CupertinoButton(
+                      onPressed: onSend,
+                      child: Icon(
+                        CupertinoIcons.arrow_up_circle_fill,
+                        size: 25,
+                        color: CupertinoColors.black,
+                      ),
+                    );
+            },
+          ),
+          decoration: BoxDecoration(
+            color: CupertinoColors.systemGrey6,
+            borderRadius: BorderRadius.circular(25),
+            border: Border.all(color: CupertinoColors.systemGrey4, width: 0.8),
+          ),
+        ),
+      ),
+    );
+  }
+}
