@@ -2,6 +2,11 @@ import 'package:chatbot_ai/config/DI/injector.dart';
 import 'package:chatbot_ai/core/shared%20domain/usecases/delete_user_usecase.dart';
 import 'package:chatbot_ai/core/shared%20domain/usecases/get_user_usecase.dart';
 import 'package:chatbot_ai/core/shared%20domain/usecases/insert_user_usecase.dart';
+import 'package:chatbot_ai/features/chat%20feature/domain/usecases/get_chats_usecase.dart';
+import 'package:chatbot_ai/features/chat%20feature/domain/usecases/insert_chat_usecase.dart';
+import 'package:chatbot_ai/features/chat%20feature/domain/usecases/send_prompt_usecase.dart';
+import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/local%20chat%20bloc/local_chat_bloc.dart';
+import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/local%20chat%20bloc/local_chat_event.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/pages/app_main_page.dart';
 import 'package:chatbot_ai/features/initial%20features/presentation/bloc/user%20bloc/user_bloc.dart';
 import 'package:chatbot_ai/features/initial%20features/presentation/bloc/user%20bloc/user_event.dart';
@@ -26,12 +31,24 @@ Route<dynamic> onGenerateRoute(RouteSettings rs) {
 
     case AppMainPage.pageName:
       return CupertinoPageRoute(
-        builder: (context) => BlocProvider(
-          create: (context) => UserBloc(
-            getUserUsecase: getIt<GetUserUsecase>(),
-            insertUserUsecase: getIt<InsertUserUsecase>(),
-            deleteUserUsecase: getIt<DeleteUserUsecase>(),
-          )..add(GetUserEvent()),
+        builder: (context) => MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => UserBloc(
+                getUserUsecase: getIt<GetUserUsecase>(),
+                insertUserUsecase: getIt<InsertUserUsecase>(),
+                deleteUserUsecase: getIt<DeleteUserUsecase>(),
+              )..add(GetUserEvent()),
+            ),
+
+            BlocProvider(
+              create: (context) => ChatBloc(
+                getChatsUsecase: getIt<GetChatsUsecase>(),
+                insertChatUsecase: getIt<InsertChatUsecase>(),
+                sendPromptUsecase: getIt<SendPromptUsecase>(),
+              )..add(GetChatsEvent()),
+            ),
+          ],
           child: const AppMainPage(),
         ),
         settings: rs,

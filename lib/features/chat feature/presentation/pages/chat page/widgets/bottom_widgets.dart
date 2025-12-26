@@ -42,14 +42,17 @@ class BottomWidgets extends StatelessWidget {
             ),
             Expanded(
               flex: 15,
-              child: ChatTextfieldWidget(
-                controller: chatController,
-                onChanged: (value) {
-                  chatNotifier.value = value;
-                },
-                onMic: () {},
-                onSend: () {},
-                chatNotifier: chatNotifier,
+              child: Padding(
+                padding: EdgeInsetsGeometry.only(top: 5),
+                child: ChatTextfieldWidget(
+                  controller: chatController,
+                  onChanged: (value) {
+                    chatNotifier.value = value;
+                  },
+                  onMic: () {},
+                  onSend: onSend,
+                  chatNotifier: chatNotifier,
+                ),
               ),
             ),
           ],

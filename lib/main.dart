@@ -6,9 +6,11 @@ import 'package:chatbot_ai/core/services/shared_preferences_service.dart';
 import 'package:chatbot_ai/features/initial%20features/presentation/pages/intro%20page/intro_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
   await initGetIt();
   runApp(
     MultiBlocProvider(

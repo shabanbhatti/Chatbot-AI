@@ -31,7 +31,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       try {
         final result = await insertUserUsecase(event.user);
         if (result) {
-          
           emit(UserInserted());
         } else {
           emit(UserError(message: 'Insert Failed'));

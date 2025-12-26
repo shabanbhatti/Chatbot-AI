@@ -5,6 +5,13 @@ import 'package:chatbot_ai/core/shared%20domain/usecases/delete_user_usecase.dar
 import 'package:chatbot_ai/core/shared%20domain/usecases/get_user_usecase.dart';
 import 'package:chatbot_ai/core/shared%20domain/usecases/insert_user_usecase.dart';
 import 'package:chatbot_ai/core/utils/image_picker_utils.dart';
+import 'package:chatbot_ai/features/chat%20feature/data/datasource/local%20datasource/chat_local_datasource.dart';
+import 'package:chatbot_ai/features/chat%20feature/data/datasource/remote%20datasource/chat_remote_datasource.dart';
+import 'package:chatbot_ai/features/chat%20feature/data/repository%20impl/chat_repository_impl.dart';
+import 'package:chatbot_ai/features/chat%20feature/domain/repository/chat_repository.dart';
+import 'package:chatbot_ai/features/chat%20feature/domain/usecases/get_chats_usecase.dart';
+import 'package:chatbot_ai/features/chat%20feature/domain/usecases/insert_chat_usecase.dart';
+import 'package:chatbot_ai/features/chat%20feature/domain/usecases/send_prompt_usecase.dart';
 import 'package:chatbot_ai/features/initial%20features/data/datasource/local%20datasource/user_local_datasource.dart';
 import 'package:chatbot_ai/features/initial%20features/data/datasource/remote%20datasource/countries_remote_datasource.dart';
 import 'package:chatbot_ai/features/initial%20features/data/repository%20impl/countries_repository_impl.dart';
@@ -70,5 +77,28 @@ Future<void> initGetIt() async {
 
   getIt.registerLazySingleton<DeleteUserUsecase>(
     () => DeleteUserUsecaseImpl(userRepository: getIt<UserRepository>()),
+  );
+
+  // Chat side
+  getIt.registerLazySingleton<ChatRemoteDatasource>(
+    () => ChatRemoteDatasourceImpl(dio: getIt<DioClient>().chatApi),
+  );
+  getIt.registerLazySingleton<ChatLocalDatasource>(
+    () => ChatLocalDatasourceImpl(appDatabase: AppDatabase()),
+  );
+  getIt.registerLazySingleton<ChatRepository>(
+    () => ChatRepositoryImpl(
+      chatRemoteDatasource: getIt<ChatRemoteDatasource>(),
+      chatLocalDatasource: getIt<ChatLocalDatasource>(),
+    ),
+  );
+  getIt.registerLazySingleton<SendPromptUsecase>(
+    () => SendPromptUsecase(chatRepository: getIt<ChatRepository>()),
+  );
+  getIt.registerLazySingleton<GetChatsUsecase>(
+    () => GetChatsUsecase(chatRepository: getIt<ChatRepository>()),
+  );
+  getIt.registerLazySingleton<InsertChatUsecase>(
+    () => InsertChatUsecase(chatRepository: getIt<ChatRepository>()),
   );
 }
