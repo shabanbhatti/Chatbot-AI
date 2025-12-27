@@ -29,7 +29,7 @@ class ChatTextfieldWidget extends StatelessWidget {
           placeholder: 'Ask anything',
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
 
-          style: const TextStyle(fontSize: 16, color: CupertinoColors.black),
+          style: const TextStyle(fontSize: 16),
           placeholderStyle: const TextStyle(
             fontSize: 16,
             color: CupertinoColors.systemGrey,
@@ -54,7 +54,13 @@ class ChatTextfieldWidget extends StatelessWidget {
                       child: Icon(
                         CupertinoIcons.arrow_up_circle_fill,
                         size: 25,
-                        color: CupertinoColors.black,
+                        color:
+                            CupertinoTheme.of(
+                                  context,
+                                ).scaffoldBackgroundColor ==
+                                CupertinoColors.black
+                            ? CupertinoColors.white
+                            : CupertinoColors.black,
                       ),
                     );
             },

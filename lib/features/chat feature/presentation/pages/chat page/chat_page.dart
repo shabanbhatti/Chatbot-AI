@@ -11,11 +11,11 @@ import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/local%20cha
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/local%20chat%20bloc/chat_event.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/local%20chat%20bloc/chat_state.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/pages/chat%20page/widgets/bottom_widgets.dart';
+import 'package:chatbot_ai/features/chat%20feature/presentation/pages/chat%20page/widgets/chat_box_widget.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/pages/chat%20page/widgets/model_loading_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gpt_markdown/gpt_markdown.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key, required this.advancedDrawerController});
@@ -113,7 +113,7 @@ class _ChatPageState extends State<ChatPage> {
                               } else if (state is LoadedChat) {
                                 var data = state.chatsList;
                                 return SliverPadding(
-                                  padding: EdgeInsetsGeometry.symmetric(
+                                  padding: const EdgeInsetsGeometry.symmetric(
                                     horizontal: 10,
                                   ),
                                   sliver: SliverList.builder(
@@ -123,36 +123,9 @@ class _ChatPageState extends State<ChatPage> {
                                       final isUser =
                                           chats.role == ChatRoleConstants.user;
 
-                                      return Padding(
-                                        padding: EdgeInsets.only(
-                                          left: isUser ? 30 : 0,
-                                          top: 6,
-                                          bottom: 6,
-                                        ),
-                                        child: Align(
-                                          alignment: isUser
-                                              ? Alignment.centerRight
-                                              : Alignment.centerLeft,
-                                          child: Container(
-                                            padding: const EdgeInsets.all(12),
-                                            decoration: BoxDecoration(
-                                              color: isUser
-                                                  ? CupertinoColors.inactiveGray
-                                                        .withAlpha(100)
-                                                  : null,
-                                              borderRadius:
-                                                  BorderRadius.circular(18),
-                                            ),
-                                            child: GptMarkdown(
-                                              chats.message,
-                                              textDirection: TextDirection.ltr,
-                                              textAlign: TextAlign.left,
-                                              style: const TextStyle(
-                                                fontSize: 13,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
+                                      return ChatBoxWidget(
+                                        isUser: isUser,
+                                        message: chats.message,
                                       );
                                     },
                                   ),

@@ -1,4 +1,5 @@
 import 'package:chatbot_ai/features/chat%20feature/presentation/pages/chat%20page/chat_page.dart';
+import 'package:chatbot_ai/features/chat%20feature/presentation/pages/drawer/cupertino_drawer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 
@@ -27,7 +28,7 @@ class _AppMainPageState extends State<AppMainPage> {
   @override
   Widget build(BuildContext context) {
     return AdvancedDrawer(
-      drawer: SizedBox(),
+      drawer: const CupertinoDrawer(),
       backdrop: Container(
         width: double.infinity,
         height: double.infinity,

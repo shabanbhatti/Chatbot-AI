@@ -1,6 +1,9 @@
 import 'dart:async';
 
+import 'package:chatbot_ai/core/constants/chat_role_constants.dart';
+import 'package:chatbot_ai/core/constants/constant_paragraph_to_test_model.dart';
 import 'package:chatbot_ai/core/errors/failures/failures.dart';
+import 'package:chatbot_ai/features/chat%20feature/domain/entity/chat_entity.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/send_prompt_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20api%20bloc/chat_api_event.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20api%20bloc/chat_api_state.dart';
@@ -18,15 +21,15 @@ class ChatApiBloc extends Bloc<ChatApiEvent, ChatApiState> {
   ) async {
     try {
       emit(LoadingChatApi());
-      var data = await sendPromptUsecase(event.chatEntity);
-      // await Future.delayed(const Duration(seconds: 4));
+      // var data = await sendPromptUsecase(event.chatEntity);
+      await Future.delayed(const Duration(seconds: 4));
       // throw ApiFailure(message: 'Internet server disconnect');
-      // // var data = ChatEntity(
-      // //   message: 'Hi bro i am good man',
-      // //   createdAt: DateTime.now().toString(),
-      // //   role: ChatRoleConstants.model,
-      // //   imgPath: '',
-      // // );
+      var data = ChatEntity(
+        message: modelReply,
+        createdAt: DateTime.now().toString(),
+        role: ChatRoleConstants.model,
+        imgPath: '',
+      );
       emit(LoadedChatApi(chatEntity: data));
     } on Failures catch (e) {
       emit(ErrorChatApi(message: e.message));
