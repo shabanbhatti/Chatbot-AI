@@ -26,7 +26,7 @@ class DioClient {
         receiveTimeout: const Duration(seconds: 30),
         sendTimeout: const Duration(seconds: 3),
         contentType: 'application/json',
-        headers: {'x-goog-api-key': ''},
+        headers: {'x-goog-api-key': apiKey},
       ),
     );
   }

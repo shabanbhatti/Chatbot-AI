@@ -16,9 +16,9 @@ class GetChatsEvent extends ChatEvent {
   const GetChatsEvent();
 }
 
-class SendPromptEvent extends ChatEvent {
-  final ChatEntity chatEntity;
-  const SendPromptEvent({required this.chatEntity});
-  @override
-  List<Object?> get props => [chatEntity];
-}
+// class SendPromptEvent extends ChatEvent {
+//   final ChatEntity chatEntity;
+//   const SendPromptEvent({required this.chatEntity});
+//   @override
+//   List<Object?> get props => [chatEntity];
+// }

@@ -5,8 +5,8 @@ import 'package:chatbot_ai/core/shared%20domain/usecases/insert_user_usecase.dar
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/get_chats_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/insert_chat_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/send_prompt_usecase.dart';
-import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/local%20chat%20bloc/local_chat_bloc.dart';
-import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/local%20chat%20bloc/local_chat_event.dart';
+import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/local%20chat%20bloc/chat_bloc.dart';
+import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/local%20chat%20bloc/chat_event.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/pages/app_main_page.dart';
 import 'package:chatbot_ai/features/initial%20features/presentation/bloc/user%20bloc/user_bloc.dart';
 import 'package:chatbot_ai/features/initial%20features/presentation/bloc/user%20bloc/user_event.dart';

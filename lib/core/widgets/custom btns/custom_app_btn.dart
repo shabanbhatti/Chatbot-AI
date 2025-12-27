@@ -3,13 +3,19 @@ import 'package:chatbot_ai/core/typedefs/typedefs.dart';
 import 'package:flutter/cupertino.dart';
 
 class CustomAppBtn extends StatelessWidget {
-  const CustomAppBtn({super.key, required this.title, required this.onTap});
+  const CustomAppBtn({
+    super.key,
+    required this.title,
+    required this.onTap,
+    this.color,
+  });
   final String title;
   final OnPressed onTap;
+  final Color? color;
   @override
   Widget build(BuildContext context) {
     return CupertinoButton.filled(
-      color: ColorConstants.appColor,
+      color: color ?? ColorConstants.appColor,
       onPressed: onTap,
       child: Text(title),
     );
