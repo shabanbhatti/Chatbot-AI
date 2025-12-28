@@ -8,13 +8,14 @@ class ChatTextfieldWidget extends StatelessWidget {
     required this.chatNotifier,
     this.onChanged,
     required this.onSend,
-    required this.onMic,
+    required this.onMic, required this.micWidget,
   });
   final TextEditingController controller;
   final OnChangedOfTextField? onChanged;
   final ValueNotifier<String> chatNotifier;
   final OnPressed onSend;
   final OnPressed onMic;
+  final Widget micWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +24,7 @@ class ChatTextfieldWidget extends StatelessWidget {
       child: SizedBox(
         child: CupertinoTextField(
           controller: controller,
+
           onChanged: onChanged ?? (v) {},
           maxLines: 10,
           minLines: 1,
@@ -42,11 +44,7 @@ class ChatTextfieldWidget extends StatelessWidget {
                       padding: EdgeInsetsGeometry.symmetric(horizontal: 5),
                       child: CupertinoButton(
                         onPressed: onMic,
-                        child: Icon(
-                          CupertinoIcons.mic,
-                          size: 25,
-                          color: CupertinoColors.systemGrey,
-                        ),
+                        child: micWidget
                       ),
                     )
                   : CupertinoButton(

@@ -5,8 +5,10 @@ import 'package:chatbot_ai/core/shared%20domain/usecases/insert_user_usecase.dar
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/get_chats_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/insert_chat_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/send_prompt_usecase.dart';
+import 'package:chatbot_ai/features/chat%20feature/domain/usecases/voice_to_text_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/local%20chat%20bloc/chat_bloc.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/local%20chat%20bloc/chat_event.dart';
+import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/voice%20bloc/voice_bloc.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/pages/app_main_page.dart';
 import 'package:chatbot_ai/features/initial%20features/presentation/bloc/user%20bloc/user_bloc.dart';
 import 'package:chatbot_ai/features/initial%20features/presentation/bloc/user%20bloc/user_event.dart';
@@ -14,6 +16,7 @@ import 'package:chatbot_ai/features/initial%20features/presentation/pages/create
 import 'package:chatbot_ai/features/initial%20features/presentation/pages/intro%20page/intro_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:record/record.dart';
 
 Route<dynamic> onGenerateRoute(RouteSettings rs) {
   switch (rs.name) {
@@ -39,6 +42,12 @@ Route<dynamic> onGenerateRoute(RouteSettings rs) {
                 insertUserUsecase: getIt<InsertUserUsecase>(),
                 deleteUserUsecase: getIt<DeleteUserUsecase>(),
               )..add(GetUserEvent()),
+            ),
+            BlocProvider(
+              create: (context) => VoiceBloc(
+                audioRecorder: AudioRecorder(),
+                voiceToTextUsecase: getIt<VoiceToTextUsecase>(),
+              ),
             ),
 
             BlocProvider(

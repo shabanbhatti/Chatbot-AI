@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chatbot_ai/core/errors/exceptions/dio_exception_handeller.dart';
 import 'package:chatbot_ai/core/errors/failures/failures.dart';
 import 'package:chatbot_ai/features/chat%20feature/data/datasource/local%20datasource/chat_local_datasource.dart';
@@ -57,6 +59,16 @@ class ChatRepositoryImpl implements ChatRepository {
       );
     } on DatabaseException catch (e) {
       throw LocalDatabaseFailure(message: e.toString());
+    }
+  }
+
+  @override
+  Future<String> voiceToText(File filePath) async {
+    try {
+      return await chatRemoteDatasource.voiceToText(filePath);
+    } on DioException catch (e) {
+      var message = DioExceptionHandeler.getMessage(e);
+      throw ApiFailure(message: message);
     }
   }
 }

@@ -12,6 +12,7 @@ import 'package:chatbot_ai/features/chat%20feature/domain/repository/chat_reposi
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/get_chats_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/insert_chat_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/send_prompt_usecase.dart';
+import 'package:chatbot_ai/features/chat%20feature/domain/usecases/voice_to_text_usecase.dart';
 import 'package:chatbot_ai/features/initial%20features/data/datasource/local%20datasource/user_local_datasource.dart';
 import 'package:chatbot_ai/features/initial%20features/data/datasource/remote%20datasource/countries_remote_datasource.dart';
 import 'package:chatbot_ai/features/initial%20features/data/repository%20impl/countries_repository_impl.dart';
@@ -100,5 +101,9 @@ Future<void> initGetIt() async {
   );
   getIt.registerLazySingleton<InsertChatUsecase>(
     () => InsertChatUsecase(chatRepository: getIt<ChatRepository>()),
+  );
+
+  getIt.registerLazySingleton<VoiceToTextUsecase>(
+    () => VoiceToTextUsecase(chatRepository: getIt<ChatRepository>()),
   );
 }

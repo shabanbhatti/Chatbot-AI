@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -8,7 +6,6 @@ class DioClient {
   late Dio chatApi;
   DioClient() {
     final apiKey = dotenv.env['API_KEY'];
-    log(apiKey!);
     countriesDio = Dio(
       BaseOptions(
         baseUrl: 'https://restcountries.com/v3.1/name',

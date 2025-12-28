@@ -24,11 +24,14 @@ class CustomErrorBoxWidget extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: 10),
-            Text(
-              exceptionMessage,
-              style: const TextStyle(
-                color: CupertinoColors.destructiveRed,
-                fontWeight: FontWeight.bold,
+            Padding(
+              padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
+              child: Text(
+                exceptionMessage,
+                style: const TextStyle(
+                  color: CupertinoColors.destructiveRed,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             Padding(

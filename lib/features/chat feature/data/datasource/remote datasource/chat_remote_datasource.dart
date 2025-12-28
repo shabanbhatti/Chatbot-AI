@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 
 abstract class ChatRemoteDatasource {
   Future<ChatModel> sendPrompt(ChatModel chatModel);
+  Future<String> voiceToText(File filePath);
 }
 
 class ChatRemoteDatasourceImpl implements ChatRemoteDatasource {
@@ -50,5 +51,30 @@ class ChatRemoteDatasourceImpl implements ChatRemoteDatasource {
       role: ChatRoleConstants.model,
       imgPath: null,
     );
+  }
+
+  @override
+  Future<String> voiceToText(File filePath) async {
+    var file = await filePath.readAsBytes();
+    var base64Audio = base64Encode(file);
+    var responce = await dio.post(
+      '/v1beta/models/gemini-2.5-flash:generateContent',
+      data: {
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {"text": "Please transcribe this audio file to text accurately."},
+              {
+                "inlineData": {"mimeType": "audio/wav", "data": base64Audio},
+              },
+            ],
+          },
+        ],
+      },
+      options: Options(headers: {"Content-Type": "application/json"}),
+    );
+
+    return responce.data['candidates'][0]['content']['parts'][0]['text'];
   }
 }

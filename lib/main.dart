@@ -2,6 +2,7 @@ import 'package:chatbot_ai/config/DI/injector.dart';
 import 'package:chatbot_ai/config/routes/routes.dart';
 import 'package:chatbot_ai/core/bloc/shared%20preferences%20bloc/shared_preferences_bloc.dart';
 import 'package:chatbot_ai/core/bloc/shared%20preferences%20bloc/shared_preferences_event.dart';
+import 'package:chatbot_ai/core/observer/bloc_observer.dart';
 import 'package:chatbot_ai/core/services/shared_preferences_service.dart';
 import 'package:chatbot_ai/core/theme/theme.dart';
 import 'package:chatbot_ai/features/initial%20features/presentation/pages/intro%20page/intro_page.dart';
@@ -12,6 +13,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
+  Bloc.observer = MyBlocObserver();
   await initGetIt();
   runApp(
     MultiBlocProvider(
@@ -33,7 +35,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoApp(
-      theme: darkTheme,
+      theme: lightTheme,
       debugShowCheckedModeBanner: false,
       initialRoute: IntroPage.pageName,
       onGenerateRoute: onGenerateRoute,

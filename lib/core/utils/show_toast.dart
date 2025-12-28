@@ -6,12 +6,13 @@ abstract class ShowToast {
     required String message,
     Color? color,
     int? duration = 2,
+    ToastGravity? gravity,
   }) {
     Fluttertoast.showToast(
       msg: message,
       backgroundColor: color ?? CupertinoColors.activeGreen,
       timeInSecForIosWeb: duration ?? 2,
-      gravity: ToastGravity.TOP,
+      gravity: gravity ?? ToastGravity.TOP,
     );
   }
 }
