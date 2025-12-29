@@ -8,12 +8,16 @@ class TextShimmerEffect extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: CupertinoColors.black,
+      baseColor: CupertinoTheme.of(context).textTheme.textStyle.color!,
       highlightColor: CupertinoColors.systemGrey4,
       period: const Duration(milliseconds: 1500),
       child: Text(
         text,
-        style: TextStyle(fontSize: textSize ?? 22, fontWeight: FontWeight.w600),
+        // style: TextStyle(fontSize: textSize ?? 22, fontWeight: FontWeight.w600),
+        style: CupertinoTheme.of(context).textTheme.textStyle.copyWith(
+          fontWeight: FontWeight.bold,
+          fontSize: 22,
+        ),
       ),
     );
   }

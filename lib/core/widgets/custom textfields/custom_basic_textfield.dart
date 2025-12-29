@@ -29,13 +29,13 @@ class CustomBasicTextfield extends StatelessWidget {
         padding: EdgeInsetsGeometry.only(left: 10),
         child: Icon(prefixIcon),
       ),
+
       placeholder: title,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      style: const TextStyle(fontSize: 16, color: CupertinoColors.black),
-      placeholderStyle: const TextStyle(
-        fontSize: 16,
-        color: CupertinoColors.systemGrey,
-      ),
+      style: CupertinoTheme.of(context).textTheme.textStyle,
+      placeholderStyle: CupertinoTheme.of(
+        context,
+      ).textTheme.textStyle.copyWith(color: CupertinoColors.systemGrey),
       decoration: BoxDecoration(
         color: CupertinoColors.systemGrey6,
         borderRadius: BorderRadius.circular(15),

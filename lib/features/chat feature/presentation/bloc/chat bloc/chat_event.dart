@@ -7,6 +7,10 @@ sealed class ChatEvent extends Equatable {
   List<Object?> get props => [];
 }
 
+class GetUserInDrawerEvent extends ChatEvent {
+  const GetUserInDrawerEvent();
+}
+
 class InsertEvent extends ChatEvent {
   final ChatEntity chatEntity;
   const InsertEvent({required this.chatEntity});

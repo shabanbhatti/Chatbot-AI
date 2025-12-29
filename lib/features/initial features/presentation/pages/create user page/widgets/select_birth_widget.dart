@@ -61,10 +61,12 @@ class SelectBirthWidget extends StatelessWidget {
                                   },
                                   child: Text(
                                     'Cancel',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: CupertinoColors.systemRed,
-                                    ),
+                                    style: CupertinoTheme.of(context)
+                                        .textTheme
+                                        .textStyle
+                                        .copyWith(
+                                          color: CupertinoColors.systemRed,
+                                        ),
                                   ),
                                 ),
                                 ValueListenableBuilder(
@@ -72,10 +74,9 @@ class SelectBirthWidget extends StatelessWidget {
                                   builder: (context, value, child) {
                                     return Text(
                                       value,
-                                      style: TextStyle(
-                                        color: CupertinoColors.activeGreen,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                      style: CupertinoTheme.of(
+                                        context,
+                                      ).textTheme.textStyle,
                                     );
                                   },
                                 ),
@@ -89,10 +90,13 @@ class SelectBirthWidget extends StatelessWidget {
                                       },
                                       child: Text(
                                         'Confirm',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: CupertinoColors.activeBlue,
-                                        ),
+
+                                        style: CupertinoTheme.of(context)
+                                            .textTheme
+                                            .textStyle
+                                            .copyWith(
+                                              color: CupertinoColors.activeBlue,
+                                            ),
                                       ),
                                     );
                                   },

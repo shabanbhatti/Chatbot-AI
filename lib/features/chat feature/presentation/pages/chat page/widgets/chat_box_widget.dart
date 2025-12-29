@@ -37,7 +37,9 @@ class ChatBoxWidget extends StatelessWidget {
                 message,
                 // textDirection: TextDirection.ltr,
                 // textAlign: TextAlign.left,
-                style: const TextStyle(fontSize: 13),
+                style: CupertinoTheme.of(
+                  context,
+                ).textTheme.textStyle.copyWith(fontWeight: FontWeight.normal),
               ),
             ),
           ),

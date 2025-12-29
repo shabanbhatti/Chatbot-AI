@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:chatbot_ai/core/constants/constant_colors.dart';
 import 'package:chatbot_ai/core/errors/failures/failures.dart';
@@ -100,9 +99,10 @@ class VoiceBloc extends Bloc<VoiceEvent, VoiceState> {
       log('Path: $path');
       emit(state.copyWith(isLoading: true, isSpeaking: false));
 
-      var reply = await voiceToTextUsecase(File(path!));
+      // var reply = await voiceToTextUsecase(File(path!));
+      throw ApiFailure(message: 'Fuck hugaaya');
 
-      emit(state.copyWith(isLoaded: true, reply: reply, isLoading: false));
+      // emit(state.copyWith(isLoaded: true, reply: 'reply', isLoading: false));
     } on Failures catch (e) {
       emit(
         VoiceState(

@@ -28,17 +28,17 @@ class _AppMainPageState extends State<AppMainPage> {
   @override
   Widget build(BuildContext context) {
     return AdvancedDrawer(
+      initialDrawerScale: 5,
+      openRatio: 0.7,
       drawer: const CupertinoDrawer(),
       backdrop: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(color: CupertinoColors.systemGrey5),
+        decoration: const BoxDecoration(color: CupertinoColors.white),
       ),
       controller: advancedDrawerController,
       animationCurve: Curves.easeInOut,
       animationDuration: const Duration(milliseconds: 300),
-      animateChildDecoration: true,
-      rtlOpening: false,
       disabledGestures: false,
       childDecoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(20)),

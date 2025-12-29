@@ -8,7 +8,8 @@ class ChatTextfieldWidget extends StatelessWidget {
     required this.chatNotifier,
     this.onChanged,
     required this.onSend,
-    required this.onMic, required this.micWidget,
+    required this.onMic,
+    required this.micWidget,
   });
   final TextEditingController controller;
   final OnChangedOfTextField? onChanged;
@@ -31,20 +32,21 @@ class ChatTextfieldWidget extends StatelessWidget {
           placeholder: 'Ask anything',
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
 
-          style: const TextStyle(fontSize: 16),
-          placeholderStyle: const TextStyle(
-            fontSize: 16,
-            color: CupertinoColors.systemGrey,
-          ),
+          style: CupertinoTheme.of(context).textTheme.textStyle,
+          placeholderStyle: CupertinoTheme.of(
+            context,
+          ).textTheme.textStyle.copyWith(color: CupertinoColors.systemGrey),
           suffix: ValueListenableBuilder(
             valueListenable: chatNotifier,
             builder: (context, value, child) {
               return (value.isEmpty)
                   ? Padding(
-                      padding: EdgeInsetsGeometry.symmetric(horizontal: 5),
+                      padding: const EdgeInsetsGeometry.symmetric(
+                        horizontal: 5,
+                      ),
                       child: CupertinoButton(
                         onPressed: onMic,
-                        child: micWidget
+                        child: micWidget,
                       ),
                     )
                   : CupertinoButton(
@@ -66,7 +68,7 @@ class ChatTextfieldWidget extends StatelessWidget {
           decoration: BoxDecoration(
             color: CupertinoColors.systemGrey6,
             borderRadius: BorderRadius.circular(25),
-            border: Border.all(color: CupertinoColors.systemGrey4, width: 0.8),
+            border: Border.all(color: CupertinoColors.systemGrey, width: 0.5),
           ),
         ),
       ),

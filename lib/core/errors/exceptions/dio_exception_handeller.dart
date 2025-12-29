@@ -27,8 +27,9 @@ abstract class DioExceptionHandeler {
       if (statusCode == 401) return "Unauthorized. Login required.";
       if (statusCode == 403) return "Access denied.";
       if (statusCode == 404) return "Not found.";
-      if (statusCode == 429)
+      if (statusCode == 429) {
         return "You've reached today's limit. Please try again tomorrow.";
+      }
       if (statusCode == 500) return "Server error. Try later.";
 
       return "Unexpected server error.";

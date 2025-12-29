@@ -28,9 +28,9 @@ class CustomErrorBoxWidget extends StatelessWidget {
               padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
               child: Text(
                 exceptionMessage,
-                style: const TextStyle(
-                  color: CupertinoColors.destructiveRed,
+                style: CupertinoTheme.of(context).textTheme.textStyle.copyWith(
                   fontWeight: FontWeight.bold,
+                  color: CupertinoColors.destructiveRed,
                 ),
               ),
             ),

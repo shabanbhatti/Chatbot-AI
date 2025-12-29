@@ -7,14 +7,15 @@ import 'package:chatbot_ai/features/chat%20feature/domain/usecases/insert_chat_u
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/send_prompt_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/update_chat_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/voice_to_text_usecase.dart';
-import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/local%20chat%20bloc/chat_bloc.dart';
-import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/local%20chat%20bloc/chat_event.dart';
+import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20bloc/chat_bloc.dart';
+import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20bloc/chat_event.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/voice%20bloc/voice_bloc.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/pages/app_main_page.dart';
 import 'package:chatbot_ai/features/initial%20features/presentation/bloc/user%20bloc/user_bloc.dart';
 import 'package:chatbot_ai/features/initial%20features/presentation/bloc/user%20bloc/user_event.dart';
 import 'package:chatbot_ai/features/initial%20features/presentation/pages/create%20user%20page/create_user_page.dart';
 import 'package:chatbot_ai/features/initial%20features/presentation/pages/intro%20page/intro_page.dart';
+import 'package:chatbot_ai/features/settings%20feature/presentation/pages/settings_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:record/record.dart';
@@ -30,6 +31,12 @@ Route<dynamic> onGenerateRoute(RouteSettings rs) {
     case CreateUserPage.pageName:
       return CupertinoPageRoute(
         builder: (context) => const CreateUserPage(),
+        settings: rs,
+      );
+
+    case SettingsPage.pageName:
+      return CupertinoPageRoute(
+        builder: (context) => const SettingsPage(),
         settings: rs,
       );
 
@@ -52,12 +59,16 @@ Route<dynamic> onGenerateRoute(RouteSettings rs) {
             ),
 
             BlocProvider(
-              create: (context) => ChatBloc(
-                getChatsUsecase: getIt<GetChatsUsecase>(),
-                insertChatUsecase: getIt<InsertChatUsecase>(),
-                sendPromptUsecase: getIt<SendPromptUsecase>(),
-                updateChatUsecase: getIt<UpdateChatUsecase>(),
-              )..add(GetChatsEvent()),
+              create: (context) =>
+                  ChatBloc(
+                      getChatsUsecase: getIt<GetChatsUsecase>(),
+                      insertChatUsecase: getIt<InsertChatUsecase>(),
+                      sendPromptUsecase: getIt<SendPromptUsecase>(),
+                      updateChatUsecase: getIt<UpdateChatUsecase>(),
+                      getUserUsecase: getIt<GetUserUsecase>(),
+                    )
+                    ..add(GetChatsEvent())
+                    ..add(GetUserInDrawerEvent()),
             ),
           ],
           child: const AppMainPage(),

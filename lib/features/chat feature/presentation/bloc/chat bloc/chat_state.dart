@@ -1,3 +1,4 @@
+import 'package:chatbot_ai/core/shared%20domain/entity/user_entity.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/entity/chat_entity.dart';
 import 'package:equatable/equatable.dart';
 
@@ -28,6 +29,13 @@ class LoadedChat extends ChatState {
 
 class LoadedInsertedChat extends ChatState {
   const LoadedInsertedChat();
+}
+
+class LoadedUserInDrawer extends ChatState {
+  final UserEntity userEntity;
+  const LoadedUserInDrawer({required this.userEntity});
+  @override
+  List<Object?> get props => [userEntity];
 }
 
 class ErrorChat extends ChatState {

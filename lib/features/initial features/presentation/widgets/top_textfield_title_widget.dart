@@ -7,7 +7,16 @@ class TopTextfieldTitleWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsetsGeometry.symmetric(vertical: 5, horizontal: 5),
-      child: Row(children: [Text('$title*')]),
+      child: Row(
+        children: [
+          Text(
+            '$title*',
+            style: CupertinoTheme.of(
+              context,
+            ).textTheme.textStyle.copyWith(fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
     );
   }
 }

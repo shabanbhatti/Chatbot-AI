@@ -15,7 +15,7 @@ class AddBtnWidget extends StatelessWidget {
           shape: const CircleBorder(
             side: BorderSide(width: 0.5, color: CupertinoColors.systemGrey),
           ),
-          color: CupertinoColors.systemGrey.withAlpha(70),
+          color: CupertinoColors.systemGrey6,
         ),
         child: const Icon(
           CupertinoIcons.add,

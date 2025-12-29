@@ -9,9 +9,9 @@ import 'package:chatbot_ai/features/chat%20feature/domain/usecases/send_prompt_u
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20api%20bloc/chat_api_bloc.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20api%20bloc/chat_api_event.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20api%20bloc/chat_api_state.dart';
-import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/local%20chat%20bloc/chat_bloc.dart';
-import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/local%20chat%20bloc/chat_event.dart';
-import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/local%20chat%20bloc/chat_state.dart';
+import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20bloc/chat_bloc.dart';
+import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20bloc/chat_event.dart';
+import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20bloc/chat_state.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/voice%20bloc/voice_bloc.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/voice%20bloc/voice_event.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/voice%20bloc/voice_state.dart';
