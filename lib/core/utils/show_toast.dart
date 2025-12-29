@@ -1,3 +1,4 @@
+import 'package:chatbot_ai/core/constants/constant_colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -10,7 +11,7 @@ abstract class ShowToast {
   }) {
     Fluttertoast.showToast(
       msg: message,
-      backgroundColor: color ?? CupertinoColors.activeGreen,
+      backgroundColor: color ?? ColorConstants.appColor,
       timeInSecForIosWeb: duration ?? 2,
       gravity: gravity ?? ToastGravity.TOP,
     );

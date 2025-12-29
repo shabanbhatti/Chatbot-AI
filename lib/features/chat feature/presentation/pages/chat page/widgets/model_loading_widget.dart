@@ -8,7 +8,7 @@ class ModelLoadingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsetsGeometry.symmetric(horizontal: 23),
+      padding: const EdgeInsetsGeometry.symmetric(horizontal: 0),
       child: Row(
         mainAxisAlignment: .start,
         children: [SpinKitWave(color: ColorConstants.appColor, size: 20)],

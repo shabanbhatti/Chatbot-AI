@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:chatbot_ai/config/DI/injector.dart';
 import 'package:chatbot_ai/core/constants/chat_role_constants.dart';
 import 'package:chatbot_ai/core/utils/show_toast.dart';
@@ -68,6 +70,7 @@ class _ChatPageState extends State<ChatPage> {
         bloc: chatApiBloc,
         listener: (context, state) {
           if (state is LoadedChatApi) {
+            log(state.chatEntity.isFav.toString());
             context.read<ChatBloc>().add(
               InsertEvent(chatEntity: state.chatEntity),
             );
@@ -95,6 +98,16 @@ class _ChatPageState extends State<ChatPage> {
                   _scrollController.position.maxScrollExtent,
                 );
               });
+            }
+            if (state is LoadedInsertedChat) {
+              context.read<ChatBloc>().add(GetChatsEvent());
+            }
+
+            if (state is ErrorChat) {
+              ShowToast.basicToast(
+                message: state.message,
+                color: CupertinoColors.destructiveRed,
+              );
             }
           },
           child: CupertinoPageScaffold(
@@ -134,17 +147,62 @@ class _ChatPageState extends State<ChatPage> {
                                     padding: const EdgeInsetsGeometry.symmetric(
                                       horizontal: 10,
                                     ),
-                                    sliver: SliverList.builder(
-                                      itemCount: data.length,
-                                      itemBuilder: (context, index) {
-                                        final chats = data[index];
-                                        final isUser =
-                                            chats.role ==
-                                            ChatRoleConstants.user;
+                                    sliver: BlocBuilder<ChatApiBloc, ChatApiState>(
+                                      bloc: chatApiBloc,
+                                      builder: (context, chatState) {
+                                        return SliverList.builder(
+                                          itemCount:
+                                              data.length +
+                                              (chatState is LoadingChatApi
+                                                  ? 1
+                                                  : 0),
+                                          itemBuilder: (context, index) {
+                                            if (chatState is LoadingChatApi &&
+                                                index == data.length) {
+                                              return const ModelLoadingWidget();
+                                            } else {
+                                              final chats = data[index];
+                                              final isUser =
+                                                  chats.role ==
+                                                  ChatRoleConstants.user;
 
-                                        return ChatBoxWidget(
-                                          isUser: isUser,
-                                          message: chats.message,
+                                              return ChatBoxWidget(
+                                                isUser: isUser,
+                                                message: chats.message,
+                                                isFav: chats.isFav,
+                                                onFavTap: () {
+                                                  print(chats.isFav);
+                                                  if (chats.isFav) {
+                                                    context
+                                                        .read<ChatBloc>()
+                                                        .add(
+                                                          UpdateChatEvent(
+                                                            chatEntity: chats
+                                                                .copyWith(
+                                                                  isFav: false,
+                                                                ),
+                                                          ),
+                                                        );
+                                                  } else {
+                                                    context
+                                                        .read<ChatBloc>()
+                                                        .add(
+                                                          UpdateChatEvent(
+                                                            chatEntity: chats
+                                                                .copyWith(
+                                                                  isFav: true,
+                                                                ),
+                                                          ),
+                                                        );
+                                                    ShowToast.basicToast(
+                                                      message:
+                                                          '🎉 Thanks for your feedback!',
+                                                    );
+                                                  }
+                                                },
+                                              );
+                                            }
+                                          },
                                         );
                                       },
                                     ),
@@ -165,9 +223,7 @@ class _ChatPageState extends State<ChatPage> {
                     BlocBuilder<ChatApiBloc, ChatApiState>(
                       bloc: chatApiBloc,
                       builder: (context, state) {
-                        if (state is LoadingChatApi) {
-                          return const ModelLoadingWidget();
-                        } else if (state is ErrorChatApi) {
+                        if (state is ErrorChatApi) {
                           return CustomErrorBoxWidget(
                             exceptionMessage: state.message,
                             onRetry: () {
@@ -178,6 +234,7 @@ class _ChatPageState extends State<ChatPage> {
                                     createdAt: DateTime.now().toString(),
                                     role: ChatRoleConstants.user,
                                     imgPath: null,
+                                    isFav: false,
                                   ),
                                 ),
                               );
@@ -223,6 +280,7 @@ class _ChatPageState extends State<ChatPage> {
                               createdAt: DateTime.now().toString(),
                               role: ChatRoleConstants.user,
                               imgPath: null,
+                              isFav: false,
                             ),
                           ),
                         );
@@ -233,6 +291,7 @@ class _ChatPageState extends State<ChatPage> {
                               createdAt: DateTime.now().toString(),
                               role: ChatRoleConstants.user,
                               imgPath: null,
+                              isFav: false,
                             ),
                           ),
                         );

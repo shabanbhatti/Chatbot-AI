@@ -7,4 +7,5 @@ abstract class ChatRepository {
   Future<List<ChatEntity>> getChat();
   Future<bool> insertChat(ChatEntity chatEntity);
   Future<String> voiceToText(File filePath);
+  Future<bool> updateChat(ChatEntity chatEntity);
 }

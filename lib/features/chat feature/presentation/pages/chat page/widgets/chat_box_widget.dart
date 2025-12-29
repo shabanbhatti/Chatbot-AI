@@ -1,23 +1,32 @@
 import 'package:chatbot_ai/core/constants/constant_colors.dart';
+import 'package:chatbot_ai/core/typedefs/typedefs.dart';
 import 'package:chatbot_ai/core/utils/show_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:gpt_markdown/gpt_markdown.dart';
 
 class ChatBoxWidget extends StatelessWidget {
-  const ChatBoxWidget({super.key, required this.isUser, required this.message});
+  const ChatBoxWidget({
+    super.key,
+    required this.isUser,
+    required this.message,
+    required this.onFavTap,
+    required this.isFav,
+  });
   final bool isUser;
   final String message;
+  final OnPressed onFavTap;
+  final bool isFav;
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.only(left: isUser ? 30 : 0, top: 6, bottom: 6),
+          padding: EdgeInsets.only(left: isUser ? 30 : 0, top: 6, bottom: 10),
           child: Align(
             alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
             child: Container(
-              padding: const EdgeInsets.all(12),
+              padding: isUser ? const EdgeInsets.all(12) : EdgeInsets.all(0),
               decoration: BoxDecoration(
                 color: isUser
                     ? CupertinoColors.inactiveGray.withAlpha(100)
@@ -48,6 +57,20 @@ class ChatBoxWidget extends StatelessWidget {
               },
               child: const Icon(CupertinoIcons.square_on_square, size: 15),
             ),
+            if (!isUser)
+              Padding(
+                padding: EdgeInsetsGeometry.only(left: 10),
+                child: GestureDetector(
+                  onTap: onFavTap,
+                  child: (!isFav)
+                      ? const Icon(CupertinoIcons.heart, size: 15)
+                      : const Icon(
+                          CupertinoIcons.heart_fill,
+                          color: CupertinoColors.destructiveRed,
+                          size: 15,
+                        ),
+                ),
+              ),
           ],
         ),
       ],

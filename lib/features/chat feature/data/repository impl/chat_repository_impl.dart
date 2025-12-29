@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:chatbot_ai/core/errors/exceptions/dio_exception_handeller.dart';
@@ -27,6 +28,7 @@ class ChatRepositoryImpl implements ChatRepository {
           createdAt: chatEnity.createdAt,
           role: chatEnity.role,
           imgPath: chatEnity.imgPath,
+          isFav: chatEnity.isFav,
         ),
       );
       return data.toEntity();
@@ -55,6 +57,7 @@ class ChatRepositoryImpl implements ChatRepository {
           createdAt: chatEntity.createdAt,
           role: chatEntity.role,
           imgPath: chatEntity.imgPath ?? '',
+          isFav: chatEntity.isFav,
         ),
       );
     } on DatabaseException catch (e) {
@@ -69,6 +72,26 @@ class ChatRepositoryImpl implements ChatRepository {
     } on DioException catch (e) {
       var message = DioExceptionHandeler.getMessage(e);
       throw ApiFailure(message: message);
+    }
+  }
+
+  @override
+  Future<bool> updateChat(ChatEntity chatEntity) async {
+    try {
+      log('Id: ${chatEntity.id}');
+      log('fav: ${chatEntity.isFav}');
+      return await chatLocalDatasource.updateChat(
+        ChatModel(
+          isFav: chatEntity.isFav,
+          message: chatEntity.message,
+          createdAt: chatEntity.createdAt,
+          role: chatEntity.role,
+          id: chatEntity.id,
+          imgPath: chatEntity.imgPath,
+        ),
+      );
+    } on DatabaseException catch (e) {
+      throw LocalDatabaseFailure(message: e.toString());
     }
   }
 }

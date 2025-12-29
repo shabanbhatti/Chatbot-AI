@@ -50,6 +50,7 @@ class ChatRemoteDatasourceImpl implements ChatRemoteDatasource {
       createdAt: DateTime.now().toString(),
       role: ChatRoleConstants.model,
       imgPath: null,
+      isFav: false,
     );
   }
 

@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:chatbot_ai/core/database/app_database.dart';
 import 'package:chatbot_ai/features/chat%20feature/data/models/chat_model.dart';
 
 abstract class ChatLocalDatasource {
   Future<List<ChatModel>> getChat();
   Future<bool> insertChat(ChatModel chatModel);
+  Future<bool> updateChat(ChatModel chatModel);
 }
 
 class ChatLocalDatasourceImpl implements ChatLocalDatasource {
@@ -21,6 +24,19 @@ class ChatLocalDatasourceImpl implements ChatLocalDatasource {
   Future<bool> insertChat(ChatModel chatModel) async {
     var db = await appDatabase.database;
     var isRowEffected = await db.insert(ChatModel.tableName, chatModel.toMap());
+    return isRowEffected > 0;
+  }
+
+  @override
+  Future<bool> updateChat(ChatModel chatModel) async {
+    log('DATASOURCE METHOD CALLED: ID: ${chatModel.id}');
+    var db = await appDatabase.database;
+    var isRowEffected = await db.update(
+      ChatModel.tableName,
+      chatModel.toMap(),
+      where: '${ChatModel.col_id}=?',
+      whereArgs: [chatModel.id],
+    );
     return isRowEffected > 0;
   }
 }

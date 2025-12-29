@@ -26,6 +26,10 @@ class LoadedChat extends ChatState {
   List<Object?> get props => [chatsList];
 }
 
+class LoadedInsertedChat extends ChatState {
+  const LoadedInsertedChat();
+}
+
 class ErrorChat extends ChatState {
   final String message;
   const ErrorChat({required this.message});

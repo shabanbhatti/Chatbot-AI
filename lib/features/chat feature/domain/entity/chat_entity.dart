@@ -4,11 +4,15 @@ class ChatEntity extends Equatable {
   final int? id;
   final String message;
   final String createdAt;
+
   final String? imgPath;
   final String role;
+  final bool isFav;
 
   const ChatEntity({
     required this.message,
+
+    required this.isFav,
     this.id,
     required this.createdAt,
     required this.role,
@@ -20,6 +24,7 @@ class ChatEntity extends Equatable {
     String? createdAt,
     String? imgPath,
     String? role,
+    bool? isFav,
   }) {
     return ChatEntity(
       message: message ?? this.message,
@@ -27,6 +32,7 @@ class ChatEntity extends Equatable {
       role: role ?? this.role,
       id: id ?? this.id,
       imgPath: imgPath ?? this.imgPath,
+      isFav: isFav ?? this.isFav,
     );
   }
 

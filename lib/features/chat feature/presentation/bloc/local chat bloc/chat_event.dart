@@ -10,15 +10,17 @@ sealed class ChatEvent extends Equatable {
 class InsertEvent extends ChatEvent {
   final ChatEntity chatEntity;
   const InsertEvent({required this.chatEntity});
+  @override
+  List<Object?> get props => [chatEntity];
 }
 
 class GetChatsEvent extends ChatEvent {
   const GetChatsEvent();
 }
 
-// class SendPromptEvent extends ChatEvent {
-//   final ChatEntity chatEntity;
-//   const SendPromptEvent({required this.chatEntity});
-//   @override
-//   List<Object?> get props => [chatEntity];
-// }
+class UpdateChatEvent extends ChatEvent {
+  final ChatEntity chatEntity;
+  const UpdateChatEvent({required this.chatEntity});
+  @override
+  List<Object?> get props => [chatEntity];
+}
