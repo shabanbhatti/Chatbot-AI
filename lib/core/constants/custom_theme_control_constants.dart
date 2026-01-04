@@ -8,7 +8,7 @@ abstract class CustomThemeControl {
 
   static Color bottomSheetColor = CupertinoDynamicColor.withBrightness(
     color: CupertinoColors.inactiveGray.withAlpha(25),
-    darkColor: const Color.fromARGB(255, 23, 23, 23),
+    darkColor: const Color.fromARGB(255, 22, 22, 22),
   );
 
   static Color outlinedBtnColor = CupertinoDynamicColor.withBrightness(

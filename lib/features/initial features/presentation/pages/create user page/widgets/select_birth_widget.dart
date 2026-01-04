@@ -1,3 +1,4 @@
+import 'package:chatbot_ai/core/constants/custom_theme_control_constants.dart';
 import 'package:chatbot_ai/core/utils/date_format_util.dart';
 import 'package:chatbot_ai/core/widgets/custom%20textfields/custom_basic_textfield.dart';
 import 'package:chatbot_ai/core/widgets/custom_divider_widget.dart';
@@ -33,7 +34,10 @@ class SelectBirthWidget extends StatelessWidget {
                   context: context,
                   builder: (_) => Container(
                     decoration: BoxDecoration(
-                      color: CupertinoColors.white,
+                      color: CupertinoDynamicColor.resolve(
+                        CustomThemeControl.bottomSheetColor,
+                        context,
+                      ),
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(20),
                         topRight: Radius.circular(20),
@@ -108,7 +112,10 @@ class SelectBirthWidget extends StatelessWidget {
                           Container(
                             height: 200,
 
-                            color: CupertinoColors.systemBackground,
+                            color: CupertinoDynamicColor.resolve(
+                              CustomThemeControl.bottomSheetColor,
+                              context,
+                            ),
                             child: CupertinoDatePicker(
                               mode: CupertinoDatePickerMode.date,
                               maximumDate: DateTime.now(),

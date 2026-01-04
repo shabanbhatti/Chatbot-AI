@@ -138,6 +138,7 @@ class _ChatPageState extends State<ChatPage> {
                           slivers: [
                             BlocBuilder<ChatBloc, ChatState>(
                               builder: (context, state) {
+                                log('CHAT PAGE BLOC CALLED');
                                 if (state is LoadingChat) {
                                   return const SliverFillRemaining(
                                     child: Center(

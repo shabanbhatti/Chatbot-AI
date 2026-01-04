@@ -50,16 +50,13 @@ abstract class Providers {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) =>
-              ChatBloc(
-                  getChatsUsecase: getIt<GetChatsUsecase>(),
-                  insertChatUsecase: getIt<InsertChatUsecase>(),
-                  sendPromptUsecase: getIt<SendPromptUsecase>(),
-                  updateChatUsecase: getIt<UpdateChatUsecase>(),
-                  getUserUsecase: getIt<GetUserUsecase>(),
-                )
-                ..add(GetChatsEvent())
-                ..add(GetUserInDrawerEvent()),
+          create: (context) => ChatBloc(
+            getChatsUsecase: getIt<GetChatsUsecase>(),
+            insertChatUsecase: getIt<InsertChatUsecase>(),
+            sendPromptUsecase: getIt<SendPromptUsecase>(),
+            updateChatUsecase: getIt<UpdateChatUsecase>(),
+            getUserUsecase: getIt<GetUserUsecase>(),
+          )..add(GetChatsEvent()),
         ),
         // BlocProvider(create: (context) => ImagePickerBloc(imagePickerUtils: getIt<ImagePickerUtils>()),),
         BlocProvider(

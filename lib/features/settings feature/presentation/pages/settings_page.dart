@@ -147,11 +147,33 @@ class SettingsPage extends StatelessWidget {
                     leadingIcon: CupertinoIcons.calendar,
                     title: 'Date of birth',
                     onTap: null,
+                    trailing: BlocBuilder<SettingBloc, SettingState>(
+                      builder: (context, state) {
+                        if (state is LoadingSettingState) {
+                          return const Skeletonizer(child: Text('Loading...'));
+                        } else if (state is LoadedUserInSettingState) {
+                          return Text(state.userEntity.dateOfBirth);
+                        } else {
+                          return const Text('No birth found');
+                        }
+                      },
+                    ),
                   ),
                   CustomBasicListtile(
                     leadingIcon: CupertinoIcons.person,
                     title: 'Gender',
                     onTap: null,
+                    trailing: BlocBuilder<SettingBloc, SettingState>(
+                      builder: (context, state) {
+                        if (state is LoadingSettingState) {
+                          return const Skeletonizer(child: Text('Loading...'));
+                        } else if (state is LoadedUserInSettingState) {
+                          return Text(state.userEntity.gender);
+                        } else {
+                          return const Text('No gender found');
+                        }
+                      },
+                    ),
                   ),
                   CustomBasicListtile(
                     leadingIcon: CupertinoIcons.bell,

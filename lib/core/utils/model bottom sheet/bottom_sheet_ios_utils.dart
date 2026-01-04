@@ -10,6 +10,7 @@ void showCupertinoFullSheet(
   showCupertinoModalPopup(
     context: context,
     barrierDismissible: false,
+    barrierColor: CupertinoColors.black.withAlpha(100),
     builder: (context) {
       final mediaQuery = MediaQuery.of(context);
 
@@ -29,10 +30,6 @@ void showCupertinoFullSheet(
                 color: CupertinoDynamicColor.resolve(
                   CustomThemeControl.bottomSheetColor,
                   context,
-                ),
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(20),
-                  bottom: Radius.circular(0),
                 ),
               ),
               child: Column(

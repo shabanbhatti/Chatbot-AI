@@ -1,7 +1,16 @@
+import 'package:chatbot_ai/config/DI/injector.dart';
+import 'package:chatbot_ai/core/domain/usecases/get_user_usecase.dart';
+import 'package:chatbot_ai/features/chat%20feature/domain/usecases/get_chats_usecase.dart';
+import 'package:chatbot_ai/features/chat%20feature/domain/usecases/insert_chat_usecase.dart';
+import 'package:chatbot_ai/features/chat%20feature/domain/usecases/send_prompt_usecase.dart';
+import 'package:chatbot_ai/features/chat%20feature/domain/usecases/update_chat_usecase.dart';
+import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20bloc/chat_bloc.dart';
+import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20bloc/chat_event.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/pages/chat%20page/chat_page.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/pages/drawer/cupertino_drawer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AppMainPage extends StatefulWidget {
   const AppMainPage({super.key});
@@ -30,7 +39,17 @@ class _AppMainPageState extends State<AppMainPage> {
     return AdvancedDrawer(
       initialDrawerScale: 5,
       openRatio: 0.7,
-      drawer: const CupertinoDrawer(),
+      drawer: BlocProvider(
+        create: (context) => ChatBloc(
+          getChatsUsecase: getIt<GetChatsUsecase>(),
+          insertChatUsecase: getIt<InsertChatUsecase>(),
+          sendPromptUsecase: getIt<SendPromptUsecase>(),
+          updateChatUsecase: getIt<UpdateChatUsecase>(),
+          getUserUsecase: getIt<GetUserUsecase>(),
+        )..add(GetChatsEvent()),
+        child: const CupertinoDrawer(),
+      ),
+
       backdrop: Container(
         width: double.infinity,
         height: double.infinity,

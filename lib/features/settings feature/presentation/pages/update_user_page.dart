@@ -12,8 +12,6 @@ import 'package:chatbot_ai/core/widgets/custom%20btns/custom_app_btn.dart';
 import 'package:chatbot_ai/core/widgets/custom%20circle%20avatar%20/custom_circle_avatar_widget.dart';
 import 'package:chatbot_ai/core/widgets/custom%20textfields/custom_basic_textfield.dart';
 import 'package:chatbot_ai/core/widgets/top_textfield_title_widget.dart';
-import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20bloc/chat_bloc.dart';
-import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20bloc/chat_event.dart';
 import 'package:chatbot_ai/features/settings%20feature/presentation/bloc/setting%20bloc/setting_bloc.dart';
 import 'package:chatbot_ai/features/settings%20feature/presentation/bloc/setting%20bloc/setting_event.dart';
 import 'package:chatbot_ai/features/settings%20feature/presentation/bloc/setting%20bloc/setting_state.dart';
@@ -68,7 +66,7 @@ class _UpdateUserPageState extends State<UpdateUserPage> {
     return BlocListener<SettingBloc, SettingState>(
       listener: (context, state) {
         if (state is LoadedUserInSettingState) {
-          context.read<ChatBloc>().add(GetUserInDrawerEvent());
+          // context.read<ChatBloc>().add(GetUserInDrawerEvent());
         }
       },
       child: SafeArea(

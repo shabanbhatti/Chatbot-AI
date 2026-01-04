@@ -22,21 +22,22 @@ class LoadingOnSendingChat extends ChatState {
 
 class LoadedChat extends ChatState {
   final List<ChatEntity> chatsList;
-  const LoadedChat({required this.chatsList});
+  final UserEntity userEntity;
+  const LoadedChat({required this.chatsList, required this.userEntity});
   @override
-  List<Object?> get props => [chatsList];
+  List<Object?> get props => [chatsList, userEntity];
 }
 
 class LoadedInsertedChat extends ChatState {
   const LoadedInsertedChat();
 }
 
-class LoadedUserInDrawer extends ChatState {
-  final UserEntity userEntity;
-  const LoadedUserInDrawer({required this.userEntity});
-  @override
-  List<Object?> get props => [userEntity];
-}
+// class LoadedUserInDrawer extends ChatState {
+//   final UserEntity userEntity;
+//   const LoadedUserInDrawer({required this.userEntity});
+//   @override
+//   List<Object?> get props => [userEntity];
+// }
 
 class ErrorChat extends ChatState {
   final String message;
