@@ -1,4 +1,4 @@
-import 'package:chatbot_ai/core/shared%20domain/entity/user_entity.dart';
+import 'package:chatbot_ai/core/domain/entity/user_entity.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/entity/chat_entity.dart';
 import 'package:equatable/equatable.dart';
 

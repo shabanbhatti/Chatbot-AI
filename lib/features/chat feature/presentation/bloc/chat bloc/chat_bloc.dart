@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:chatbot_ai/core/errors/failures/failures.dart';
-import 'package:chatbot_ai/core/shared%20domain/usecases/get_user_usecase.dart';
+import 'package:chatbot_ai/core/domain/usecases/get_user_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/get_chats_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/insert_chat_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/send_prompt_usecase.dart';

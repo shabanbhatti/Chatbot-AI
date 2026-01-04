@@ -1,3 +1,4 @@
+import 'package:chatbot_ai/core/constants/constant_colors.dart';
 import 'package:chatbot_ai/core/typedefs/typedefs.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -68,7 +69,7 @@ class ChatTextfieldWidget extends StatelessWidget {
           decoration: BoxDecoration(
             color: CupertinoColors.systemGrey6,
             borderRadius: BorderRadius.circular(25),
-            border: Border.all(color: CupertinoColors.systemGrey, width: 0.5),
+            border: Border.all(color: ColorConstants.dividerColor, width: 0.5),
           ),
         ),
       ),

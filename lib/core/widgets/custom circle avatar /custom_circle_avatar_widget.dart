@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:chatbot_ai/core/typedefs/typedefs.dart';
+import 'package:chatbot_ai/core/utils/extentions/get_first&last_initial_extension.dart';
 import 'package:flutter/cupertino.dart';
 
 class CustomCircleAvatarWidget extends StatelessWidget {
@@ -10,11 +11,15 @@ class CustomCircleAvatarWidget extends StatelessWidget {
     required this.userName,
     required this.imgPath,
     required this.onTakeImage,
+    this.iconSize,
+    this.iconHolderRadius,
   });
   final double radius;
   final String userName;
   final String imgPath;
   final OnPressed onTakeImage;
+  final double? iconSize;
+  final double? iconHolderRadius;
 
   @override
   Widget build(BuildContext context) {
@@ -34,12 +39,13 @@ class CustomCircleAvatarWidget extends StatelessWidget {
             alignment: Alignment.center,
             child: (imgPath == '')
                 ? Text(
-                    userName,
-                    style: const TextStyle(
-                      fontSize: 50,
-                      fontWeight: FontWeight.bold,
-                      color: CupertinoColors.extraLightBackgroundGray,
-                    ),
+                    userName.initials,
+                    style: CupertinoTheme.of(context).textTheme.textStyle
+                        .copyWith(
+                          fontSize: 35,
+                          fontWeight: FontWeight.bold,
+                          color: CupertinoColors.white,
+                        ),
                   )
                 : Image.file(
                     File(imgPath),
@@ -54,8 +60,8 @@ class CustomCircleAvatarWidget extends StatelessWidget {
             child: GestureDetector(
               onTap: onTakeImage,
               child: Container(
-                height: 50,
-                width: 50,
+                height: iconHolderRadius ?? 50,
+                width: iconHolderRadius ?? 50,
                 decoration: ShapeDecoration(
                   shape: CircleBorder(),
                   color: CupertinoColors.white,
@@ -63,7 +69,7 @@ class CustomCircleAvatarWidget extends StatelessWidget {
                 child: Icon(
                   CupertinoIcons.camera_fill,
                   color: CupertinoColors.black,
-                  size: 27,
+                  size: iconSize ?? 27,
                 ),
               ),
             ),

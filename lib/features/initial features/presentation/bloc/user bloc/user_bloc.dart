@@ -1,6 +1,6 @@
-import 'package:chatbot_ai/core/shared%20domain/usecases/delete_user_usecase.dart';
-import 'package:chatbot_ai/core/shared%20domain/usecases/get_user_usecase.dart';
-import 'package:chatbot_ai/core/shared%20domain/usecases/insert_user_usecase.dart';
+import 'package:chatbot_ai/core/domain/usecases/delete_user_usecase.dart';
+import 'package:chatbot_ai/core/domain/usecases/get_user_usecase.dart';
+import 'package:chatbot_ai/core/domain/usecases/insert_user_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'user_event.dart';

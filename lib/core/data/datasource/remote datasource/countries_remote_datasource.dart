@@ -1,4 +1,4 @@
-import 'package:chatbot_ai/features/initial%20features/data/models/countries_model.dart';
+import 'package:chatbot_ai/core/data/model/countries_model.dart';
 import 'package:dio/dio.dart';
 
 abstract class CountriesRemoteDatasource {

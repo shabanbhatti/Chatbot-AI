@@ -116,7 +116,10 @@ class _ChatPageState extends State<ChatPage> {
                 onTap: () {
                   widget.advancedDrawerController.showDrawer();
                 },
-                child: const Icon(CupertinoIcons.slider_horizontal_3, size: 25),
+                child: const Icon(
+                  CupertinoIcons.line_horizontal_3_decrease,
+                  size: 25,
+                ),
               ),
               middle: const Text(
                 'Ai Chatbot',
@@ -262,40 +265,45 @@ class _ChatPageState extends State<ChatPage> {
                         }
                       },
                     ),
-                    BottomWidgets(
-                      chatNotifier: chatNotifier,
-                      chatController: chatController,
-                      onMic: () {
-                        if (!context.read<VoiceBloc>().state.isSpeaking) {
-                          context.read<VoiceBloc>().add(StartRecordingEvent());
-                        } else {
-                          context.read<VoiceBloc>().add(StopRecordingEvent());
-                        }
-                      },
-                      onSend: () {
-                        context.read<ChatBloc>().add(
-                          InsertEvent(
-                            chatEntity: ChatEntity(
-                              message: chatController.text.trim(),
-                              createdAt: DateTime.now().toString(),
-                              role: ChatRoleConstants.user,
-                              imgPath: null,
-                              isFav: false,
+                    Padding(
+                      padding: EdgeInsetsGeometry.only(bottom: 10),
+                      child: BottomWidgets(
+                        chatNotifier: chatNotifier,
+                        chatController: chatController,
+                        onMic: () {
+                          if (!context.read<VoiceBloc>().state.isSpeaking) {
+                            context.read<VoiceBloc>().add(
+                              StartRecordingEvent(),
+                            );
+                          } else {
+                            context.read<VoiceBloc>().add(StopRecordingEvent());
+                          }
+                        },
+                        onSend: () {
+                          context.read<ChatBloc>().add(
+                            InsertEvent(
+                              chatEntity: ChatEntity(
+                                message: chatController.text.trim(),
+                                createdAt: DateTime.now().toString(),
+                                role: ChatRoleConstants.user,
+                                imgPath: null,
+                                isFav: false,
+                              ),
                             ),
-                          ),
-                        );
-                        chatApiBloc.add(
-                          OnSendPromptEvent(
-                            chatEntity: ChatEntity(
-                              message: chatController.text.trim(),
-                              createdAt: DateTime.now().toString(),
-                              role: ChatRoleConstants.user,
-                              imgPath: null,
-                              isFav: false,
+                          );
+                          chatApiBloc.add(
+                            OnSendPromptEvent(
+                              chatEntity: ChatEntity(
+                                message: chatController.text.trim(),
+                                createdAt: DateTime.now().toString(),
+                                role: ChatRoleConstants.user,
+                                imgPath: null,
+                                isFav: false,
+                              ),
                             ),
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),

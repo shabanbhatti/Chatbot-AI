@@ -1,3 +1,4 @@
+import 'package:chatbot_ai/core/constants/custom_theme_control_constants.dart';
 import 'package:chatbot_ai/core/utils/model%20bottom%20sheet/bottom_sheet_ios_utils.dart';
 import 'package:chatbot_ai/core/widgets/Custom%20ListTiles%20widgets/custom_user_listtile_widget.dart';
 import 'package:chatbot_ai/core/widgets/Custom%20ListTiles%20widgets/loading_effect_listtile_widget.dart';
@@ -14,7 +15,10 @@ class CupertinoDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: double.infinity,
-      color: CupertinoColors.inactiveGray.withAlpha(30),
+      color: CupertinoDynamicColor.resolve(
+        CustomThemeControl.drawerColor,
+        context,
+      ),
       child: SafeArea(
         child: Column(
           children: [
@@ -33,10 +37,9 @@ class CupertinoDrawer extends StatelessWidget {
                     username: chatEntity.name,
                     imgPath: chatEntity.userImg,
                     onTap: () {
-                      // Navigator.of(context).pushNamed(SettingsPage.pageName);
                       showCupertinoFullSheet(
                         context,
-                        child: SettingsPage(),
+                        child: const SettingsPage(),
                         pageName: 'Settings',
                       );
                     },

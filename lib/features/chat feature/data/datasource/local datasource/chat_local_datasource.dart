@@ -17,7 +17,11 @@ class ChatLocalDatasourceImpl implements ChatLocalDatasource {
   Future<List<ChatModel>> getChat() async {
     var db = await appDatabase.database;
     var data = await db.query(ChatModel.tableName);
-    return data.map((e) => ChatModel.fromMap(e)).toList();
+    if (data.isNotEmpty) {
+      return data.map((e) => ChatModel.fromMap(e)).toList();
+    } else {
+      return [];
+    }
   }
 
   @override

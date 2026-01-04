@@ -10,7 +10,7 @@ class CustomAppBtn extends StatelessWidget {
     this.color,
   });
   final String title;
-  final OnPressed onTap;
+  final OnPressed? onTap;
   final Color? color;
   @override
   Widget build(BuildContext context) {

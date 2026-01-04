@@ -1,5 +1,7 @@
+import 'dart:developer';
+
 import 'package:chatbot_ai/core/errors/failures/failures.dart';
-import 'package:chatbot_ai/core/shared domain/entity/user_entity.dart';
+import 'package:chatbot_ai/core/domain/entity/user_entity.dart';
 import 'package:chatbot_ai/features/initial features/data/datasource/local datasource/user_local_datasource.dart';
 import 'package:chatbot_ai/features/initial features/data/models/user_model.dart';
 import 'package:chatbot_ai/features/initial features/domain/repository/user_repository.dart';
@@ -48,6 +50,7 @@ class UserRepositoryImpl implements UserRepository {
         country: userEntity.country,
         userImg: userEntity.userImg,
       );
+      log('ID: ${userModel.id}');
       return await userLocalDatasource.updateUser(userModel);
     } on DatabaseException catch (e) {
       throw LocalDatabaseFailure(message: e.toString());

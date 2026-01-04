@@ -1,6 +1,5 @@
 import 'package:chatbot_ai/config/DI/injector.dart';
 import 'package:chatbot_ai/core/typedefs/typedefs.dart';
-import 'package:chatbot_ai/core/utils/extentions/get_first&last_initial_extension.dart';
 import 'package:chatbot_ai/core/utils/image_picker_utils.dart';
 import 'package:chatbot_ai/core/widgets/custom%20btns/custom_app_btn.dart';
 import 'package:chatbot_ai/core/widgets/custom%20circle%20avatar%20/custom_circle_avatar_widget.dart';
@@ -42,7 +41,7 @@ class ImgGenderAgeWidget extends StatelessWidget {
                 valueListenable: imgPathNotifier,
                 builder: (context, value, child) {
                   return CustomCircleAvatarWidget(
-                    userName: name.initials,
+                    userName: name,
                     imgPath: value ?? '',
                     onTakeImage: () async {
                       var imgPath = await getIt<ImagePickerUtils>().takeImage(

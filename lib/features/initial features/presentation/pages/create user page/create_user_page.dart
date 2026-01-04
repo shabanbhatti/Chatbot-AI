@@ -2,15 +2,15 @@ import 'package:chatbot_ai/config/DI/injector.dart';
 import 'package:chatbot_ai/core/bloc/shared%20preferences%20bloc/shared_preferences_bloc.dart';
 import 'package:chatbot_ai/core/bloc/shared%20preferences%20bloc/shared_preferences_event.dart';
 import 'package:chatbot_ai/core/services/shared_preferences_service.dart';
-import 'package:chatbot_ai/core/shared%20domain/entity/user_entity.dart';
-import 'package:chatbot_ai/core/shared%20domain/usecases/delete_user_usecase.dart';
-import 'package:chatbot_ai/core/shared%20domain/usecases/get_user_usecase.dart';
-import 'package:chatbot_ai/core/shared%20domain/usecases/insert_user_usecase.dart';
+import 'package:chatbot_ai/core/domain/entity/user_entity.dart';
+import 'package:chatbot_ai/core/domain/usecases/delete_user_usecase.dart';
+import 'package:chatbot_ai/core/domain/usecases/get_countries_usecase.dart';
+import 'package:chatbot_ai/core/domain/usecases/get_user_usecase.dart';
+import 'package:chatbot_ai/core/domain/usecases/insert_user_usecase.dart';
 import 'package:chatbot_ai/core/utils/dialogs%20utils/loading_dialog_util.dart';
 import 'package:chatbot_ai/core/utils/show_toast.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/pages/app_main_page.dart';
-import 'package:chatbot_ai/features/initial%20features/domain/usecases/get_countries_usecase.dart';
-import 'package:chatbot_ai/features/initial%20features/presentation/bloc/countries%20bloc/countries_bloc.dart';
+import 'package:chatbot_ai/core/bloc/countries%20bloc/countries_bloc.dart';
 import 'package:chatbot_ai/features/initial%20features/presentation/bloc/user%20bloc/user_bloc.dart';
 import 'package:chatbot_ai/features/initial%20features/presentation/bloc/user%20bloc/user_event.dart';
 import 'package:chatbot_ai/features/initial%20features/presentation/bloc/user%20bloc/user_state.dart';
@@ -108,7 +108,7 @@ class _CreateUserPageState extends State<CreateUserPage> {
                       gender: genderNotifier.value,
                       country: countryController.text.trim(),
                       userImg: imgPathNotifier.value ?? '',
-                      id: DateTime.now().microsecond,
+                      id: 1,
                     ),
                   ),
                 );

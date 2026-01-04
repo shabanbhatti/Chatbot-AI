@@ -15,4 +15,5 @@ class SharedPreferencesService {
 
 abstract class SharedPreferencesKEYS {
   static const String loggedKey = 'logged_key';
+  static const String themeKey = 'theme';
 }

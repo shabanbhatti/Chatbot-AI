@@ -16,14 +16,14 @@ class CustomUserListtileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         border: Border(
           top: BorderSide(width: 0.5, color: CupertinoColors.systemGrey),
         ),
       ),
       width: double.infinity,
       child: CupertinoButton(
-        borderRadius: BorderRadius.all(Radius.circular(0)),
+        borderRadius: const BorderRadius.all(Radius.circular(0)),
         color: CupertinoColors.transparent,
         onPressed: onTap ?? () {},
         child: Row(

@@ -1,8 +1,8 @@
-import 'package:chatbot_ai/core/shared%20domain/entity/user_entity.dart';
+import 'package:chatbot_ai/core/domain/entity/user_entity.dart';
 
 abstract class UserRepository {
   Future<UserEntity> getUser();
   Future<bool> insertUser(UserEntity userEntity);
   Future<bool> deleteUser(int id);
-  Future<bool> updateUser(UserEntity userModel);
+  Future<bool> updateUser(UserEntity userEntity);
 }

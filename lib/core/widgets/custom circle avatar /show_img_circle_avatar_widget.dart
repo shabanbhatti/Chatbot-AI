@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:chatbot_ai/core/constants/constant_colors.dart';
 import 'package:chatbot_ai/core/utils/extentions/get_first&last_initial_extension.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -10,10 +9,12 @@ class ShowImgCircleAvatarWidget extends StatelessWidget {
     required this.radius,
     required this.userName,
     required this.imgPath,
+    this.internalFontSize,
   });
   final double radius;
   final String userName;
   final String imgPath;
+  final double? internalFontSize;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -22,7 +23,7 @@ class ShowImgCircleAvatarWidget extends StatelessWidget {
       clipBehavior: Clip.antiAliasWithSaveLayer,
       decoration: const ShapeDecoration(
         shape: CircleBorder(),
-        color: ColorConstants.appColor,
+        color: CupertinoColors.systemPink,
       ),
       alignment: Alignment.center,
       child: (imgPath == '')
@@ -30,7 +31,8 @@ class ShowImgCircleAvatarWidget extends StatelessWidget {
               userName.initials,
               style: CupertinoTheme.of(context).textTheme.textStyle.copyWith(
                 color: CupertinoColors.extraLightBackgroundGray,
-                fontSize: 20,
+                fontSize: internalFontSize ?? 20,
+                fontWeight: FontWeight.bold,
               ),
             )
           : Image.file(

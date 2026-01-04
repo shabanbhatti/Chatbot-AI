@@ -1,12 +1,12 @@
+import 'package:chatbot_ai/core/bloc/countries%20bloc/countries_bloc.dart';
+import 'package:chatbot_ai/core/bloc/countries%20bloc/countries_event.dart';
+import 'package:chatbot_ai/core/bloc/countries%20bloc/countries_state.dart';
 import 'package:chatbot_ai/core/constants/image_path_constants.dart';
 import 'package:chatbot_ai/core/typedefs/typedefs.dart';
 import 'package:chatbot_ai/core/utils/show_toast.dart';
 import 'package:chatbot_ai/core/widgets/custom%20btns/custom_app_btn.dart';
 import 'package:chatbot_ai/core/widgets/custom%20textfields/custom_basic_textfield.dart';
-import 'package:chatbot_ai/features/initial%20features/presentation/bloc/countries%20bloc/countries_bloc.dart';
-import 'package:chatbot_ai/features/initial%20features/presentation/bloc/countries%20bloc/countries_event.dart';
-import 'package:chatbot_ai/features/initial%20features/presentation/bloc/countries%20bloc/countries_state.dart';
-import 'package:chatbot_ai/features/initial%20features/presentation/widgets/top_textfield_title_widget.dart';
+import 'package:chatbot_ai/core/widgets/top_textfield_title_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -108,7 +108,7 @@ class _SelectCountryWidgetState extends State<SelectCountryWidget> {
                             return CupertinoListTile(
                               onTap: () {
                                 widget.controller.text =
-                                    '${data[index].flag} ${data[index].country}';
+                                    '${data[index].country} ${data[index].flag} ';
                                 isShow.value = false;
                               },
                               title: Text(data[index].country),

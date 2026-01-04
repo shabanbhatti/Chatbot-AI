@@ -34,7 +34,9 @@ class _AppMainPageState extends State<AppMainPage> {
       backdrop: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(color: CupertinoColors.white),
+        decoration: BoxDecoration(
+          color: CupertinoTheme.of(context).scaffoldBackgroundColor,
+        ),
       ),
       controller: advancedDrawerController,
       animationCurve: Curves.easeInOut,

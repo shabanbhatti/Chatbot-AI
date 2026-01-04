@@ -3,7 +3,8 @@ import 'package:flutter/cupertino.dart';
 var lightTheme = CupertinoThemeData(
   brightness: Brightness.light,
   scaffoldBackgroundColor: CupertinoColors.white,
-  primaryColor: CupertinoColors.systemGrey,
+  primaryColor: CupertinoColors.black,
+
   textTheme: CupertinoTextThemeData(
     textStyle: TextStyle(
       color: CupertinoColors.darkBackgroundGray,
@@ -16,7 +17,7 @@ var lightTheme = CupertinoThemeData(
 var darkTheme = CupertinoThemeData(
   brightness: Brightness.dark,
   scaffoldBackgroundColor: CupertinoColors.black,
-  primaryColor: CupertinoColors.systemGrey,
+  primaryColor: CupertinoColors.white,
   textTheme: CupertinoTextThemeData(
     textStyle: TextStyle(color: CupertinoColors.white),
   ),

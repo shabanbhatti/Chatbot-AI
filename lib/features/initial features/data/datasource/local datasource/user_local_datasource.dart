@@ -45,6 +45,9 @@ class UserLocalDatasourceImpl implements UserLocalDatasource {
 
   @override
   Future<bool> updateUser(UserModel userModel) async {
+    print(
+      '${userModel.country} ${userModel.name} ${userModel.id.toString()} ${userModel.gender} ${userModel.userImg.toString()}',
+    );
     final db = await appDatabase.database;
     final result = await db.update(
       UserModel.tableName,

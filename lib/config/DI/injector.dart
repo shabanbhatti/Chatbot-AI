@@ -1,9 +1,14 @@
+import 'package:chatbot_ai/core/data/datasource/remote%20datasource/countries_remote_datasource.dart';
+import 'package:chatbot_ai/core/data/repository%20impl/countries_repository_impl.dart';
 import 'package:chatbot_ai/core/database/app_database.dart';
 import 'package:chatbot_ai/core/dio%20client/dio_client.dart';
+import 'package:chatbot_ai/core/domain/repository/countries_repository.dart';
+import 'package:chatbot_ai/core/domain/usecases/delete_user_usecase.dart';
+import 'package:chatbot_ai/core/domain/usecases/get_countries_usecase.dart';
+import 'package:chatbot_ai/core/domain/usecases/get_user_usecase.dart';
+import 'package:chatbot_ai/core/domain/usecases/insert_user_usecase.dart';
+import 'package:chatbot_ai/core/domain/usecases/update_user_usecase.dart';
 import 'package:chatbot_ai/core/services/shared_preferences_service.dart';
-import 'package:chatbot_ai/core/shared%20domain/usecases/delete_user_usecase.dart';
-import 'package:chatbot_ai/core/shared%20domain/usecases/get_user_usecase.dart';
-import 'package:chatbot_ai/core/shared%20domain/usecases/insert_user_usecase.dart';
 import 'package:chatbot_ai/core/utils/image_picker_utils.dart';
 import 'package:chatbot_ai/features/chat%20feature/data/datasource/local%20datasource/chat_local_datasource.dart';
 import 'package:chatbot_ai/features/chat%20feature/data/datasource/remote%20datasource/chat_remote_datasource.dart';
@@ -15,15 +20,12 @@ import 'package:chatbot_ai/features/chat%20feature/domain/usecases/send_prompt_u
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/update_chat_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/voice_to_text_usecase.dart';
 import 'package:chatbot_ai/features/initial%20features/data/datasource/local%20datasource/user_local_datasource.dart';
-import 'package:chatbot_ai/features/initial%20features/data/datasource/remote%20datasource/countries_remote_datasource.dart';
-import 'package:chatbot_ai/features/initial%20features/data/repository%20impl/countries_repository_impl.dart';
 import 'package:chatbot_ai/features/initial%20features/data/repository%20impl/user_repository_impl.dart';
-import 'package:chatbot_ai/features/initial%20features/domain/repository/countries_repository.dart';
 import 'package:chatbot_ai/features/initial%20features/domain/repository/user_repository.dart';
 import 'package:chatbot_ai/features/initial%20features/domain/usecases/delete_user_usecase_impl.dart';
-import 'package:chatbot_ai/features/initial%20features/domain/usecases/get_countries_usecase.dart';
 import 'package:chatbot_ai/features/initial%20features/domain/usecases/get_user_usecase_impl.dart';
 import 'package:chatbot_ai/features/initial%20features/domain/usecases/insert_user_usecase_impl.dart';
+import 'package:chatbot_ai/features/initial%20features/domain/usecases/update_user_usecase_impl.dart';
 import 'package:get_it/get_it.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -77,6 +79,10 @@ Future<void> initGetIt() async {
     () => InsertUserUsecaseImpl(userRepository: getIt<UserRepository>()),
   );
 
+  getIt.registerLazySingleton<UpdateUserUsecase>(
+    () => UpdateUserUsecaseImpl(userRepository: getIt<UserRepository>()),
+  );
+
   getIt.registerLazySingleton<DeleteUserUsecase>(
     () => DeleteUserUsecaseImpl(userRepository: getIt<UserRepository>()),
   );
@@ -110,4 +116,6 @@ Future<void> initGetIt() async {
   getIt.registerLazySingleton<UpdateChatUsecase>(
     () => UpdateChatUsecase(chatRepository: getIt<ChatRepository>()),
   );
+
+  // settings side
 }
