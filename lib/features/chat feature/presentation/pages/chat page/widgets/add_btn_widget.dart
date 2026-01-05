@@ -6,6 +6,10 @@ class AddBtnWidget extends StatelessWidget {
   final OnPressed onTap;
   @override
   Widget build(BuildContext context) {
+    var butnTheme = CupertinoDynamicColor.withBrightness(
+      color: CupertinoColors.systemGrey6,
+      darkColor: CupertinoColors.systemGrey6.withAlpha(40),
+    );
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -15,7 +19,7 @@ class AddBtnWidget extends StatelessWidget {
           shape: const CircleBorder(
             side: BorderSide(width: 0.5, color: CupertinoColors.systemGrey),
           ),
-          color: CupertinoColors.systemGrey6,
+          color: CupertinoDynamicColor.resolve(butnTheme, context),
         ),
         child: const Icon(
           CupertinoIcons.add,

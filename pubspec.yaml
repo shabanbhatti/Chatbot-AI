@@ -56,6 +56,7 @@ dependencies:
   avatar_glow: ^3.0.1
   permission_handler: ^12.0.1
   skeletonizer: ^2.1.2
+  popover: ^0.4.0
 
 dev_dependencies:
   flutter_test:

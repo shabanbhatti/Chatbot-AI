@@ -1,8 +1,12 @@
+import 'package:chatbot_ai/core/bloc/accent%20color%20SP%20bloc/accent_color_bloc.dart';
+import 'package:chatbot_ai/core/bloc/accent%20color%20SP%20bloc/accent_color_state.dart';
 import 'package:chatbot_ai/core/constants/constant_colors.dart';
 import 'package:chatbot_ai/core/typedefs/typedefs.dart';
+import 'package:chatbot_ai/core/utils/get_accent_colors_util.dart';
 import 'package:chatbot_ai/core/utils/show_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gpt_markdown/gpt_markdown.dart';
 
 class ChatBoxWidget extends StatelessWidget {
@@ -17,6 +21,7 @@ class ChatBoxWidget extends StatelessWidget {
   final String message;
   final OnPressed onFavTap;
   final bool isFav;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -25,22 +30,30 @@ class ChatBoxWidget extends StatelessWidget {
           padding: EdgeInsets.only(left: isUser ? 30 : 0, top: 6, bottom: 10),
           child: Align(
             alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
-            child: Container(
-              padding: isUser ? const EdgeInsets.all(12) : EdgeInsets.all(0),
-              decoration: BoxDecoration(
-                color: isUser
-                    ? CupertinoColors.inactiveGray.withAlpha(100)
-                    : null,
-                borderRadius: BorderRadius.circular(18),
-              ),
-              child: GptMarkdown(
-                message,
-                // textDirection: TextDirection.ltr,
-                // textAlign: TextAlign.left,
-                style: CupertinoTheme.of(
-                  context,
-                ).textTheme.textStyle.copyWith(fontWeight: FontWeight.normal),
-              ),
+            child: BlocBuilder<AccentColorBloc, AccentColorState>(
+              buildWhen: (previous, current) {
+                if (previous.colorName != current.colorName) {
+                  return true;
+                } else {
+                  return false;
+                }
+              },
+              builder: (context, state) {
+                return Container(
+                  padding: isUser
+                      ? const EdgeInsets.all(12)
+                      : EdgeInsets.all(0),
+                  decoration: BoxDecoration(
+                    color: isUser ? getAccentColor(state.colorName) : null,
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  child: GptMarkdown(
+                    message,
+                    style: CupertinoTheme.of(context).textTheme.textStyle
+                        .copyWith(fontWeight: FontWeight.normal),
+                  ),
+                );
+              },
             ),
           ),
         ),

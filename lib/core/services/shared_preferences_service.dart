@@ -4,6 +4,14 @@ class SharedPreferencesService {
   final SharedPreferences sharedPreferences;
   const SharedPreferencesService({required this.sharedPreferences});
 
+  Future<void> setString(String key, String value) async {
+    await sharedPreferences.setString(key, value);
+  }
+
+  Future<String> getString(String key) async {
+    return sharedPreferences.getString(key) ?? '';
+  }
+
   Future<void> setBool(String key, bool value) async {
     await sharedPreferences.setBool(key, value);
   }
@@ -16,4 +24,5 @@ class SharedPreferencesService {
 abstract class SharedPreferencesKEYS {
   static const String loggedKey = 'logged_key';
   static const String themeKey = 'theme';
+  static const String accentColorKey = 'accent_color';
 }

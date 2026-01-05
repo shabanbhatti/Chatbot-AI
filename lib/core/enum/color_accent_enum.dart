@@ -1,0 +1,1 @@
+enum AccentColors{red, blue, green, yellow, defaultColor}

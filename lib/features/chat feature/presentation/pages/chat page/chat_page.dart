@@ -34,9 +34,11 @@ class _ChatPageState extends State<ChatPage> {
   TextEditingController chatController = TextEditingController();
   ValueNotifier<String> chatNotifier = ValueNotifier('');
   final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
+
     chatApiBloc = ChatApiBloc(sendPromptUsecase: getIt<SendPromptUsecase>());
   }
 

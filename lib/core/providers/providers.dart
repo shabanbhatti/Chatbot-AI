@@ -1,7 +1,8 @@
 import 'package:chatbot_ai/config/DI/injector.dart';
-import 'package:chatbot_ai/core/bloc/shared%20preferences%20bloc/shared_preferences_bloc.dart';
-import 'package:chatbot_ai/core/bloc/shared%20preferences%20bloc/shared_preferences_event.dart';
+import 'package:chatbot_ai/core/bloc/accent%20color%20SP%20bloc/accent_color_bloc.dart';
+import 'package:chatbot_ai/core/bloc/accent%20color%20SP%20bloc/accent_color_event.dart';
 import 'package:chatbot_ai/core/bloc/theme%20bloc/theme_bloc.dart';
+import 'package:chatbot_ai/core/bloc/theme%20bloc/theme_event.dart';
 import 'package:chatbot_ai/core/domain/usecases/delete_user_usecase.dart';
 import 'package:chatbot_ai/core/domain/usecases/get_user_usecase.dart';
 import 'package:chatbot_ai/core/domain/usecases/insert_user_usecase.dart';
@@ -68,12 +69,15 @@ abstract class Providers {
           },
           child: SettingsPage(),
         ),
-        BlocProvider(create: (context) => ThemeBloc()),
-        BlocProvider<SharedPreferencesBloc>(
-          create: (context) => SharedPreferencesBloc(
+        BlocProvider(
+          create: (context) => ThemeBloc(
             sharedPreferencesService: getIt<SharedPreferencesService>(),
-          )..add(GetBoolEvent(key: SharedPreferencesKEYS.themeKey)),
-          // ..add(GetBoolEvent(key: SharedPreferencesKEYS.loggedKey)),
+          )..add(GetTheme()),
+        ),
+        BlocProvider<AccentColorBloc>(
+          create: (context) => AccentColorBloc(
+            sharedPreferencesService: getIt<SharedPreferencesService>(),
+          )..add(GetColorEvent()),
         ),
       ],
       child: child,

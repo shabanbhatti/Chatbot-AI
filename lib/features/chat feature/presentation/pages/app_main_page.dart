@@ -1,4 +1,8 @@
+import 'dart:developer';
+
 import 'package:chatbot_ai/config/DI/injector.dart';
+import 'package:chatbot_ai/core/bloc/accent%20color%20SP%20bloc/accent_color_bloc.dart';
+import 'package:chatbot_ai/core/bloc/accent%20color%20SP%20bloc/accent_color_event.dart';
 import 'package:chatbot_ai/core/domain/usecases/get_user_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/get_chats_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/insert_chat_usecase.dart';
@@ -26,6 +30,8 @@ class _AppMainPageState extends State<AppMainPage> {
   void initState() {
     super.initState();
     advancedDrawerController = AdvancedDrawerController();
+    log('MAIN PAGE INIT CALLED');
+    context.read<AccentColorBloc>().add(GetColorEvent());
   }
 
   @override

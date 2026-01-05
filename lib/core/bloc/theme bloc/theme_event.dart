@@ -11,8 +11,7 @@ class ToggeledTheme extends ThemeEvent {
 }
 
 class GetTheme extends ThemeEvent {
-  final bool isLight;
-  const GetTheme({required this.isLight});
+  const GetTheme();
   @override
-  List<Object?> get props => [isLight];
+  List<Object?> get props => [];
 }
