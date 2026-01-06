@@ -1,4 +1,5 @@
-import 'package:chatbot_ai/core/domain/entity/user_entity.dart';
+import 'package:chatbot_ai/core/shared%20domain/entity/chat_bckgnd_img_path_entity.dart';
+import 'package:chatbot_ai/core/shared%20domain/entity/user_entity.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/entity/chat_entity.dart';
 import 'package:equatable/equatable.dart';
 
@@ -23,9 +24,14 @@ class LoadingOnSendingChat extends ChatState {
 class LoadedChat extends ChatState {
   final List<ChatEntity> chatsList;
   final UserEntity userEntity;
-  const LoadedChat({required this.chatsList, required this.userEntity});
+  final ChatBckgndImgPathsEntity? chatBckgndImgPathsEntity;
+  const LoadedChat({
+    required this.chatsList,
+    required this.userEntity,
+    required this.chatBckgndImgPathsEntity,
+  });
   @override
-  List<Object?> get props => [chatsList, userEntity];
+  List<Object?> get props => [chatsList, userEntity, chatBckgndImgPathsEntity];
 }
 
 class LoadedInsertedChat extends ChatState {

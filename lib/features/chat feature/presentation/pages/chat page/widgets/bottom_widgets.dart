@@ -1,6 +1,9 @@
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:chatbot_ai/core/bloc/accent%20color%20SP%20bloc/accent_color_bloc.dart';
+import 'package:chatbot_ai/core/bloc/accent%20color%20SP%20bloc/accent_color_state.dart';
 import 'package:chatbot_ai/core/constants/constant_colors.dart';
 import 'package:chatbot_ai/core/typedefs/typedefs.dart';
+import 'package:chatbot_ai/core/utils/get_accent_colors_util.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/voice%20bloc/voice_bloc.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/voice%20bloc/voice_state.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/pages/chat%20page/widgets/add_btn_widget.dart';
@@ -38,15 +41,31 @@ class BottomWidgets extends StatelessWidget {
                   builder: (context, state) {
                     return ChatTextfieldWidget(
                       micWidget: state.isSpeaking
-                          ? AvatarGlow(
-                              duration: const Duration(seconds: 2),
-                              curve: Curves.easeOutCirc,
-                              glowColor: ColorConstants.appColor,
-                              child: const Icon(
-                                CupertinoIcons.mic,
-                                size: 25,
-                                color: CupertinoColors.systemGrey,
-                              ),
+                          ? BlocBuilder<AccentColorBloc, AccentColorState>(
+                              buildWhen: (previous, current) {
+                                if (previous.colorName != current.colorName) {
+                                  return true;
+                                } else {
+                                  return false;
+                                }
+                              },
+                              builder: (context, state) {
+                                return AvatarGlow(
+                                  duration: const Duration(seconds: 2),
+                                  curve: Curves.easeOutCirc,
+                                  glowColor: state.colorName == '⚪️  Default'
+                                      ? ColorConstants.appColor
+                                      : getAccentColor(
+                                          state.colorName,
+                                          withOpacity: false,
+                                        ),
+                                  child: const Icon(
+                                    CupertinoIcons.mic,
+                                    size: 25,
+                                    color: CupertinoColors.systemGrey,
+                                  ),
+                                );
+                              },
                             )
                           : (state.isLoading)
                           ? CupertinoActivityIndicator()

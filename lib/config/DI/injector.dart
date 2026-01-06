@@ -1,14 +1,11 @@
-import 'package:chatbot_ai/core/data/datasource/remote%20datasource/countries_remote_datasource.dart';
-import 'package:chatbot_ai/core/data/repository%20impl/countries_repository_impl.dart';
 import 'package:chatbot_ai/core/database/app_database.dart';
 import 'package:chatbot_ai/core/dio%20client/dio_client.dart';
-import 'package:chatbot_ai/core/domain/repository/countries_repository.dart';
-import 'package:chatbot_ai/core/domain/usecases/delete_user_usecase.dart';
-import 'package:chatbot_ai/core/domain/usecases/get_countries_usecase.dart';
-import 'package:chatbot_ai/core/domain/usecases/get_user_usecase.dart';
-import 'package:chatbot_ai/core/domain/usecases/insert_user_usecase.dart';
-import 'package:chatbot_ai/core/domain/usecases/update_user_usecase.dart';
 import 'package:chatbot_ai/core/services/shared_preferences_service.dart';
+import 'package:chatbot_ai/core/shared%20domain/usecases/delete_user_usecase.dart';
+import 'package:chatbot_ai/core/shared%20domain/usecases/get_user_usecase.dart';
+import 'package:chatbot_ai/core/shared%20domain/usecases/insert_chat_bckgnd_img_paths_usecae.dart';
+import 'package:chatbot_ai/core/shared%20domain/usecases/insert_user_usecase.dart';
+import 'package:chatbot_ai/core/shared%20domain/usecases/update_user_usecase.dart';
 import 'package:chatbot_ai/core/utils/image_picker_utils.dart';
 import 'package:chatbot_ai/features/chat%20feature/data/datasource/local%20datasource/chat_local_datasource.dart';
 import 'package:chatbot_ai/features/chat%20feature/data/datasource/remote%20datasource/chat_remote_datasource.dart';
@@ -26,6 +23,17 @@ import 'package:chatbot_ai/features/initial%20features/domain/usecases/delete_us
 import 'package:chatbot_ai/features/initial%20features/domain/usecases/get_user_usecase_impl.dart';
 import 'package:chatbot_ai/features/initial%20features/domain/usecases/insert_user_usecase_impl.dart';
 import 'package:chatbot_ai/features/initial%20features/domain/usecases/update_user_usecase_impl.dart';
+import 'package:chatbot_ai/features/settings%20feature/data/datasource/local%20datasource/chat_bckgnd_img_paths_local_datasource.dart';
+import 'package:chatbot_ai/features/settings%20feature/data/repository%20impl/chat_bckgnd_img_paths_repository_impl.dart';
+import 'package:chatbot_ai/features/settings%20feature/domain/repository/chat_bckgnd_img_paths_repository.dart';
+import 'package:chatbot_ai/features/settings%20feature/domain/usecases/delete_chat_img_paths_usecase.dart';
+import 'package:chatbot_ai/features/settings%20feature/domain/usecases/get_chat_imgs_paths_usecase.dart';
+import 'package:chatbot_ai/features/settings%20feature/domain/usecases/insert_chat_img_path_usecase_impl.dart';
+import 'package:chatbot_ai/features/settings%20feature/domain/usecases/update_chat_img_path_usecase.dart';
+import 'package:chatbot_ai/shared/data/datasource/remote%20datasource/countries_remote_datasource.dart';
+import 'package:chatbot_ai/shared/data/repository%20impl/countries_repository_impl.dart';
+import 'package:chatbot_ai/shared/domain/repository/countries_repository.dart';
+import 'package:chatbot_ai/shared/domain/usecases/get_countries_usecase.dart';
 import 'package:get_it/get_it.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -118,4 +126,34 @@ Future<void> initGetIt() async {
   );
 
   // settings side
+  getIt.registerLazySingleton<ChatBckgndImgPathsLocalDatasource>(
+    () => ChatBckgndImgPathsLocalDatasourceImpl(appDatabase: AppDatabase()),
+  );
+  getIt.registerLazySingleton<ChatBckgndImgPathsRepository>(
+    () => ChatBckgndImgPathsRepositoryImpl(
+      chatBckgndImgPathsLocalDatasource:
+          getIt<ChatBckgndImgPathsLocalDatasource>(),
+    ),
+  );
+  getIt.registerLazySingleton(
+    () => GetChatImgsPathsUsecase(
+      chatBckgndImgPathsRepository: getIt<ChatBckgndImgPathsRepository>(),
+    ),
+  );
+  getIt.registerLazySingleton(
+    () => DeleteChatImgPathsUsecase(
+      chatBckgndImgPathsRepository: getIt<ChatBckgndImgPathsRepository>(),
+    ),
+  );
+  getIt.registerLazySingleton<InsertChatBckgndImgPathsUsecae>(
+    () => InsertChatImgPathUsecaseImpl(
+      chatBckgndImgPathsRepository: getIt<ChatBckgndImgPathsRepository>(),
+    ),
+  );
+
+  getIt.registerLazySingleton<UpdateChatImgPathUsecase>(
+    () => UpdateChatImgPathUsecase(
+      chatBckgndImgPathsRepository: getIt<ChatBckgndImgPathsRepository>(),
+    ),
+  );
 }

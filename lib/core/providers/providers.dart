@@ -3,11 +3,12 @@ import 'package:chatbot_ai/core/bloc/accent%20color%20SP%20bloc/accent_color_blo
 import 'package:chatbot_ai/core/bloc/accent%20color%20SP%20bloc/accent_color_event.dart';
 import 'package:chatbot_ai/core/bloc/theme%20bloc/theme_bloc.dart';
 import 'package:chatbot_ai/core/bloc/theme%20bloc/theme_event.dart';
-import 'package:chatbot_ai/core/domain/usecases/delete_user_usecase.dart';
-import 'package:chatbot_ai/core/domain/usecases/get_user_usecase.dart';
-import 'package:chatbot_ai/core/domain/usecases/insert_user_usecase.dart';
-import 'package:chatbot_ai/core/domain/usecases/update_user_usecase.dart';
 import 'package:chatbot_ai/core/services/shared_preferences_service.dart';
+import 'package:chatbot_ai/core/shared%20domain/usecases/delete_user_usecase.dart';
+import 'package:chatbot_ai/core/shared%20domain/usecases/get_user_usecase.dart';
+import 'package:chatbot_ai/core/shared%20domain/usecases/insert_chat_bckgnd_img_paths_usecae.dart';
+import 'package:chatbot_ai/core/shared%20domain/usecases/insert_user_usecase.dart';
+import 'package:chatbot_ai/core/shared%20domain/usecases/update_user_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/get_chats_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/insert_chat_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/send_prompt_usecase.dart';
@@ -18,6 +19,9 @@ import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20bloc
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/voice%20bloc/voice_bloc.dart';
 import 'package:chatbot_ai/features/initial%20features/presentation/bloc/user%20bloc/user_bloc.dart';
 import 'package:chatbot_ai/features/initial%20features/presentation/bloc/user%20bloc/user_event.dart';
+import 'package:chatbot_ai/features/settings%20feature/domain/usecases/delete_chat_img_paths_usecase.dart';
+import 'package:chatbot_ai/features/settings%20feature/domain/usecases/get_chat_imgs_paths_usecase.dart';
+import 'package:chatbot_ai/features/settings%20feature/domain/usecases/update_chat_img_path_usecase.dart';
 import 'package:chatbot_ai/features/settings%20feature/presentation/bloc/setting%20bloc/setting_bloc.dart';
 import 'package:chatbot_ai/features/settings%20feature/presentation/bloc/setting%20bloc/setting_event.dart';
 import 'package:chatbot_ai/features/settings%20feature/presentation/pages/settings_page.dart';
@@ -34,6 +38,8 @@ abstract class Providers {
             getUserUsecase: getIt<GetUserUsecase>(),
             insertUserUsecase: getIt<InsertUserUsecase>(),
             deleteUserUsecase: getIt<DeleteUserUsecase>(),
+            insertChatBckgndImgPathsUsecae:
+                getIt<InsertChatBckgndImgPathsUsecae>(),
           )..add(GetUserEvent()),
         ),
         BlocProvider(
@@ -57,6 +63,7 @@ abstract class Providers {
             sendPromptUsecase: getIt<SendPromptUsecase>(),
             updateChatUsecase: getIt<UpdateChatUsecase>(),
             getUserUsecase: getIt<GetUserUsecase>(),
+            getChatImgsPathsUsecase: getIt<GetChatImgsPathsUsecase>(),
           )..add(GetChatsEvent()),
         ),
         // BlocProvider(create: (context) => ImagePickerBloc(imagePickerUtils: getIt<ImagePickerUtils>()),),
@@ -65,6 +72,10 @@ abstract class Providers {
             return SettingBloc(
               getUserUsecase: getIt<GetUserUsecase>(),
               updateChatUsecase: getIt<UpdateUserUsecase>(),
+              deleteChatImgPathsUsecase: getIt<DeleteChatImgPathsUsecase>(),
+              getChatImgsPathsUsecase: getIt<GetChatImgsPathsUsecase>(),
+              insertChatImgPathUsecase: getIt<InsertChatBckgndImgPathsUsecae>(),
+              updateChatImgPathUsecase: getIt<UpdateChatImgPathUsecase>(),
             )..add(GetUserInSettingEvent());
           },
           child: SettingsPage(),

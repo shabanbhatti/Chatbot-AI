@@ -1,4 +1,5 @@
-import 'package:chatbot_ai/core/domain/entity/user_entity.dart';
+import 'package:chatbot_ai/core/shared%20domain/entity/chat_bckgnd_img_path_entity.dart';
+import 'package:chatbot_ai/core/shared%20domain/entity/user_entity.dart';
 import 'package:equatable/equatable.dart';
 
 sealed class SettingState extends Equatable {
@@ -15,11 +16,41 @@ class LoadingSettingState extends SettingState {
   const LoadingSettingState();
 }
 
-class LoadedUserInSettingState extends SettingState {
-  final UserEntity userEntity;
-  const LoadedUserInSettingState({required this.userEntity});
+class LoadedSettingState extends SettingState {
+  final UserEntity? userEntity;
+  final List<ChatBckgndImgPathsEntity>? chatImgPaths;
+
+  final bool isUserLoading;
+  final bool isChatImgsLoading;
+
+  const LoadedSettingState({
+    this.userEntity,
+    this.chatImgPaths,
+    this.isUserLoading = false,
+    this.isChatImgsLoading = false,
+  });
+
+  LoadedSettingState copyWith({
+    UserEntity? userEntity,
+    List<ChatBckgndImgPathsEntity>? chatImgPaths,
+    bool? isUserLoading,
+    bool? isChatImgsLoading,
+  }) {
+    return LoadedSettingState(
+      userEntity: userEntity ?? this.userEntity,
+      chatImgPaths: chatImgPaths ?? this.chatImgPaths,
+      isUserLoading: isUserLoading ?? this.isUserLoading,
+      isChatImgsLoading: isChatImgsLoading ?? this.isChatImgsLoading,
+    );
+  }
+
   @override
-  List<Object?> get props => [userEntity];
+  List<Object?> get props => [
+    isUserLoading,
+    isChatImgsLoading,
+    userEntity,
+    chatImgPaths,
+  ];
 }
 
 class ErrorSettingState extends SettingState {

@@ -37,5 +37,5 @@ class ChatEntity extends Equatable {
   }
 
   @override
-  List<Object?> get props => [message, createdAt, imgPath, role, id];
+  List<Object?> get props => [message, createdAt, imgPath, role, id, isFav];
 }

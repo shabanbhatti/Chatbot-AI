@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:chatbot_ai/core/errors/failures/failures.dart';
-import 'package:chatbot_ai/core/domain/usecases/get_countries_usecase.dart';
+import 'package:chatbot_ai/shared/domain/usecases/get_countries_usecase.dart';
 import 'package:chatbot_ai/core/bloc/countries%20bloc/countries_event.dart';
 import 'package:chatbot_ai/core/bloc/countries%20bloc/countries_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

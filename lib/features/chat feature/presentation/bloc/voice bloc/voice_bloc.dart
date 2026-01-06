@@ -69,7 +69,7 @@ class VoiceBloc extends Bloc<VoiceEvent, VoiceState> {
           message: 'Recording started 🎤: $timerString',
 
           color: ColorConstants.appColor,
-          gravity: ToastGravity.BOTTOM,
+          gravity: ToastGravity.TOP,
         );
       });
     } else {
@@ -100,7 +100,7 @@ class VoiceBloc extends Bloc<VoiceEvent, VoiceState> {
       emit(state.copyWith(isLoading: true, isSpeaking: false));
 
       // var reply = await voiceToTextUsecase(File(path!));
-      throw ApiFailure(message: 'Fuck hugaaya');
+      throw ApiFailure(message: 'ERROR FOUND (hardcode)');
 
       // emit(state.copyWith(isLoaded: true, reply: 'reply', isLoading: false));
     } on Failures catch (e) {

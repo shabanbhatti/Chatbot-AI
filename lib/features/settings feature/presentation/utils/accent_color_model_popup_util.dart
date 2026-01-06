@@ -16,12 +16,12 @@ void showSheet(BuildContext context) {
               context.read<AccentColorBloc>().add(
                 SetColorEvent(
                   key: SharedPreferencesKEYS.accentColorKey,
-                  value: 'Default',
+                  value: '⚪️  Default',
                 ),
               );
               Navigator.pop(context);
             },
-            child: _centerAlign('  Default'),
+            child: _centerAlign('⚪️  Default'),
           ),
           CupertinoActionSheetAction(
             onPressed: () {

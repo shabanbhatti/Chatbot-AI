@@ -1,4 +1,4 @@
-import 'package:chatbot_ai/core/domain/entity/user_entity.dart';
+import 'package:chatbot_ai/core/shared%20domain/entity/user_entity.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class UserEvent extends Equatable {
@@ -26,6 +26,15 @@ class UpdateUserEvent extends UserEvent {
 
   @override
   List<Object?> get props => [user];
+}
+
+class InsertChatBackgroundImagesPathsEventInUserBloc extends UserEvent {
+  final List<String> imgPaths;
+  const InsertChatBackgroundImagesPathsEventInUserBloc({
+    required this.imgPaths,
+  });
+  @override
+  List<Object?> get props => [imgPaths];
 }
 
 class DeleteUserEvent extends UserEvent {

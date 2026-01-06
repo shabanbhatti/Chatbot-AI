@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:chatbot_ai/config/DI/injector.dart';
 import 'package:chatbot_ai/core/constants/chat_role_constants.dart';
@@ -133,102 +134,176 @@ class _ChatPageState extends State<ChatPage> {
                 child: Column(
                   children: [
                     Expanded(
-                      child: CupertinoScrollbar(
-                        controller: _scrollController,
-                        child: CustomScrollView(
-                          controller: _scrollController,
-                          slivers: [
-                            BlocBuilder<ChatBloc, ChatState>(
-                              builder: (context, state) {
-                                log('CHAT PAGE BLOC CALLED');
-                                if (state is LoadingChat) {
-                                  return const SliverFillRemaining(
-                                    child: Center(
-                                      child: CupertinoActivityIndicator(),
-                                    ),
-                                  );
-                                } else if (state is LoadedChat) {
-                                  var data = state.chatsList;
-                                  return SliverPadding(
-                                    padding: const EdgeInsetsGeometry.symmetric(
-                                      horizontal: 10,
-                                    ),
-                                    sliver: BlocBuilder<ChatApiBloc, ChatApiState>(
-                                      bloc: chatApiBloc,
-                                      builder: (context, chatState) {
-                                        return SliverList.builder(
-                                          itemCount:
-                                              data.length +
-                                              (chatState is LoadingChatApi
-                                                  ? 1
-                                                  : 0),
-                                          itemBuilder: (context, index) {
-                                            if (chatState is LoadingChatApi &&
-                                                index == data.length) {
-                                              return const ModelLoadingWidget();
-                                            } else {
-                                              final chats = data[index];
-                                              final isUser =
-                                                  chats.role ==
-                                                  ChatRoleConstants.user;
+                      child: Stack(
+                        children: [
+                          BlocBuilder<ChatBloc, ChatState>(
+                            // buildWhen: (previous, current) {
+                            //   // Sirf tab rebuild ho jab background image change ho
+                            //   if (previous is LoadedChat &&
+                            //       current is LoadedChat) {
+                            //     return previous.chatBckgndImgPathsEntity !=
+                            //         current.chatBckgndImgPathsEntity;
+                            //   }
 
-                                              return ChatBoxWidget(
-                                                isUser: isUser,
-                                                message: chats.message,
-                                                isFav: chats.isFav,
-                                                onFavTap: () {
-                                                  print(chats.isFav);
-                                                  if (chats.isFav) {
-                                                    context
-                                                        .read<ChatBloc>()
-                                                        .add(
-                                                          UpdateChatEvent(
-                                                            chatEntity: chats
-                                                                .copyWith(
-                                                                  isFav: false,
-                                                                ),
-                                                          ),
-                                                        );
-                                                  } else {
-                                                    context
-                                                        .read<ChatBloc>()
-                                                        .add(
-                                                          UpdateChatEvent(
-                                                            chatEntity: chats
-                                                                .copyWith(
-                                                                  isFav: true,
-                                                                ),
-                                                          ),
-                                                        );
-                                                    ShowToast.basicToast(
-                                                      message:
-                                                          '🎉 Thanks for your feedback!',
-                                                    );
-                                                  }
-                                                },
-                                              );
-                                            }
-                                          },
-                                        );
-                                      },
+                            //   // Initial / loading se LoadedChat par aate waqt build ho
+                            //   if (previous is! LoadedChat &&
+                            //       current is LoadedChat) {
+                            //     return true;
+                            //   }
+
+                            //   return false;
+                            // },
+                            builder: (context, state) {
+                              log(
+                                'CHAT BLOC with CHAT BACKGROUND WALLPAPER CALLED',
+                              );
+                              if (state is LoadingChat) {
+                                return SizedBox(
+                                  height: double.infinity,
+                                  width: double.infinity,
+                                  child: const Column(
+                                    mainAxisAlignment: .center,
+                                    children: [CupertinoActivityIndicator()],
+                                  ),
+                                );
+                              } else if (state is LoadedChat) {
+                                var chatBackgroundPath =
+                                    state.chatBckgndImgPathsEntity;
+                                if (chatBackgroundPath != null) {
+                                  return Opacity(
+                                    opacity: 0.7,
+                                    child: SizedBox(
+                                      height: double.infinity,
+                                      width: double.infinity,
+                                      child:
+                                          (chatBackgroundPath.imgPaths
+                                              .startsWith('assets/'))
+                                          ? Image.asset(
+                                              chatBackgroundPath.imgPaths,
+                                              fit: BoxFit.cover,
+                                            )
+                                          : Image.file(
+                                              File(chatBackgroundPath.imgPaths),
+                                              fit: BoxFit.cover,
+                                            ),
                                     ),
-                                  );
-                                } else if (state is ErrorChat) {
-                                  return SliverFillRemaining(
-                                    child: Center(child: Text(state.message)),
                                   );
                                 } else {
-                                  return const SliverToBoxAdapter();
+                                  return const SizedBox();
                                 }
-                              },
+                              } else {
+                                return const SizedBox(
+                                  height: double.infinity,
+                                  width: double.infinity,
+                                );
+                              }
+                            },
+                          ),
+                          CupertinoScrollbar(
+                            controller: _scrollController,
+                            child: CustomScrollView(
+                              controller: _scrollController,
+                              slivers: [
+                                BlocBuilder<ChatBloc, ChatState>(
+                                  builder: (context, state) {
+                                    log('CHAT BLOC with CHAT LIST CALLED');
+                                    if (state is LoadingChat) {
+                                      return const SliverFillRemaining(
+                                        child: Center(
+                                          child: CupertinoActivityIndicator(),
+                                        ),
+                                      );
+                                    } else if (state is LoadedChat) {
+                                      var data = state.chatsList;
+                                      return SliverPadding(
+                                        padding:
+                                            const EdgeInsetsGeometry.symmetric(
+                                              horizontal: 10,
+                                            ),
+                                        sliver: BlocBuilder<ChatApiBloc, ChatApiState>(
+                                          bloc: chatApiBloc,
+                                          builder: (context, chatState) {
+                                            return SliverList.builder(
+                                              itemCount:
+                                                  data.length +
+                                                  (chatState is LoadingChatApi
+                                                      ? 1
+                                                      : 0),
+                                              itemBuilder: (context, index) {
+                                                if (chatState
+                                                        is LoadingChatApi &&
+                                                    index == data.length) {
+                                                  return const ModelLoadingWidget();
+                                                } else {
+                                                  final chats = data[index];
+                                                  final isUser =
+                                                      chats.role ==
+                                                      ChatRoleConstants.user;
+
+                                                  return ChatBoxWidget(
+                                                    isUser: isUser,
+                                                    message: chats.message,
+                                                    isFav: chats.isFav,
+                                                    onFavTap: () {
+                                                      print(chats.isFav);
+                                                      if (chats.isFav) {
+                                                        context
+                                                            .read<ChatBloc>()
+                                                            .add(
+                                                              UpdateChatEvent(
+                                                                chatEntity: chats
+                                                                    .copyWith(
+                                                                      isFav:
+                                                                          false,
+                                                                    ),
+                                                              ),
+                                                            );
+                                                      } else {
+                                                        context
+                                                            .read<ChatBloc>()
+                                                            .add(
+                                                              UpdateChatEvent(
+                                                                chatEntity: chats
+                                                                    .copyWith(
+                                                                      isFav:
+                                                                          true,
+                                                                    ),
+                                                              ),
+                                                            );
+                                                        ShowToast.basicToast(
+                                                          message:
+                                                              '🎉 Thanks for your feedback!',
+                                                        );
+                                                      }
+                                                    },
+                                                  );
+                                                }
+                                              },
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    } else if (state is ErrorChat) {
+                                      return SliverFillRemaining(
+                                        child: Center(
+                                          child: Text(state.message),
+                                        ),
+                                      );
+                                    } else {
+                                      return const SliverToBoxAdapter();
+                                    }
+                                  },
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                     BlocBuilder<ChatApiBloc, ChatApiState>(
                       bloc: chatApiBloc,
                       builder: (context, state) {
+                        log('CHAT API BLOC CALLED');
                         if (state is ErrorChatApi) {
                           return CustomErrorBoxWidget(
                             exceptionMessage: state.message,
@@ -254,6 +329,7 @@ class _ChatPageState extends State<ChatPage> {
 
                     BlocBuilder<VoiceBloc, VoiceState>(
                       builder: (context, state) {
+                        log('VOICE BLOC CALLED');
                         if (state.isError) {
                           return CustomErrorBoxWidget(
                             exceptionMessage: state.error,

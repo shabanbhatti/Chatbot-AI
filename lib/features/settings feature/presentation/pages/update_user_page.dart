@@ -5,8 +5,8 @@ import 'package:chatbot_ai/core/bloc/countries%20bloc/countries_bloc.dart';
 import 'package:chatbot_ai/core/bloc/countries%20bloc/countries_event.dart';
 import 'package:chatbot_ai/core/bloc/countries%20bloc/countries_state.dart';
 import 'package:chatbot_ai/core/constants/constant_colors.dart';
-import 'package:chatbot_ai/core/domain/entity/user_entity.dart';
-import 'package:chatbot_ai/core/domain/usecases/get_countries_usecase.dart';
+import 'package:chatbot_ai/core/shared%20domain/entity/user_entity.dart';
+import 'package:chatbot_ai/shared/domain/usecases/get_countries_usecase.dart';
 import 'package:chatbot_ai/core/utils/image_picker_utils.dart';
 import 'package:chatbot_ai/core/widgets/custom%20btns/custom_app_btn.dart';
 import 'package:chatbot_ai/core/widgets/custom%20circle%20avatar%20/custom_circle_avatar_widget.dart';
@@ -65,7 +65,7 @@ class _UpdateUserPageState extends State<UpdateUserPage> {
 
     return BlocListener<SettingBloc, SettingState>(
       listener: (context, state) {
-        if (state is LoadedUserInSettingState) {
+        if (state is LoadedSettingState) {
           // context.read<ChatBloc>().add(GetUserInDrawerEvent());
         }
       },

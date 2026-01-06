@@ -1,4 +1,4 @@
-import 'package:chatbot_ai/core/domain/entity/country_entity.dart';
+import 'package:chatbot_ai/shared/domain/entity/country_entity.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class CountriesState extends Equatable {

@@ -1,13 +1,16 @@
 import 'dart:async';
 
-import 'package:chatbot_ai/core/domain/usecases/get_user_usecase.dart';
 import 'package:chatbot_ai/core/errors/failures/failures.dart';
+import 'package:chatbot_ai/core/shared%20domain/entity/chat_bckgnd_img_path_entity.dart';
+import 'package:chatbot_ai/core/shared%20domain/usecases/get_user_usecase.dart';
+import 'package:chatbot_ai/features/chat%20feature/domain/entity/chat_entity.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/get_chats_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/insert_chat_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/send_prompt_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/update_chat_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20bloc/chat_event.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20bloc/chat_state.dart';
+import 'package:chatbot_ai/features/settings%20feature/domain/usecases/get_chat_imgs_paths_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
@@ -16,9 +19,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final InsertChatUsecase insertChatUsecase;
   final UpdateChatUsecase updateChatUsecase;
   final GetUserUsecase getUserUsecase;
+  final GetChatImgsPathsUsecase getChatImgsPathsUsecase;
   ChatBloc({
     required this.sendPromptUsecase,
     required this.getUserUsecase,
+    required this.getChatImgsPathsUsecase,
     required this.insertChatUsecase,
     required this.updateChatUsecase,
     required this.getChatsUsecase,
@@ -36,9 +41,23 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   ) async {
     try {
       emit(LoadingChat());
+
+      await Future.delayed(Duration(seconds: 2));
       var data = await getChatsUsecase();
       var user = await getUserUsecase();
-      emit(LoadedChat(chatsList: data, userEntity: user));
+      var backgroundImg = await getChatImgsPathsUsecase();
+      List<ChatBckgndImgPathsEntity> paths = backgroundImg
+          .where((e) => e.isActive)
+          .toList();
+
+      ChatBckgndImgPathsEntity? finalPath = (paths.isEmpty) ? null : paths[0];
+      emit(
+        LoadedChat(
+          chatsList: data,
+          userEntity: user,
+          chatBckgndImgPathsEntity: finalPath,
+        ),
+      );
     } on Failures catch (e) {
       emit(ErrorChat(message: e.message));
     }
@@ -48,8 +67,19 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     InsertEvent event,
     Emitter<ChatState> emit,
   ) async {
+    // emit(LoadingChat());
+
     await insertChatUsecase(event.chatEntity);
-    add(GetChatsEvent());
+    var loaded = state as LoadedChat;
+    List<ChatEntity> list = [...loaded.chatsList];
+    list.add(event.chatEntity);
+    emit(
+      LoadedChat(
+        chatsList: list,
+        userEntity: loaded.userEntity,
+        chatBckgndImgPathsEntity: loaded.chatBckgndImgPathsEntity,
+      ),
+    );
   }
 
   Future<void> onUpdateChatEvent(
@@ -58,28 +88,25 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   ) async {
     try {
       var isInserted = await updateChatUsecase(event.chatEntity);
-      if (isInserted) {
-        emit(LoadedInsertedChat());
-        add(GetChatsEvent());
-      } else {
-        add(GetChatsEvent());
-        // ShowToast.basicToast(message: 'FAILED');
-      }
+      var loaded = state as LoadedChat;
+
+      var data = loaded.chatsList
+          .map(
+            (e) => (e.id == event.chatEntity.id)
+                ? e.copyWith(isFav: event.chatEntity.isFav)
+                : e,
+          )
+          .toList();
+
+      emit(
+        LoadedChat(
+          chatsList: data,
+          userEntity: loaded.userEntity,
+          chatBckgndImgPathsEntity: loaded.chatBckgndImgPathsEntity,
+        ),
+      );
     } on Failures catch (e) {
       emit(ErrorChat(message: e.message));
     }
   }
-
-  // Future<void> onGetUserInDrawerEvent(
-  //   GetUserInDrawerEvent event,
-  //   Emitter<ChatState> emit,
-  // ) async {
-  //   try {
-  //     emit(LoadingChat());
-
-  //     emit(LoadedUserInDrawer(userEntity: user));
-  //   } on Failures catch (e) {
-  //     emit(ErrorChat(message: e.message));
-  //   }
-  // }
 }

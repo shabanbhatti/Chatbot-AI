@@ -1,11 +1,12 @@
 import 'package:chatbot_ai/config/DI/injector.dart';
 import 'package:chatbot_ai/core/bloc/countries%20bloc/countries_bloc.dart';
-import 'package:chatbot_ai/core/domain/entity/user_entity.dart';
-import 'package:chatbot_ai/core/domain/usecases/delete_user_usecase.dart';
-import 'package:chatbot_ai/core/domain/usecases/get_countries_usecase.dart';
-import 'package:chatbot_ai/core/domain/usecases/get_user_usecase.dart';
-import 'package:chatbot_ai/core/domain/usecases/insert_user_usecase.dart';
+import 'package:chatbot_ai/core/constants/chat_background_img_paths_constants.dart';
 import 'package:chatbot_ai/core/services/shared_preferences_service.dart';
+import 'package:chatbot_ai/core/shared%20domain/entity/user_entity.dart';
+import 'package:chatbot_ai/core/shared%20domain/usecases/delete_user_usecase.dart';
+import 'package:chatbot_ai/core/shared%20domain/usecases/get_user_usecase.dart';
+import 'package:chatbot_ai/core/shared%20domain/usecases/insert_chat_bckgnd_img_paths_usecae.dart';
+import 'package:chatbot_ai/core/shared%20domain/usecases/insert_user_usecase.dart';
 import 'package:chatbot_ai/core/utils/dialogs%20utils/loading_dialog_util.dart';
 import 'package:chatbot_ai/core/utils/show_toast.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/pages/app_main_page.dart';
@@ -15,6 +16,7 @@ import 'package:chatbot_ai/features/initial%20features/presentation/bloc/user%20
 import 'package:chatbot_ai/features/initial%20features/presentation/pages/create%20user%20page/widgets/create_username_widget.dart';
 import 'package:chatbot_ai/features/initial%20features/presentation/pages/create%20user%20page/widgets/img_gender_age_widget.dart';
 import 'package:chatbot_ai/features/initial%20features/presentation/pages/create%20user%20page/widgets/select_country_widget.dart';
+import 'package:chatbot_ai/shared/domain/usecases/get_countries_usecase.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -44,6 +46,12 @@ class _CreateUserPageState extends State<CreateUserPage> {
       getUserUsecase: getIt<GetUserUsecase>(),
       insertUserUsecase: getIt<InsertUserUsecase>(),
       deleteUserUsecase: getIt<DeleteUserUsecase>(),
+      insertChatBckgndImgPathsUsecae: getIt<InsertChatBckgndImgPathsUsecae>(),
+    );
+    userBloc.add(
+      InsertChatBackgroundImagesPathsEventInUserBloc(
+        imgPaths: ChatBackgroundImgPathsConstants.imgPaths,
+      ),
     );
     pages = [
       CreateUserNameWidget(

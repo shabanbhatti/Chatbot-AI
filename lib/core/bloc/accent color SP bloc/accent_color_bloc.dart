@@ -7,7 +7,7 @@ class AccentColorBloc extends Bloc<AccentColorEvent, AccentColorState> {
   final SharedPreferencesService sharedPreferencesService;
 
   AccentColorBloc({required this.sharedPreferencesService})
-    : super(AccentColorState(colorName: 'Default')) {
+    : super(AccentColorState(colorName: '⚪️ Default')) {
     on<SetColorEvent>((event, emit) async {
       await sharedPreferencesService.setString(event.key, event.value);
       add(GetColorEvent());
@@ -18,7 +18,7 @@ class AccentColorBloc extends Bloc<AccentColorEvent, AccentColorState> {
         SharedPreferencesKEYS.accentColorKey,
       );
       if (value.isEmpty) {
-        emit(AccentColorState(colorName: 'Default'));
+        emit(AccentColorState(colorName: '⚪️  Default'));
       } else {
         emit(AccentColorState(colorName: value));
       }

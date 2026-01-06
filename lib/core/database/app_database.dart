@@ -1,5 +1,6 @@
 import 'package:chatbot_ai/features/chat%20feature/data/models/chat_model.dart';
 import 'package:chatbot_ai/features/initial%20features/data/models/user_model.dart';
+import 'package:chatbot_ai/features/settings%20feature/data/models/chat_bckgnd_img_paths_model.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -20,6 +21,7 @@ class AppDatabase {
       onCreate: (db, version) async {
         await db.execute(UserModel.createTableQuery);
         await db.execute(ChatModel.createTable);
+        await db.execute(ChatBckgndImgPathsModel.createTable);
       },
       version: 1,
     );
