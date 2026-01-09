@@ -19,6 +19,6 @@ var darkTheme = CupertinoThemeData(
   scaffoldBackgroundColor: CupertinoColors.black,
   primaryColor: CupertinoColors.white,
   textTheme: CupertinoTextThemeData(
-    textStyle: TextStyle(color: CupertinoColors.white),
+    textStyle: TextStyle(color: CupertinoColors.white, fontSize: 15),
   ),
 );

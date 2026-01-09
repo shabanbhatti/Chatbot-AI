@@ -64,7 +64,7 @@ class VoiceBloc extends Bloc<VoiceEvent, VoiceState> {
       var path = await audioRecorder.stop();
       timer?.cancel();
 
-      if (totalSeconds < 2) {
+      if (totalSeconds < 3) {
         emit(IsErrorVoice(message: '🔇 Voice should be more than 2 seconds'));
         return;
       }
@@ -74,9 +74,14 @@ class VoiceBloc extends Bloc<VoiceEvent, VoiceState> {
 
       // var reply = await voiceToTextUsecase(File(path!));
       // throw ApiFailure(message: 'ERROR FOUND (hardcode)');
-      await Future.delayed(Duration(seconds: 3));
+      await Future.delayed(Duration(seconds: 2));
 
-      emit(IsLoadedVoice(reply: 'HI Motherfucker'));
+      emit(
+        IsLoadedVoice(
+          reply:
+              'Sorry! Currently, work is in progress on the app, so this service is temporarily disabled 😊',
+        ),
+      );
     } on Failures catch (e) {
       emit(IsErrorVoice(message: e.message));
     }

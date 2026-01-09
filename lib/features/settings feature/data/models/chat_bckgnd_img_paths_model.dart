@@ -8,7 +8,7 @@ class ChatBckgndImgPathsModel extends Equatable {
   const ChatBckgndImgPathsModel({
     required this.imgPaths,
     required this.isActive,
-    this.id,
+    required this.id,
   });
 
   factory ChatBckgndImgPathsModel.fromMap(Map<String, dynamic> map) {
@@ -29,7 +29,7 @@ class ChatBckgndImgPathsModel extends Equatable {
   static const String isActiveCol = 'isActive_col';
 
   static const String createTable =
-      '''CREATE TABLE $tableName($imgPathCol TEXT,$idCol INTEGER PRIMARY KEY AUTOINCREMENT,$isActiveCol INTEGER)''';
+      '''CREATE TABLE $tableName($imgPathCol TEXT,$idCol INTEGER PRIMARY KEY,$isActiveCol INTEGER)''';
 
   ChatBckgndImgPathsEntity toEntity() {
     return ChatBckgndImgPathsEntity(

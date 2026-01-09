@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:chatbot_ai/core/bloc/accent%20color%20SP%20bloc/accent_color_bloc.dart';
 import 'package:chatbot_ai/core/bloc/accent%20color%20SP%20bloc/accent_color_state.dart';
 import 'package:chatbot_ai/core/bloc/theme%20bloc/theme_bloc.dart';
@@ -11,6 +9,7 @@ import 'package:chatbot_ai/core/widgets/custom%20btns/custom_outlined_btn.dart';
 import 'package:chatbot_ai/core/widgets/custom%20circle%20avatar%20/custom_circle_avatar_widget.dart';
 import 'package:chatbot_ai/core/widgets/custom%20circle%20avatar%20/loading_effect_circle_avatar_widget.dart';
 import 'package:chatbot_ai/core/widgets/custom%20circle%20avatar%20/show_img_circle_avatar_widget.dart';
+import 'package:chatbot_ai/core/widgets/custom%20text/theme_text_widget.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20bloc/chat_bloc.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20bloc/chat_event.dart';
 import 'package:chatbot_ai/features/settings%20feature/presentation/bloc/setting%20bloc/setting_bloc.dart';
@@ -55,9 +54,9 @@ class _SettingsPageState extends State<SettingsPage> {
             child: Center(
               child: BlocBuilder<SettingBloc, SettingState>(
                 buildWhen: (previous, current) {
-                  print(
-                    'PREVIOUS: ${previous.runtimeType} | CURRENT: ${current.runtimeType}',
-                  );
+                  // print(
+                  //   'PREVIOUS: ${previous.runtimeType} | CURRENT: ${current.runtimeType}',
+                  // );
                   if (previous is InitialSettingState &&
                       current is LoadingSettingState) {
                     return true;
@@ -73,16 +72,16 @@ class _SettingsPageState extends State<SettingsPage> {
                   }
                 },
                 builder: (context, state) {
-                  log('AVATAR CALLED BLOC');
+                  // log('AVATAR CALLED BLOC');/
                   if (state is LoadingSettingState) {
-                    return const LoadingEffectCircleAvatarWidget();
+                    return const LoadingEffectCircleAvatarWidget(radius: 120);
                   } else if (state is LoadedSettingState) {
                     var user = state.userEntity!;
                     return ShowImgCircleAvatarWidget(
                       userName: user.name,
                       imgPath: user.userImg,
-                      radius: 150,
-                      internalFontSize: 30,
+                      radius: 120,
+                      internalFontSize: 40,
                     );
                   } else {
                     return CustomCircleAvatarWidget(
@@ -128,25 +127,15 @@ class _SettingsPageState extends State<SettingsPage> {
                       return Column(
                         mainAxisSize: .min,
                         children: [
-                          Text(
-                            state.userEntity!.name,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: CupertinoTheme.of(context)
-                                .textTheme
-                                .textStyle
-                                .copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                ),
+                          ThemeTextWidget(
+                            text: state.userEntity!.name,
+                            fontWeight: FontWeight.bold,
+                            size: 18,
                           ),
                           const SizedBox(height: 5),
-                          Text(
-                            state.userEntity!.country,
-                            style: CupertinoTheme.of(context)
-                                .textTheme
-                                .textStyle
-                                .copyWith(color: CupertinoColors.systemGrey),
+                          ThemeTextWidget(
+                            text: state.userEntity!.country,
+                            color: CupertinoColors.systemGrey,
                           ),
                         ],
                       );
@@ -170,7 +159,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   var loadedUser =
                       context.read<SettingBloc>().state as LoadedSettingState;
                   var user = loadedUser.userEntity!;
-                  // log('${user.name} ${user.country}');
+
                   showCupertinoFullSheet(
                     context,
                     sheetHeightThroughMediaQuery: 0.5,

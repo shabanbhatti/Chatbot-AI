@@ -138,8 +138,8 @@ class _ChatPageState extends State<ChatPage> {
                                       return true;
                                     } else if (previous is LoadedChat &&
                                         current is LoadedChat) {
-                                      return previous.chatsList.length !=
-                                          current.chatsList.length;
+                                      return previous.chatsList !=
+                                          current.chatsList;
                                     } else {
                                       return false;
                                     }

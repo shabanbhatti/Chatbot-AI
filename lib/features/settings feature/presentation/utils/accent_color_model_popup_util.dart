@@ -84,12 +84,12 @@ void showSheet(BuildContext context) {
 Widget _centerAlign(String text) {
   return Container(
     color: CupertinoColors.transparent,
-    width: 100,
+    width: double.infinity,
     height: 30,
     child: Row(
       mainAxisAlignment: .start,
       crossAxisAlignment: .start,
-      children: [Flexible(child: Text(text))],
+      children: [Text(text, maxLines: 1)],
     ),
   );
 }

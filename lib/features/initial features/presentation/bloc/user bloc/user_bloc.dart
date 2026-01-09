@@ -65,6 +65,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           ChatBckgndImgPathsEntity(
             imgPaths: element,
             isActive: false,
+            
             id: DateTime.now().microsecondsSinceEpoch,
           ),
         );

@@ -51,34 +51,37 @@ Widget _topBarWidget(
   String pageTitle, {
   num sheetHeightThroughMediaQuery = 0.07,
 }) {
-  return Container(
-    height: MediaQuery.of(context).size.height * sheetHeightThroughMediaQuery,
-    color: CupertinoColors.transparent,
-    child: Padding(
-      padding: const EdgeInsetsGeometry.symmetric(vertical: 20),
-      child: Stack(
-        children: [
-          Align(
-            alignment: Alignment.topCenter,
-            child: Text(
-              pageTitle,
-              style: CupertinoTheme.of(
-                context,
-              ).textTheme.textStyle.copyWith(fontWeight: FontWeight.bold),
-            ),
-          ),
-
-          Align(
-            alignment: Alignment.topRight,
-            child: Padding(
-              padding: const EdgeInsetsGeometry.symmetric(horizontal: 10),
-              child: GestureDetector(
-                onTap: () => Navigator.pop(context),
-                child: const Icon(CupertinoIcons.xmark_circle_fill),
+  return Padding(
+    padding: const EdgeInsetsGeometry.symmetric(vertical: 5),
+    child: Container(
+      height: MediaQuery.of(context).size.height * sheetHeightThroughMediaQuery,
+      color: CupertinoColors.transparent,
+      child: Padding(
+        padding: const EdgeInsetsGeometry.symmetric(vertical: 20),
+        child: Stack(
+          children: [
+            Align(
+              alignment: Alignment.topCenter,
+              child: Text(
+                pageTitle,
+                style: CupertinoTheme.of(
+                  context,
+                ).textTheme.textStyle.copyWith(fontWeight: FontWeight.bold),
               ),
             ),
-          ),
-        ],
+
+            Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsetsGeometry.symmetric(horizontal: 10),
+                child: GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: const Icon(CupertinoIcons.xmark_circle_fill),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     ),
   );

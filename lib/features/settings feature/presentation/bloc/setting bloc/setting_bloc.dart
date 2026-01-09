@@ -38,6 +38,7 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
     on<UpdateChatBackgroundImagePathEvent>(
       onUpdateChatBackgroundImagePathEvent,
     );
+    on<DeleteChatbackgroundImagesEvent>(onDeleteChatbackgroundImagesEvent);
     on<InactiveAllChatBackgroundThemeEvent>(
       onInactiveAllChatBackgroundThemeEvent,
     );
@@ -51,7 +52,7 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
       if (state is! LoadedSettingState) {
         emit(LoadingSettingState());
       }
-      await Future.delayed(Duration(seconds: 1));
+
       var user = await getUserUsecase();
       final data = await getChatImgsPathsUsecase();
       emit(LoadedSettingState(userEntity: user, chatImgPaths: data));
@@ -98,7 +99,13 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
           color: CupertinoColors.destructiveRed,
         );
       }
-      // add(GetChatbackgroundImgsPathsEvent());
+      final loaded = state as LoadedSettingState;
+
+      final updatedList = List<ChatBckgndImgPathsEntity>.of(
+        loaded.chatImgPaths ?? [],
+      )..add(event.chatBckgndImgPathsEntity);
+
+      emit(loaded.copyWith(chatImgPaths: updatedList));
     } on Failures catch (e) {
       emit(ErrorSettingState(message: e.message));
     }
@@ -175,6 +182,22 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
           id: element.id,
         ),
       );
+    }
+  }
+
+  Future<void> onDeleteChatbackgroundImagesEvent(
+    DeleteChatbackgroundImagesEvent event,
+    Emitter<SettingState> emit,
+  ) async {
+    try {
+      await deleteChatImgPathsUsecase(event.chatBckgndImgEntity.id ?? 0);
+      var loaded = state as LoadedSettingState;
+      var list = loaded.chatImgPaths
+          ?.where((element) => element.id != event.chatBckgndImgEntity.id)
+          .toList();
+      emit(loaded.copyWith(chatImgPaths: list));
+    } on Failures catch (e) {
+      emit(ErrorSettingState(message: e.message));
     }
   }
 }

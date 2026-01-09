@@ -20,11 +20,10 @@ class ChatApiBloc extends Bloc<ChatApiEvent, ChatApiState> {
   ) async {
     try {
       emit(LoadingChatApi());
-      // var data = await sendPromptUsecase(event.chatEntity);
       await Future.delayed(const Duration(seconds: 2));
-      // throw ApiFailure(message: 'Error');
       ChatEntity data = ChatEntity(
-        message: 'I am good boy, What about u man',
+        message:
+            'Sorry! Currently, work is in progress on the app, so this service is temporarily disabled 😊',
         createdAt: DateTime.now().toString(),
         role: ChatRoleConstants.model,
         isFav: false,

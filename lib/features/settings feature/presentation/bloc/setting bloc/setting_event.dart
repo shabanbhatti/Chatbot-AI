@@ -32,6 +32,13 @@ class GetDataInSettingsEvent extends SettingEvent {
   const GetDataInSettingsEvent();
 }
 
+class DeleteChatbackgroundImagesEvent extends SettingEvent {
+  final ChatBckgndImgPathsEntity chatBckgndImgEntity;
+  const DeleteChatbackgroundImagesEvent({required this.chatBckgndImgEntity});
+  @override
+  List<Object?> get props => [chatBckgndImgEntity];
+}
+
 class InactiveAllChatBackgroundThemeEvent extends SettingEvent {
   final List<ChatBckgndImgPathsEntity> chatBckgndEntityList;
   const InactiveAllChatBackgroundThemeEvent({

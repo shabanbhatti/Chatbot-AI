@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:chatbot_ai/config/DI/injector.dart';
@@ -15,28 +16,43 @@ class ChatBackgroundSheetWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log('CHAT BACKGROUND WALLPAPER PAGE BUILD CALLED');
     return Padding(
       padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
-      child: CustomScrollView(
-        slivers: [
-          BlocBuilder<SettingBloc, SettingState>(
-            buildWhen: (previous, current) {
-              return true;
-            },
-            builder: (context, state) {
-              if (state is LoadedSettingState) {
-                return const SliverFillRemaining(
-                  child: Center(child: CupertinoActivityIndicator()),
-                );
-              } else if (state is LoadedSettingState) {
-                var list = state.chatImgPaths ?? [];
-                return _loadedWidget(list);
-              } else {
-                return const SliverToBoxAdapter();
-              }
-            },
-          ),
-        ],
+      child: SafeArea(
+        top: false,
+        child: CustomScrollView(
+          slivers: [
+            BlocBuilder<SettingBloc, SettingState>(
+              buildWhen: (previous, current) {
+                if (previous is InitialSettingState &&
+                    current is LoadingSettingState) {
+                  return true;
+                } else if (previous is LoadingSettingState &&
+                    current is LoadedSettingState) {
+                  return true;
+                } else if (previous is LoadedSettingState &&
+                    current is LoadedSettingState) {
+                  return previous.chatImgPaths != current.chatImgPaths;
+                } else {
+                  return false;
+                }
+              },
+              builder: (context, state) {
+                if (state is LoadingSettingState) {
+                  return const SliverFillRemaining(
+                    child: Center(child: CupertinoActivityIndicator()),
+                  );
+                } else if (state is LoadedSettingState) {
+                  var list = state.chatImgPaths ?? [];
+                  return _loadedWidget(list);
+                } else {
+                  return const SliverToBoxAdapter();
+                }
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -67,6 +83,7 @@ Widget _loadedWidget(List<ChatBckgndImgPathsEntity> list) {
                     chatBckgndImgPathsEntity: ChatBckgndImgPathsEntity(
                       imgPaths: path,
                       isActive: false,
+                      id: DateTime.now().microsecondsSinceEpoch,
                     ),
                   ),
                 );
@@ -92,6 +109,7 @@ Widget _loadedWidget(List<ChatBckgndImgPathsEntity> list) {
       }
 
       if (index == 1) {
+        print('====');
         return Padding(
           padding: const EdgeInsets.all(5),
           child: GestureDetector(
@@ -103,10 +121,11 @@ Widget _loadedWidget(List<ChatBckgndImgPathsEntity> list) {
             child: Container(
               clipBehavior: Clip.antiAlias,
               decoration: BoxDecoration(
+                color: CupertinoTheme.of(context).scaffoldBackgroundColor,
                 borderRadius: const BorderRadius.all(Radius.circular(10)),
                 border: (!isAnyActive)
                     ? Border.all(color: CupertinoColors.activeGreen, width: 3)
-                    : Border.all(width: 1, color: CupertinoColors.systemGrey),
+                    : null,
               ),
               alignment: Alignment.center,
               child: Text(
@@ -138,17 +157,43 @@ Widget _loadedWidget(List<ChatBckgndImgPathsEntity> list) {
               ),
             );
           },
-          child: Container(
-            clipBehavior: Clip.antiAlias,
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-              border: (data.isActive)
-                  ? Border.all(color: CupertinoColors.activeGreen, width: 3)
-                  : null,
+          child: SizedBox(
+            child: Stack(
+              children: [
+                Container(
+                  height: double.infinity,
+                  width: double.infinity,
+                  clipBehavior: Clip.antiAlias,
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                    border: (data.isActive)
+                        ? Border.all(
+                            color: CupertinoColors.activeGreen,
+                            width: 3,
+                          )
+                        : null,
+                  ),
+                  child: (data.imgPaths.startsWith('assets/'))
+                      ? Image.asset(data.imgPaths, fit: BoxFit.cover)
+                      : Image.file(File(data.imgPaths), fit: BoxFit.cover),
+                ),
+                if (!data.imgPaths.startsWith('assets/'))
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: GestureDetector(
+                      child: Icon(
+                        CupertinoIcons.minus_circle_fill,
+                        color: CupertinoColors.destructiveRed,
+                      ),
+                      onTap: () => context.read<SettingBloc>().add(
+                        DeleteChatbackgroundImagesEvent(
+                          chatBckgndImgEntity: data,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
-            child: (data.imgPaths.startsWith('assets/'))
-                ? Image.asset(data.imgPaths, fit: BoxFit.cover)
-                : Image.file(File(data.imgPaths), fit: BoxFit.cover),
           ),
         ),
       );

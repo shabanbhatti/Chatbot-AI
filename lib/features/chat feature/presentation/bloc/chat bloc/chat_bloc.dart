@@ -48,7 +48,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       List<ChatBckgndImgPathsEntity> paths = backgroundImg
           .where((e) => e.isActive)
           .toList();
-
       ChatBckgndImgPathsEntity? finalPath = (paths.isEmpty) ? null : paths[0];
       emit(
         LoadedChat(
