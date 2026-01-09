@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:chatbot_ai/config/DI/injector.dart';
 import 'package:chatbot_ai/core/constants/image_path_constants.dart';
 import 'package:chatbot_ai/core/services/shared_preferences_service.dart';
@@ -43,6 +45,7 @@ class _IntroPageState extends State<IntroPage> {
 
   @override
   Widget build(BuildContext context) {
+    log('INTRO PAGE BUILD CALLED');
     return CupertinoPageScaffold(
       child: Center(
         child: SingleChildScrollView(

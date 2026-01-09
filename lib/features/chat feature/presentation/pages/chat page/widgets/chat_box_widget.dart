@@ -42,7 +42,7 @@ class ChatBoxWidget extends StatelessWidget {
                 return Container(
                   padding: isUser
                       ? const EdgeInsets.all(12)
-                      : EdgeInsets.all(0),
+                      : const EdgeInsets.all(0),
                   decoration: BoxDecoration(
                     color: isUser ? getAccentColor(state.colorName) : null,
                     borderRadius: BorderRadius.circular(18),

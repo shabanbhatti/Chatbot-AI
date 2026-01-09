@@ -20,37 +20,20 @@ class LoadedSettingState extends SettingState {
   final UserEntity? userEntity;
   final List<ChatBckgndImgPathsEntity>? chatImgPaths;
 
-  final bool isUserLoading;
-  final bool isChatImgsLoading;
-
-  const LoadedSettingState({
-    this.userEntity,
-    this.chatImgPaths,
-    this.isUserLoading = false,
-    this.isChatImgsLoading = false,
-  });
+  const LoadedSettingState({this.userEntity, this.chatImgPaths});
 
   LoadedSettingState copyWith({
     UserEntity? userEntity,
     List<ChatBckgndImgPathsEntity>? chatImgPaths,
-    bool? isUserLoading,
-    bool? isChatImgsLoading,
   }) {
     return LoadedSettingState(
       userEntity: userEntity ?? this.userEntity,
       chatImgPaths: chatImgPaths ?? this.chatImgPaths,
-      isUserLoading: isUserLoading ?? this.isUserLoading,
-      isChatImgsLoading: isChatImgsLoading ?? this.isChatImgsLoading,
     );
   }
 
   @override
-  List<Object?> get props => [
-    isUserLoading,
-    isChatImgsLoading,
-    userEntity,
-    chatImgPaths,
-  ];
+  List<Object?> get props => [userEntity, chatImgPaths];
 }
 
 class ErrorSettingState extends SettingState {

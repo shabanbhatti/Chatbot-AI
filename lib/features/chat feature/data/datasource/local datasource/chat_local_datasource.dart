@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:chatbot_ai/core/database/app_database.dart';
 import 'package:chatbot_ai/features/chat%20feature/data/models/chat_model.dart';
 
@@ -33,7 +31,6 @@ class ChatLocalDatasourceImpl implements ChatLocalDatasource {
 
   @override
   Future<bool> updateChat(ChatModel chatModel) async {
-    log('DATASOURCE METHOD CALLED: ID: ${chatModel.id}');
     var db = await appDatabase.database;
     var isRowEffected = await db.update(
       ChatModel.tableName,

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:chatbot_ai/core/bloc/countries%20bloc/countries_bloc.dart';
 import 'package:chatbot_ai/core/bloc/countries%20bloc/countries_event.dart';
 import 'package:chatbot_ai/core/bloc/countries%20bloc/countries_state.dart';
@@ -7,6 +9,7 @@ import 'package:chatbot_ai/core/utils/show_toast.dart';
 import 'package:chatbot_ai/core/widgets/custom%20btns/custom_app_btn.dart';
 import 'package:chatbot_ai/core/widgets/custom%20textfields/custom_basic_textfield.dart';
 import 'package:chatbot_ai/core/widgets/top_textfield_title_widget.dart';
+import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20bloc/chat_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -95,7 +98,25 @@ class _SelectCountryWidgetState extends State<SelectCountryWidget> {
                 sliver: SliverVisibility(
                   visible: value,
                   sliver: BlocBuilder<CountriesBloc, CountriesState>(
+                    buildWhen: (previous, current) {
+                      print('====================');
+                      print(
+                        'PREVIOUS: ${previous.runtimeType} | CURRENT: ${current.runtimeType}',
+                      );
+                      if (current is CountriesLoading) {
+                        return true;
+                      } else if (previous is CountriesLoading &&
+                          current is CountriesLoaded) {
+                        return true;
+                      }else if(current is CountriesError){
+                        return true;
+                      }else if(previous is CountriesLoaded && current is CountriesLoaded){
+                        return previous.countriesEntity!=current.countriesEntity;
+                      }
+                      return false;
+                    },
                     builder: (context, state) {
+                      log('countries bloc called');
                       if (state is CountriesLoading) {
                         return const SliverToBoxAdapter(
                           child: Center(child: CupertinoActivityIndicator()),

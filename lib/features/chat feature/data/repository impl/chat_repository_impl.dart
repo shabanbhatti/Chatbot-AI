@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:chatbot_ai/core/errors/exceptions/dio_exception_handeller.dart';
@@ -78,8 +77,8 @@ class ChatRepositoryImpl implements ChatRepository {
   @override
   Future<bool> updateChat(ChatEntity chatEntity) async {
     try {
-      log('Id: ${chatEntity.id}');
-      log('fav: ${chatEntity.isFav}');
+      // log('Id: ${chatEntity.id}');
+      // log('fav: ${chatEntity.isFav}');
       return await chatLocalDatasource.updateChat(
         ChatModel(
           isFav: chatEntity.isFav,

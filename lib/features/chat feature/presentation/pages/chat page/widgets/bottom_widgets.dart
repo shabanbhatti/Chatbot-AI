@@ -38,9 +38,22 @@ class BottomWidgets extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsetsGeometry.only(top: 5),
                 child: BlocBuilder<VoiceBloc, VoiceState>(
+                  buildWhen: (previous, current) {
+                    if (current is IsSpeakingVoice) {
+                      return true;
+                    } else if (current is IsLoadingVoice) {
+                      return true;
+                    } else if (current is IsLoadedVoice) {
+                      return true;
+                    } else if (current is IsErrorVoice) {
+                      return true;
+                    } else {
+                      return false;
+                    }
+                  },
                   builder: (context, state) {
                     return ChatTextfieldWidget(
-                      micWidget: state.isSpeaking
+                      micWidget: state is IsSpeakingVoice
                           ? BlocBuilder<AccentColorBloc, AccentColorState>(
                               buildWhen: (previous, current) {
                                 if (previous.colorName != current.colorName) {
@@ -67,9 +80,9 @@ class BottomWidgets extends StatelessWidget {
                                 );
                               },
                             )
-                          : (state.isLoading)
+                          : (state is IsLoadingVoice)
                           ? CupertinoActivityIndicator()
-                          : (state.isLoaded)
+                          : (state is IsLoadedVoice)
                           ? const Icon(
                               CupertinoIcons.mic,
                               size: 25,
@@ -85,7 +98,7 @@ class BottomWidgets extends StatelessWidget {
                       onChanged: (value) {
                         chatNotifier.value = value;
                       },
-                      onMic: (state.isLoading) ? () {} : onMic,
+                      onMic: (state is IsLoadingVoice) ? () {} : onMic,
                       onSend: onSend,
                       chatNotifier: chatNotifier,
                     );

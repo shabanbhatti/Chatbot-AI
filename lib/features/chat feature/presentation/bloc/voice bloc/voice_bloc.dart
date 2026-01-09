@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:chatbot_ai/core/constants/constant_colors.dart';
 import 'package:chatbot_ai/core/errors/failures/failures.dart';
@@ -8,7 +7,6 @@ import 'package:chatbot_ai/core/utils/show_toast.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/voice_to_text_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/voice%20bloc/voice_event.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/voice%20bloc/voice_state.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -21,17 +19,7 @@ class VoiceBloc extends Bloc<VoiceEvent, VoiceState> {
   final VoiceToTextUsecase voiceToTextUsecase;
   Timer? timer;
   VoiceBloc({required this.audioRecorder, required this.voiceToTextUsecase})
-    : super(
-        VoiceState(
-          path: '',
-          isSpeaking: false,
-          error: '',
-          isError: false,
-          isLoaded: false,
-          isLoading: false,
-          reply: '',
-        ),
-      ) {
+    : super(InitialVoice()) {
     on<StartRecordingEvent>(onStartRecordingEvent);
     on<StopRecordingEvent>(onStopRecordingEvent);
   }
@@ -49,17 +37,7 @@ class VoiceBloc extends Bloc<VoiceEvent, VoiceState> {
     totalSeconds = 0;
     var permission = await audioRecorder.hasPermission();
     if (permission) {
-      emit(
-        state.copyWith(
-          isSpeaking: true,
-          reply: '',
-          error: '',
-          isError: false,
-          isLoaded: false,
-          isLoading: false,
-          path: '',
-        ),
-      );
+      emit(IsSpeakingVoice());
 
       var path = await GetPath.getPathForAudio();
       audioRecorder.start(const RecordConfig(), path: path);
@@ -86,35 +64,21 @@ class VoiceBloc extends Bloc<VoiceEvent, VoiceState> {
       var path = await audioRecorder.stop();
       timer?.cancel();
 
-      if (totalSeconds < 5) {
-        ShowToast.basicToast(
-          message: "🔇 Voice should be more than 5 seconds",
-          color: CupertinoColors.destructiveRed,
-          duration: 3,
-        );
-        emit(state.copyWith(isSpeaking: false));
+      if (totalSeconds < 2) {
+        emit(IsErrorVoice(message: '🔇 Voice should be more than 2 seconds'));
         return;
       }
 
-      log('Path: $path');
-      emit(state.copyWith(isLoading: true, isSpeaking: false));
+      // log('Path: $path');
+      emit(IsLoadingVoice());
 
       // var reply = await voiceToTextUsecase(File(path!));
-      throw ApiFailure(message: 'ERROR FOUND (hardcode)');
+      // throw ApiFailure(message: 'ERROR FOUND (hardcode)');
+      await Future.delayed(Duration(seconds: 3));
 
-      // emit(state.copyWith(isLoaded: true, reply: 'reply', isLoading: false));
+      emit(IsLoadedVoice(reply: 'HI Motherfucker'));
     } on Failures catch (e) {
-      emit(
-        VoiceState(
-          path: '',
-          isSpeaking: false,
-          isLoading: false,
-          isLoaded: false,
-          error: e.message,
-          isError: true,
-          reply: '',
-        ),
-      );
+      emit(IsErrorVoice(message: e.message));
     }
   }
 

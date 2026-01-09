@@ -76,7 +76,7 @@ abstract class Providers {
               getChatImgsPathsUsecase: getIt<GetChatImgsPathsUsecase>(),
               insertChatImgPathUsecase: getIt<InsertChatBckgndImgPathsUsecae>(),
               updateChatImgPathUsecase: getIt<UpdateChatImgPathUsecase>(),
-            )..add(GetUserInSettingEvent());
+            )..add(GetDataInSettingsEvent());
           },
           child: SettingsPage(),
         ),

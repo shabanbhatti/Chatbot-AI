@@ -28,11 +28,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     required this.updateChatUsecase,
     required this.getChatsUsecase,
   }) : super(InitialChat()) {
-    // on<SendPromptEvent>(onSendPromptEvent);
     on<InsertEvent>(onInsertPromptEvent);
     on<GetChatsEvent>(onGetChatsEvent);
     on<UpdateChatEvent>(onUpdateChatEvent);
-    // on<GetUserInDrawerEvent>(onGetUserInDrawerEvent);
   }
 
   Future<void> onGetChatsEvent(
@@ -40,9 +38,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     Emitter<ChatState> emit,
   ) async {
     try {
-      emit(LoadingChat());
+      if (state is! LoadedChat) {
+        emit(LoadingChat());
+      }
 
-      await Future.delayed(Duration(seconds: 2));
       var data = await getChatsUsecase();
       var user = await getUserUsecase();
       var backgroundImg = await getChatImgsPathsUsecase();
@@ -67,8 +66,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     InsertEvent event,
     Emitter<ChatState> emit,
   ) async {
-    // emit(LoadingChat());
-
     await insertChatUsecase(event.chatEntity);
     var loaded = state as LoadedChat;
     List<ChatEntity> list = [...loaded.chatsList];
@@ -87,7 +84,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     Emitter<ChatState> emit,
   ) async {
     try {
-      var isInserted = await updateChatUsecase(event.chatEntity);
+      await updateChatUsecase(event.chatEntity);
       var loaded = state as LoadedChat;
 
       var data = loaded.chatsList

@@ -8,10 +8,6 @@ sealed class SettingEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class GetChatbackgroundImgsPathsEvent extends SettingEvent {
-  const GetChatbackgroundImgsPathsEvent();
-}
-
 class InsertChatBackgroundImagePathEvent extends SettingEvent {
   final ChatBckgndImgPathsEntity chatBckgndImgPathsEntity;
   const InsertChatBackgroundImagePathEvent({
@@ -32,8 +28,8 @@ class UpdateChatBackgroundImagePathEvent extends SettingEvent {
   List<Object?> get props => [chatBckgndImgPathsEntity, chatBckgndEntityList];
 }
 
-class GetUserInSettingEvent extends SettingEvent {
-  const GetUserInSettingEvent();
+class GetDataInSettingsEvent extends SettingEvent {
+  const GetDataInSettingsEvent();
 }
 
 class InactiveAllChatBackgroundThemeEvent extends SettingEvent {

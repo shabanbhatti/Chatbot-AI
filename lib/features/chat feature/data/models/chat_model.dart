@@ -29,7 +29,6 @@ class ChatModel extends Equatable {
   }
 
   factory ChatModel.fromMap(Map<String, dynamic> map) {
-    print('--------------${map[col_Fav]}');
     return ChatModel(
       message: map[col_message] ?? '',
       createdAt: map[col_createdAt] ?? '',

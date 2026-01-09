@@ -1,4 +1,6 @@
-class UserEntity {
+import 'package:equatable/equatable.dart';
+
+class UserEntity extends Equatable {
   final int? id;
   final String name;
   final String dateOfBirth;
@@ -31,4 +33,7 @@ class UserEntity {
       id: id ?? this.id,
     );
   }
+
+  @override
+  List<Object?> get props => [name, dateOfBirth, gender, country, userImg, id];
 }

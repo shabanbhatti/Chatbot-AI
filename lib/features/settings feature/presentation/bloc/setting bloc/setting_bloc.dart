@@ -30,8 +30,7 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
     required this.deleteChatImgPathsUsecase,
     required this.insertChatImgPathUsecase,
   }) : super(InitialSettingState()) {
-    on<GetChatbackgroundImgsPathsEvent>(onGetChatbackgroundImgsPathsEvent);
-    on<GetUserInSettingEvent>(onGetUserEvent);
+    on<GetDataInSettingsEvent>(onGetDataInSettingsEvent);
     on<UpdateUserInSettingEvent>(onUpdateUserEvent);
     on<InsertChatBackgroundImagePathEvent>(
       onInsertChatBackgroundImagePathEvent,
@@ -44,23 +43,18 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
     );
   }
 
-  Future<void> onGetUserEvent(
-    GetUserInSettingEvent event,
+  Future<void> onGetDataInSettingsEvent(
+    GetDataInSettingsEvent event,
     Emitter<SettingState> emit,
   ) async {
     try {
-      if (state is LoadedSettingState) {
-        emit((state as LoadedSettingState).copyWith(isUserLoading: true));
-      } else {
-        emit(LoadedSettingState(isUserLoading: true));
+      if (state is! LoadedSettingState) {
+        emit(LoadingSettingState());
       }
+      await Future.delayed(Duration(seconds: 1));
       var user = await getUserUsecase();
-      emit(
-        (state as LoadedSettingState).copyWith(
-          userEntity: user,
-          isUserLoading: false,
-        ),
-      );
+      final data = await getChatImgsPathsUsecase();
+      emit(LoadedSettingState(userEntity: user, chatImgPaths: data));
     } on Failures catch (e) {
       emit(ErrorSettingState(message: e.message));
     }
@@ -71,7 +65,6 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
     Emitter<SettingState> emit,
   ) async {
     try {
-      emit(LoadingSettingState());
       var isUpdated = await updateChatUsecase(event.userEntity);
       if (isUpdated) {
         ShowToast.basicToast(message: 'Updated');
@@ -81,31 +74,8 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
           color: CupertinoColors.destructiveRed,
         );
       }
-      add(GetUserInSettingEvent());
-    } on Failures catch (e) {
-      emit(ErrorSettingState(message: e.message));
-    }
-  }
-
-  Future<void> onGetChatbackgroundImgsPathsEvent(
-    GetChatbackgroundImgsPathsEvent event,
-    Emitter<SettingState> emit,
-  ) async {
-    try {
-      if (state is LoadedSettingState) {
-        emit((state as LoadedSettingState).copyWith(isChatImgsLoading: true));
-      } else {
-        emit(LoadedSettingState(isChatImgsLoading: true));
-      }
-      // await Future.delayed(Duration(seconds: 3));
-
-      final data = await getChatImgsPathsUsecase();
-
       emit(
-        (state as LoadedSettingState).copyWith(
-          chatImgPaths: data,
-          isChatImgsLoading: false,
-        ),
+        (state as LoadedSettingState).copyWith(userEntity: event.userEntity),
       );
     } on Failures catch (e) {
       emit(ErrorSettingState(message: e.message));
@@ -128,7 +98,7 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
           color: CupertinoColors.destructiveRed,
         );
       }
-      add(GetChatbackgroundImgsPathsEvent());
+      // add(GetChatbackgroundImgsPathsEvent());
     } on Failures catch (e) {
       emit(ErrorSettingState(message: e.message));
     }
@@ -170,15 +140,7 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
                   : e.copyWith(isActive: false),
             )
             .toList();
-        emit(
-          loaded.copyWith(chatImgPaths: list),
-          // LoadedSettingState(
-          //   isChatImgsLoading: loaded.isChatImgsLoading,
-          //   isUserLoading: loaded.isUserLoading,
-          //   userEntity: loaded.userEntity,
-          //   chatImgPaths: list,
-          // ),
-        );
+        emit(loaded.copyWith(chatImgPaths: list));
       } else {
         for (var element in event.chatBckgndEntityList) {
           await updateChatImgPathUsecase(
@@ -194,15 +156,7 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
         var list = loaded.chatImgPaths
             ?.map((e) => e.copyWith(isActive: false))
             .toList();
-        emit(
-          loaded.copyWith(chatImgPaths: list),
-          // LoadedSettingState(
-          //   isChatImgsLoading: loaded.isChatImgsLoading,
-          //   isUserLoading: loaded.isUserLoading,
-          //   userEntity: loaded.userEntity,
-          //   chatImgPaths: list,
-          // ),
-        );
+        emit(loaded.copyWith(chatImgPaths: list));
       }
     } on Failures catch (e) {
       emit(ErrorSettingState(message: e.message));
@@ -222,10 +176,5 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
         ),
       );
     }
-    // var loaded = state as LoadedSettingState;
-    // var list = loaded.chatImgPaths
-    //     ?.map((e) => e.copyWith(isActive: false))
-    //     .toList();
-    // emit(loaded.copyWith(chatImgPaths: list));
   }
 }

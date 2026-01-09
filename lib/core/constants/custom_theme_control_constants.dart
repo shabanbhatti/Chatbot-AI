@@ -1,10 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
 abstract class CustomThemeControl {
-  static Color drawerColor = CupertinoDynamicColor.withBrightness(
-    color: CupertinoColors.inactiveGray.withAlpha(25),
-    darkColor: CupertinoColors.darkBackgroundGray,
-  );
+  // static
 
   static Color bottomSheetColor = CupertinoDynamicColor.withBrightness(
     color: CupertinoColors.inactiveGray.withAlpha(25),
