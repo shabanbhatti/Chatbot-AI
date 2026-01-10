@@ -57,6 +57,7 @@ dependencies:
   permission_handler: ^12.0.1
   skeletonizer: ^2.1.2
   popover: ^0.4.0
+  cupertino_native: ^0.1.1
 
 dev_dependencies:
   flutter_test:

@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:chatbot_ai/core/bloc/accent%20color%20SP%20bloc/accent_color_bloc.dart';
+import 'package:chatbot_ai/core/bloc/accent%20color%20SP%20bloc/accent_color_event.dart';
 import 'package:chatbot_ai/core/bloc/accent%20color%20SP%20bloc/accent_color_state.dart';
 import 'package:chatbot_ai/core/bloc/theme%20bloc/theme_bloc.dart';
 import 'package:chatbot_ai/core/bloc/theme%20bloc/theme_event.dart';
+import 'package:chatbot_ai/core/bloc/theme%20bloc/theme_state.dart';
 import 'package:chatbot_ai/core/services/shared_preferences_service.dart';
 import 'package:chatbot_ai/core/utils/model%20bottom%20sheet/bottom_sheet_ios_utils.dart';
 import 'package:chatbot_ai/core/widgets/Custom%20ListTiles%20widgets/custom_basic_listtile.dart';
@@ -17,6 +21,7 @@ import 'package:chatbot_ai/features/settings%20feature/presentation/bloc/setting
 import 'package:chatbot_ai/features/settings%20feature/presentation/pages/update_user_page.dart';
 import 'package:chatbot_ai/features/settings%20feature/presentation/utils/accent_color_model_popup_util.dart';
 import 'package:chatbot_ai/features/settings%20feature/presentation/widgets/chat_background_sheet_widget.dart';
+import 'package:cupertino_native/cupertino_native.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -32,16 +37,28 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
-    // context.read<SettingBloc>().add(GetChatbackgroundImgsPathsEvent());
+    var theme = context.read<ThemeBloc>().state.themeDarkLight;
+    if (theme == ThemeDarkLight.dark) {
+      toggeleNotifier.value = false;
+    } else {
+      toggeleNotifier.value = true;
+    }
   }
 
+  ValueNotifier<bool> toggeleNotifier = ValueNotifier(false);
+  final items = const [
+    CNPopupMenuItem(label: '🟡  Yellow'),
+    CNPopupMenuItem(label: '🔵  Blue'),
+    CNPopupMenuItem(label: '🟢  Green'),
+    CNPopupMenuItem(label: '🔴  Red'),
+    CNPopupMenuDivider(),
+    CNPopupMenuItem(label: '⚪️  Default'),
+  ];
   @override
   Widget build(BuildContext context) {
     print('SETTING SHEET BUILD CALLED');
-    return BlocListener<SettingBloc, SettingState>(
-      // listenWhen: (previous, current) {
 
-      // },
+    return BlocListener<SettingBloc, SettingState>(
       listener: (context, state) {
         if (state is LoadedSettingState) {
           context.read<ChatBloc>().add(GetChatsEvent());
@@ -54,9 +71,6 @@ class _SettingsPageState extends State<SettingsPage> {
             child: Center(
               child: BlocBuilder<SettingBloc, SettingState>(
                 buildWhen: (previous, current) {
-                  // print(
-                  //   'PREVIOUS: ${previous.runtimeType} | CURRENT: ${current.runtimeType}',
-                  // );
                   if (previous is InitialSettingState &&
                       current is LoadingSettingState) {
                     return true;
@@ -72,7 +86,6 @@ class _SettingsPageState extends State<SettingsPage> {
                   }
                 },
                 builder: (context, state) {
-                  // log('AVATAR CALLED BLOC');/
                   if (state is LoadingSettingState) {
                     return const LoadingEffectCircleAvatarWidget(radius: 120);
                   } else if (state is LoadedSettingState) {
@@ -120,7 +133,6 @@ class _SettingsPageState extends State<SettingsPage> {
                     }
                   },
                   builder: (context, state) {
-                    print('USER & FLAG BLOC CALLED');
                     if (state is LoadingSettingState) {
                       return _loadingNameAndCountryWidget();
                     } else if (state is LoadedSettingState) {
@@ -200,7 +212,6 @@ class _SettingsPageState extends State<SettingsPage> {
                         }
                       },
                       builder: (context, state) {
-                        print('DATE OF BIRTH BLOC CALLED');
                         if (state is LoadingSettingState) {
                           return const Skeletonizer(child: Text('Loading...'));
                         } else if (state is LoadedSettingState) {
@@ -232,7 +243,6 @@ class _SettingsPageState extends State<SettingsPage> {
                         }
                       },
                       builder: (context, state) {
-                        print('Gender BLOC CALLED');
                         if (state is LoadingSettingState) {
                           return const Skeletonizer(child: Text('Loading...'));
                         } else if (state is LoadedSettingState) {
@@ -272,19 +282,38 @@ class _SettingsPageState extends State<SettingsPage> {
                     onTap: null,
                     trailing: Text('English'),
                   ),
-
                   CustomBasicListtile(
                     leadingIcon: CupertinoIcons.sun_max,
                     title: SharedPreferencesKEYS.themeKey,
                     onTap: () {
                       context.read<ThemeBloc>().add(ToggeledTheme());
                     },
-                    trailing: GestureDetector(
-                      onTap: () {
-                        context.read<ThemeBloc>().add(ToggeledTheme());
-                      },
-                      child: const Icon(CupertinoIcons.circle_righthalf_fill),
-                    ),
+
+                    trailing: (Platform.isAndroid)
+                        ? GestureDetector(
+                            onTap: () {
+                              context.read<ThemeBloc>().add(ToggeledTheme());
+                            },
+                            child: const Icon(
+                              CupertinoIcons.circle_righthalf_fill,
+                            ),
+                          )
+                        : ValueListenableBuilder(
+                            valueListenable: toggeleNotifier,
+                            builder: (context, value, child) {
+                              return CNSwitch(
+                                color: CupertinoColors.activeGreen,
+                                value: value,
+                                onChanged: (v) {
+                                  print(v);
+                                  toggeleNotifier.value = v;
+                                  context.read<ThemeBloc>().add(
+                                    ToggeledTheme(),
+                                  );
+                                },
+                              );
+                            },
+                          ),
                   ),
 
                   BlocBuilder<AccentColorBloc, AccentColorState>(
@@ -298,11 +327,41 @@ class _SettingsPageState extends State<SettingsPage> {
                     builder: (context, state) {
                       return CustomBasicListtile(
                         leadingIcon: CupertinoIcons.circle_grid_hex,
+                        cupertinoIcon: (Platform.isIOS)
+                            ? CNIcon(
+                                symbol: CNSymbol('paintpalette.fill'),
+                                mode: CNSymbolRenderingMode.multicolor,
+                              )
+                            : null,
                         title: 'Accent color',
-                        onTap: () {
-                          showSheet(context);
-                        },
-                        trailing: Text(state.colorName),
+                        onTap: (Platform.isAndroid)
+                            ? () {
+                                showSheet(context);
+                              }
+                            : null,
+                        trailing: (Platform.isAndroid)
+                            ? Text(state.colorName)
+                            : CNPopupMenuButton(
+                                buttonLabel: state.colorName.characters.first,
+                                buttonStyle: CNButtonStyle.gray,
+                                items: items,
+                                onSelected: (index) {
+                                  context.read<AccentColorBloc>().add(
+                                    SetColorEvent(
+                                      key: SharedPreferencesKEYS.accentColorKey,
+                                      value: (index == 0)
+                                          ? '🟡  Yellow'
+                                          : (index == 1)
+                                          ? '🔵  Blue'
+                                          : (index == 2)
+                                          ? '🟢  Green'
+                                          : (index == 3)
+                                          ? '🔴  Red'
+                                          : '⚪️  Default',
+                                    ),
+                                  );
+                                },
+                              ),
                       );
                     },
                   ),
