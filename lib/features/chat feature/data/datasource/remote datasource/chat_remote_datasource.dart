@@ -46,11 +46,13 @@ class ChatRemoteDatasourceImpl implements ChatRemoteDatasource {
     String reply = data['candidates'][0]['content']['parts'][0]['text'];
 
     return ChatModel(
+      chatRoomId: chatModel.chatRoomId,
       message: reply,
       createdAt: DateTime.now().toString(),
       role: ChatRoleConstants.model,
       imgPath: null,
       isFav: false,
+      id: DateTime.now().microsecondsSinceEpoch,
     );
   }
 

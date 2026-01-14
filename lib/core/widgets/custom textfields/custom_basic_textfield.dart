@@ -6,17 +6,19 @@ class CustomBasicTextfield extends StatelessWidget {
     super.key,
     required this.controller,
     required this.title,
-    required this.prefixIcon,
+    this.prefixIcon,
     this.onChanged,
     this.readOnly,
     this.onTap,
+    this.placeHolderSize,
   });
   final TextEditingController controller;
   final String title;
   final bool? readOnly;
-  final IconData prefixIcon;
+  final IconData? prefixIcon;
   final OnChangedOfTextField? onChanged;
   final OnPressed? onTap;
+  final double? placeHolderSize;
 
   @override
   Widget build(BuildContext context) {
@@ -25,17 +27,20 @@ class CustomBasicTextfield extends StatelessWidget {
       readOnly: readOnly ?? false,
       controller: controller,
       onChanged: onChanged ?? (v) {},
-      prefix: Padding(
-        padding: EdgeInsetsGeometry.only(left: 10),
-        child: Icon(prefixIcon),
-      ),
+      prefix: (prefixIcon == null)
+          ? null
+          : Padding(
+              padding: EdgeInsetsGeometry.only(left: 10),
+              child: Icon(prefixIcon),
+            ),
 
       placeholder: title,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       style: CupertinoTheme.of(context).textTheme.textStyle,
-      placeholderStyle: CupertinoTheme.of(
-        context,
-      ).textTheme.textStyle.copyWith(color: CupertinoColors.systemGrey),
+      placeholderStyle: CupertinoTheme.of(context).textTheme.textStyle.copyWith(
+        color: CupertinoColors.systemGrey,
+        fontSize: placeHolderSize ?? 15,
+      ),
       decoration: BoxDecoration(
         color: CupertinoColors.systemGrey6,
         borderRadius: BorderRadius.circular(15),

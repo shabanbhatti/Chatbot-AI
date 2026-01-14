@@ -27,35 +27,32 @@ class ChatTextfieldWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsetsGeometry.symmetric(horizontal: 10),
-      child: SizedBox(
-        child: CupertinoTextField(
-          controller: controller,
+      child: CupertinoTextField(
+        controller: controller,
 
-          onChanged: onChanged ?? (v) {},
-          maxLines: 10,
-          minLines: 1,
-          placeholder: 'Ask anything',
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        onChanged: onChanged ?? (v) {},
+        maxLines: 10,
+        minLines: 1,
 
-          style: CupertinoTheme.of(context).textTheme.textStyle,
-          placeholderStyle: CupertinoTheme.of(
-            context,
-          ).textTheme.textStyle.copyWith(color: CupertinoColors.systemGrey),
-          suffix: ValueListenableBuilder(
-            valueListenable: chatNotifier,
-            builder: (context, value, child) {
-              return (value.isEmpty)
-                  ? Padding(
-                      padding: const EdgeInsetsGeometry.symmetric(
-                        horizontal: 5,
-                      ),
-                      child: CupertinoButton(
-                        onPressed: onMic,
-                        child: micWidget,
-                      ),
-                    )
-                  : CupertinoButton(
-                      onPressed: onSend,
+        placeholder: 'Ask anything',
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+
+        style: CupertinoTheme.of(context).textTheme.textStyle,
+        placeholderStyle: CupertinoTheme.of(
+          context,
+        ).textTheme.textStyle.copyWith(color: CupertinoColors.systemGrey),
+        suffix: ValueListenableBuilder(
+          valueListenable: chatNotifier,
+          builder: (context, value, child) {
+            return (value.isEmpty)
+                ? Padding(
+                    padding: const EdgeInsetsGeometry.only(right: 0, bottom: 0),
+                    child: GestureDetector(onTap: onMic, child: micWidget),
+                  )
+                : Padding(
+                    padding: EdgeInsetsGeometry.only(right: 2),
+                    child: GestureDetector(
+                      onTap: onSend,
                       child: BlocBuilder<AccentColorBloc, AccentColorState>(
                         buildWhen: (previous, current) {
                           if (previous.colorName != current.colorName) {
@@ -67,7 +64,7 @@ class ChatTextfieldWidget extends StatelessWidget {
                         builder: (context, state) {
                           return Icon(
                             CupertinoIcons.arrow_up_circle_fill,
-                            size: 25,
+                            size: 45,
                             color: state.colorName == 'Default'
                                 ? null
                                 : getAccentColor(
@@ -77,14 +74,14 @@ class ChatTextfieldWidget extends StatelessWidget {
                           );
                         },
                       ),
-                    );
-            },
-          ),
-          decoration: BoxDecoration(
-            color: CupertinoColors.systemGrey6,
-            borderRadius: BorderRadius.circular(25),
-            border: Border.all(color: ColorConstants.dividerColor, width: 0.5),
-          ),
+                    ),
+                  );
+          },
+        ),
+        decoration: BoxDecoration(
+          color: CupertinoColors.systemGrey6,
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(color: ColorConstants.dividerColor, width: 0.5),
         ),
       ),
     );

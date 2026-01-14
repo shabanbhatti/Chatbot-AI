@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'dart:developer';
 
+import 'package:chatbot_ai/config/DI/injector.dart';
 import 'package:chatbot_ai/core/errors/failures/failures.dart';
+import 'package:chatbot_ai/core/services/shared_preferences_service.dart';
 import 'package:chatbot_ai/core/shared%20domain/entity/chat_bckgnd_img_path_entity.dart';
 import 'package:chatbot_ai/core/shared%20domain/usecases/get_user_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/entity/chat_entity.dart';
@@ -41,8 +44,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       if (state is! LoadedChat) {
         emit(LoadingChat());
       }
-
-      var data = await getChatsUsecase();
+      var id = await getIt<SharedPreferencesService>().getInt(
+        SharedPreferencesKEYS.chatRoomIdKey,
+      );
+      log(id.toString());
+      var data = await getChatsUsecase(id);
       var user = await getUserUsecase();
       var backgroundImg = await getChatImgsPathsUsecase();
       List<ChatBckgndImgPathsEntity> paths = backgroundImg
@@ -85,7 +91,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     try {
       await updateChatUsecase(event.chatEntity);
       var loaded = state as LoadedChat;
-
+      print('IsFav: ${event.chatEntity.id}');
       var data = loaded.chatsList
           .map(
             (e) => (e.id == event.chatEntity.id)

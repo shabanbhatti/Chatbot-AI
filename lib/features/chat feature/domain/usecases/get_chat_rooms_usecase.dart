@@ -1,10 +1,11 @@
 import 'package:chatbot_ai/features/chat%20feature/domain/entity/chat_entity.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/repository/chat_repository.dart';
 
-class GetChatsUsecase {
+class GetChatRoomsUsecase  {
   final ChatRepository chatRepository;
-  const GetChatsUsecase({required this.chatRepository});
-  Future<List<ChatEntity>> call(int id) async {
-    return await chatRepository.getChat(id);
+  const GetChatRoomsUsecase({required this.chatRepository});
+
+  Future<List<ChatRoomEntity>> call()async{
+    return await chatRepository.getChatRooms();
   }
 }

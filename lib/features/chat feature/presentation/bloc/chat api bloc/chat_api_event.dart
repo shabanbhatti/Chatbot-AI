@@ -13,3 +13,7 @@ class OnSendPromptEvent extends ChatApiEvent {
   @override
   List<Object?> get props => [chatEntity];
 }
+
+class OnStopChatApiEvent extends ChatApiEvent {
+  const OnStopChatApiEvent();
+}

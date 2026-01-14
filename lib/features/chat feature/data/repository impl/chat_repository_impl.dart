@@ -23,11 +23,13 @@ class ChatRepositoryImpl implements ChatRepository {
     try {
       var data = await chatRemoteDatasource.sendPrompt(
         ChatModel(
+          chatRoomId: chatEnity.chatRoomId,
           message: chatEnity.message,
           createdAt: chatEnity.createdAt,
           role: chatEnity.role,
           imgPath: chatEnity.imgPath,
           isFav: chatEnity.isFav,
+          id: chatEnity.id
         ),
       );
       return data.toEntity();
@@ -38,9 +40,9 @@ class ChatRepositoryImpl implements ChatRepository {
   }
 
   @override
-  Future<List<ChatEntity>> getChat() async {
+  Future<List<ChatEntity>> getChat(int id) async {
     try {
-      var data = await chatLocalDatasource.getChat();
+      var data = await chatLocalDatasource.getChat(id);
       return data.map((e) => e.toEntity()).toList();
     } on DatabaseException catch (e) {
       throw LocalDatabaseFailure(message: e.toString());
@@ -52,11 +54,13 @@ class ChatRepositoryImpl implements ChatRepository {
     try {
       return await chatLocalDatasource.insertChat(
         ChatModel(
+          chatRoomId: chatEntity.chatRoomId,
           message: chatEntity.message,
           createdAt: chatEntity.createdAt,
           role: chatEntity.role,
           imgPath: chatEntity.imgPath ?? '',
           isFav: chatEntity.isFav,
+          id: chatEntity.id
         ),
       );
     } on DatabaseException catch (e) {
@@ -81,12 +85,66 @@ class ChatRepositoryImpl implements ChatRepository {
       // log('fav: ${chatEntity.isFav}');
       return await chatLocalDatasource.updateChat(
         ChatModel(
+          chatRoomId: chatEntity.chatRoomId,
           isFav: chatEntity.isFav,
           message: chatEntity.message,
           createdAt: chatEntity.createdAt,
           role: chatEntity.role,
           id: chatEntity.id,
           imgPath: chatEntity.imgPath,
+        ),
+      );
+    } on DatabaseException catch (e) {
+      throw LocalDatabaseFailure(message: e.toString());
+    }
+  }
+
+  @override
+  Future<bool> createChatRoom(ChatRoomEntity chatRoomEntity) async {
+    try {
+      return await chatLocalDatasource.createChatRoom(
+        ChatRoomModel(
+          isTitleAssigned: chatRoomEntity.isTitleAssigned,
+          id: chatRoomEntity.id,
+          createdAt: chatRoomEntity.createdAt,
+          title: chatRoomEntity.title,
+          isPin: chatRoomEntity.isPin
+        ),
+      );
+    } on DatabaseException catch (e) {
+      throw LocalDatabaseFailure(message: e.toString());
+    }
+  }
+
+  @override
+  Future<List<ChatRoomEntity>> getChatRooms() async {
+    try {
+      var data = await chatLocalDatasource.getChatRooms();
+      return data.map((e) => e.toEntity()).toList();
+    } on DatabaseException catch (e) {
+      throw LocalDatabaseFailure(message: e.toString());
+    }
+  }
+
+  @override
+  Future<bool> deleteChatRoom(int id) async {
+    try {
+      return await chatLocalDatasource.deleteChatRoom(id);
+    } on DatabaseException catch (e) {
+      throw LocalDatabaseFailure(message: e.toString());
+    }
+  }
+
+  @override
+  Future<bool> updateChatRoom(ChatRoomEntity chatRoomEntity) async {
+    try {
+      return await chatLocalDatasource.updateChatRoom(
+        ChatRoomModel(
+          isTitleAssigned: chatRoomEntity.isTitleAssigned,
+          id: chatRoomEntity.id,
+          createdAt: chatRoomEntity.createdAt,
+          title: chatRoomEntity.title,
+          isPin: chatRoomEntity.isPin
         ),
       );
     } on DatabaseException catch (e) {

@@ -13,6 +13,10 @@ import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20api%
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20bloc/chat_bloc.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20bloc/chat_event.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20bloc/chat_state.dart';
+import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20room%20ID%20pref%20bloc/chat_room_id_pref_bloc.dart';
+import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20room%20bloc/chat_room_bloc.dart';
+import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20room%20bloc/chat_room_event.dart';
+import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20room%20bloc/chat_room_state.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/voice%20bloc/voice_bloc.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/voice%20bloc/voice_event.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/voice%20bloc/voice_state.dart';
@@ -24,8 +28,16 @@ import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChatPage extends StatefulWidget {
-  const ChatPage({super.key, required this.advancedDrawerController});
+  const ChatPage({
+    super.key,
+    required this.advancedDrawerController,
+    required this.newChatNotifier,
+    required this.idNotifier,
+  });
   final AdvancedDrawerController advancedDrawerController;
+  final ValueNotifier<bool> newChatNotifier;
+  final ValueNotifier<int> idNotifier;
+
   @override
   State<ChatPage> createState() => _ChatPageState();
 }
@@ -39,6 +51,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
+
     advancedDrawerController = widget.advancedDrawerController;
     chatApiBloc = ChatApiBloc(sendPromptUsecase: getIt<SendPromptUsecase>());
   }
@@ -73,9 +86,11 @@ class _ChatPageState extends State<ChatPage> {
         bloc: chatApiBloc,
         listener: (context, state) {
           if (state is LoadedChatApi) {
-            context.read<ChatBloc>().add(
-              InsertEvent(chatEntity: state.chatEntity),
-            );
+            if (state.chatEntity != null) {
+              context.read<ChatBloc>().add(
+                InsertEvent(chatEntity: state.chatEntity!),
+              );
+            }
           }
 
           if (state is ErrorChatApi) {
@@ -188,6 +203,12 @@ class _ChatPageState extends State<ChatPage> {
                               chatApiBloc.add(
                                 OnSendPromptEvent(
                                   chatEntity: ChatEntity(
+                                    id: null,
+                                    chatRoomId:
+                                        (context.read<ChatRoomBloc>().state
+                                                as LoadedChatRoom)
+                                            .chatRoomEntities[0]
+                                            .id,
                                     message: chatController.text.trim(),
                                     createdAt: DateTime.now().toString(),
                                     role: ChatRoleConstants.user,
@@ -230,6 +251,7 @@ class _ChatPageState extends State<ChatPage> {
                     Padding(
                       padding: const EdgeInsetsGeometry.only(bottom: 10),
                       child: BottomWidgets(
+                        chatApiBloc: chatApiBloc,
                         chatNotifier: chatNotifier,
                         chatController: chatController,
                         onMic: () {
@@ -245,10 +267,16 @@ class _ChatPageState extends State<ChatPage> {
                             context.read<VoiceBloc>().add(StopRecordingEvent());
                           }
                         },
-                        onSend: () {
+                        onSend: () async {
+                          widget.newChatNotifier.value = false;
+
+                          var id = context.read<ChatRoomIdPrefBloc>().state;
+                          widget.idNotifier.value = id;
                           context.read<ChatBloc>().add(
                             InsertEvent(
                               chatEntity: ChatEntity(
+                                chatRoomId: id,
+                                id: DateTime.now().microsecondsSinceEpoch,
                                 message: chatController.text.trim(),
                                 createdAt: DateTime.now().toString(),
                                 role: ChatRoleConstants.user,
@@ -257,9 +285,12 @@ class _ChatPageState extends State<ChatPage> {
                               ),
                             ),
                           );
+
                           chatApiBloc.add(
                             OnSendPromptEvent(
                               chatEntity: ChatEntity(
+                                chatRoomId: id,
+                                id: null,
                                 message: chatController.text.trim(),
                                 createdAt: DateTime.now().toString(),
                                 role: ChatRoleConstants.user,
@@ -268,6 +299,23 @@ class _ChatPageState extends State<ChatPage> {
                               ),
                             ),
                           );
+
+                          var loaded =
+                              context.read<ChatRoomBloc>().state
+                                  as LoadedChatRoom;
+                          var chatRoomEntity = loaded.chatRoomEntities
+                              .where((element) => element.id == id)
+                              .toList();
+                          if (!chatRoomEntity[0].isTitleAssigned) {
+                            context.read<ChatRoomBloc>().add(
+                              UpdateChatRoomEvent(
+                                chatRoomEntity: chatRoomEntity[0].copyWith(
+                                  title: chatController.text.trim(),
+                                  isTitleAssigned: true,
+                                ),
+                              ),
+                            );
+                          }
                         },
                       ),
                     ),
@@ -378,6 +426,7 @@ Widget _chatBox(
   required bool isUser,
   required ChatEntity chats,
 }) {
+  log('----in Chat page: ID: ${chats.id}');
   return ChatBoxWidget(
     isUser: isUser,
     message: chats.message,

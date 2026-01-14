@@ -20,6 +20,7 @@ class AppDatabase {
       join(path, 'ai_chatbot.db'),
       onCreate: (db, version) async {
         await db.execute(UserModel.createTableQuery);
+        await db.execute(ChatRoomModel.createTable);
         await db.execute(ChatModel.createTable);
         await db.execute(ChatBckgndImgPathsModel.createTable);
       },

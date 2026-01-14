@@ -15,8 +15,12 @@ class LoadingChatApi extends ChatApiState {
   const LoadingChatApi();
 }
 
+class StopChatAPi extends ChatApiState {
+  const StopChatAPi();
+}
+
 class LoadedChatApi extends ChatApiState {
-  final ChatEntity chatEntity;
+  final ChatEntity? chatEntity;
   const LoadedChatApi({required this.chatEntity});
   @override
   List<Object?> get props => [chatEntity];

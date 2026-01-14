@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:chatbot_ai/core/constants/chat_role_constants.dart';
 import 'package:chatbot_ai/core/errors/failures/failures.dart';
@@ -12,6 +13,7 @@ class ChatApiBloc extends Bloc<ChatApiEvent, ChatApiState> {
   final SendPromptUsecase sendPromptUsecase;
   ChatApiBloc({required this.sendPromptUsecase}) : super(InitialChatApi()) {
     on<OnSendPromptEvent>(onSendPromptEvent);
+    on<OnStopChatApiEvent>(onStopEvent);
   }
 
   Future<void> onSendPromptEvent(
@@ -21,18 +23,30 @@ class ChatApiBloc extends Bloc<ChatApiEvent, ChatApiState> {
     try {
       emit(LoadingChatApi());
       await Future.delayed(const Duration(seconds: 2));
-      ChatEntity data = ChatEntity(
-        message:
-            'Sorry! Currently, work is in progress on the app, so this service is temporarily disabled 😊',
-        createdAt: DateTime.now().toString(),
-        role: ChatRoleConstants.model,
-        isFav: false,
-        imgPath: '',
-      );
-
-      emit(LoadedChatApi(chatEntity: data));
+      if (state is! StopChatAPi) {
+        ChatEntity data = ChatEntity(
+          chatRoomId: event.chatEntity.chatRoomId,
+          id: DateTime.now().microsecondsSinceEpoch,
+          message:
+              'Sorry! Currently, work is in progress on the app, so this service is temporarily disabled 😊',
+          createdAt: DateTime.now().toString(),
+          role: ChatRoleConstants.model,
+          isFav: false,
+          imgPath: '',
+        );
+        log('CHAT API BLOC: ${data.id} ');
+        emit(LoadedChatApi(chatEntity: data));
+      }
     } on Failures catch (e) {
       emit(ErrorChatApi(message: e.message));
     }
+  }
+
+  Future<void> onStopEvent(
+    OnStopChatApiEvent event,
+    Emitter<ChatApiState> emit,
+  ) async {
+    emit(LoadedChatApi(chatEntity: null));
+    emit(StopChatAPi());
   }
 }

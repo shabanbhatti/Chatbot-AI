@@ -9,13 +9,19 @@ import 'package:chatbot_ai/core/shared%20domain/usecases/get_user_usecase.dart';
 import 'package:chatbot_ai/core/shared%20domain/usecases/insert_chat_bckgnd_img_paths_usecae.dart';
 import 'package:chatbot_ai/core/shared%20domain/usecases/insert_user_usecase.dart';
 import 'package:chatbot_ai/core/shared%20domain/usecases/update_user_usecase.dart';
+import 'package:chatbot_ai/features/chat%20feature/domain/usecases/delete_chat_room_usecase.dart';
+import 'package:chatbot_ai/features/chat%20feature/domain/usecases/get_chat_rooms_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/get_chats_usecase.dart';
+import 'package:chatbot_ai/features/chat%20feature/domain/usecases/insert_chat_room_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/insert_chat_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/send_prompt_usecase.dart';
+import 'package:chatbot_ai/features/chat%20feature/domain/usecases/update_chat_room_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/update_chat_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/voice_to_text_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20bloc/chat_bloc.dart';
-import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20bloc/chat_event.dart';
+import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20room%20ID%20pref%20bloc/chat_room_id_pref_bloc.dart';
+import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20room%20bloc/chat_room_bloc.dart';
+import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/new%20chat%20pref%20bloc/new_chat_pref_bloc.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/voice%20bloc/voice_bloc.dart';
 import 'package:chatbot_ai/features/initial%20features/presentation/bloc/user%20bloc/user_bloc.dart';
 import 'package:chatbot_ai/features/initial%20features/presentation/bloc/user%20bloc/user_event.dart';
@@ -64,7 +70,27 @@ abstract class Providers {
             updateChatUsecase: getIt<UpdateChatUsecase>(),
             getUserUsecase: getIt<GetUserUsecase>(),
             getChatImgsPathsUsecase: getIt<GetChatImgsPathsUsecase>(),
-          )..add(GetChatsEvent()),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => ChatRoomBloc(
+            getChatRoomsUsecase: getIt<GetChatRoomsUsecase>(),
+            insertChatRoomUsecase: getIt<InsertChatRoomUsecase>(),
+            updateChatRoomUsecase: getIt<UpdateChatRoomUsecase>(),
+            deleteChatRoomUsecase: getIt<DeleteChatRoomUsecase>(),
+          ),
+        ),
+
+        BlocProvider(
+          create: (context) => NewChatPrefBloc(
+            sharedPreferencesService: getIt<SharedPreferencesService>(),
+          ),
+        ),
+
+        BlocProvider(
+          create: (context) => ChatRoomIdPrefBloc(
+            sharedPreferencesService: getIt<SharedPreferencesService>(),
+          ),
         ),
         // BlocProvider(create: (context) => ImagePickerBloc(imagePickerUtils: getIt<ImagePickerUtils>()),),
         BlocProvider(

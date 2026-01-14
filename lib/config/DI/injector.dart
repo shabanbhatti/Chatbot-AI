@@ -11,9 +11,13 @@ import 'package:chatbot_ai/features/chat%20feature/data/datasource/local%20datas
 import 'package:chatbot_ai/features/chat%20feature/data/datasource/remote%20datasource/chat_remote_datasource.dart';
 import 'package:chatbot_ai/features/chat%20feature/data/repository%20impl/chat_repository_impl.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/repository/chat_repository.dart';
+import 'package:chatbot_ai/features/chat%20feature/domain/usecases/delete_chat_room_usecase.dart';
+import 'package:chatbot_ai/features/chat%20feature/domain/usecases/get_chat_rooms_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/get_chats_usecase.dart';
+import 'package:chatbot_ai/features/chat%20feature/domain/usecases/insert_chat_room_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/insert_chat_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/send_prompt_usecase.dart';
+import 'package:chatbot_ai/features/chat%20feature/domain/usecases/update_chat_room_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/update_chat_usecase.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/voice_to_text_usecase.dart';
 import 'package:chatbot_ai/features/initial%20features/data/datasource/local%20datasource/user_local_datasource.dart';
@@ -155,5 +159,21 @@ Future<void> initGetIt() async {
     () => UpdateChatImgPathUsecase(
       chatBckgndImgPathsRepository: getIt<ChatBckgndImgPathsRepository>(),
     ),
+  );
+
+  // CHAT ROOM SIDE
+
+  getIt.registerLazySingleton<GetChatRoomsUsecase>(
+    () => GetChatRoomsUsecase(chatRepository: getIt<ChatRepository>()),
+  );
+  getIt.registerLazySingleton<InsertChatRoomUsecase>(
+    () => InsertChatRoomUsecase(chatRepository: getIt<ChatRepository>()),
+  );
+  getIt.registerLazySingleton<UpdateChatRoomUsecase>(
+    () => UpdateChatRoomUsecase(chatRepository: getIt<ChatRepository>()),
+  );
+
+  getIt.registerLazySingleton<DeleteChatRoomUsecase>(
+    () => DeleteChatRoomUsecase(chatRepository: getIt<ChatRepository>()),
   );
 }
