@@ -1,3 +1,3 @@
 abstract class ImagePathConstants {
-  static const String appLogo = 'assets/images/chatbot_logo.png';
+  static const String appLogo = 'assets/images/app_logo.png';
 }

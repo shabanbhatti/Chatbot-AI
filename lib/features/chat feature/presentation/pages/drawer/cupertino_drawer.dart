@@ -66,7 +66,7 @@ class _CupertinoDrawerState extends State<CupertinoDrawer> {
               ),
             ),
             Padding(
-              padding: const EdgeInsetsGeometry.symmetric(horizontal: 10),
+              padding: const EdgeInsetsGeometry.symmetric(horizontal: 0),
               child: _topListTileWithLogo(
                 context,
                 widget.idNotifier,
@@ -265,30 +265,42 @@ Widget _topListTileWithLogo(
   return ValueListenableBuilder(
     valueListenable: newChatNotifier,
     builder: (context, value, child) {
-      return Container(
-        decoration: BoxDecoration(
-          color: value ? CupertinoColors.inactiveGray.withAlpha(50) : null,
-          borderRadius: const BorderRadius.all(Radius.circular(15)),
-        ),
-        child: CupertinoListTile(
-          onTap: () async {
-            advancedDrawerController.hideDrawer();
-            int id = DateTime.now().microsecondsSinceEpoch;
+      return CupertinoButton(
+        onPressed: () async {
+          advancedDrawerController.hideDrawer();
+          int id = DateTime.now().microsecondsSinceEpoch;
 
-            context.read<ChatRoomBloc>().add(
-              CreateChatRoomEvent(
-                chatRoomEntity: ChatRoomEntity(
-                  isTitleAssigned: false,
-                  id: id,
-                  title: controller.text.trim(),
-                  createdAt: DateTime.now().toString(),
-                  isPin: false,
-                ),
+          context.read<ChatRoomBloc>().add(
+            CreateChatRoomEvent(
+              chatRoomEntity: ChatRoomEntity(
+                isTitleAssigned: false,
+                id: id,
+                title: controller.text.trim(),
+                createdAt: DateTime.now().toString(),
+                isPin: false,
               ),
-            );
-          },
-          leading: Image.asset(ImagePathConstants.appLogo),
-          title: const Text('Ai Chatbot'),
+            ),
+          );
+        },
+        child: Container(
+          height: 60,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: value ? CupertinoColors.inactiveGray.withAlpha(50) : null,
+            borderRadius: const BorderRadius.all(Radius.circular(15)),
+          ),
+          child: Row(
+            children: [
+              Image.asset(ImagePathConstants.appLogo, height: 50),
+              const SizedBox(width: 10),
+              Text(
+                'Ai Chatbot',
+                style: CupertinoTheme.of(
+                  context,
+                ).textTheme.textStyle.copyWith(fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
         ),
       );
     },
