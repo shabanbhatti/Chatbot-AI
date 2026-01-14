@@ -21,7 +21,7 @@ class DioClient {
         baseUrl: 'https://generativelanguage.googleapis.com',
         connectTimeout: const Duration(seconds: 30),
         receiveTimeout: const Duration(seconds: 30),
-        sendTimeout: const Duration(seconds: 3),
+        sendTimeout: const Duration(seconds: 30),
         contentType: 'application/json',
         headers: {'x-goog-api-key': apiKey},
       ),

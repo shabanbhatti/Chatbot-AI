@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:chatbot_ai/core/bloc/accent%20color%20SP%20bloc/accent_color_bloc.dart';
 import 'package:chatbot_ai/core/bloc/accent%20color%20SP%20bloc/accent_color_state.dart';
 import 'package:chatbot_ai/core/constants/constant_colors.dart';
 import 'package:chatbot_ai/core/typedefs/typedefs.dart';
 import 'package:chatbot_ai/core/utils/get_accent_colors_util.dart';
 import 'package:chatbot_ai/core/utils/show_toast.dart';
+import 'package:chatbot_ai/features/chat%20feature/domain/entity/chat_entity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,8 +19,10 @@ class ChatBoxWidget extends StatelessWidget {
     required this.message,
     required this.onFavTap,
     required this.isFav,
+    required this.chatEntity,
   });
   final bool isUser;
+  final ChatEntity chatEntity;
   final String message;
   final OnPressed onFavTap;
   final bool isFav;
@@ -39,20 +44,75 @@ class ChatBoxWidget extends StatelessWidget {
                 }
               },
               builder: (context, state) {
-                return Container(
-                  padding: isUser
-                      ? const EdgeInsets.all(12)
-                      : const EdgeInsets.all(0),
-                  decoration: BoxDecoration(
-                    color: isUser ? getAccentColor(state.colorName) : null,
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-                  child: GptMarkdown(
-                    message,
-                    style: CupertinoTheme.of(context).textTheme.textStyle
-                        .copyWith(fontWeight: FontWeight.normal),
-                  ),
-                );
+                return (chatEntity.imgPaths.isEmpty)
+                    ? Container(
+                        padding: isUser
+                            ? const EdgeInsets.all(12)
+                            : const EdgeInsets.all(0),
+                        decoration: BoxDecoration(
+                          color: isUser
+                              ? getAccentColor(state.colorName)
+                              : null,
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                        child: GptMarkdown(
+                          message,
+                          style: CupertinoTheme.of(context).textTheme.textStyle
+                              .copyWith(fontWeight: FontWeight.normal),
+                        ),
+                      )
+                    : Container(
+                        padding: isUser
+                            ? const EdgeInsets.all(12)
+                            : const EdgeInsets.all(0),
+                        decoration: BoxDecoration(
+                          color: isUser
+                              ? getAccentColor(state.colorName)
+                              : null,
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisSize: .min,
+                              mainAxisAlignment: .start,
+                              children: chatEntity.imgPaths
+                                  .map(
+                                    (e) => Padding(
+                                      padding:
+                                          const EdgeInsetsGeometry.symmetric(
+                                            horizontal: 5,
+                                          ),
+                                      child: Container(
+                                        height: 50,
+                                        clipBehavior:
+                                            Clip.antiAliasWithSaveLayer,
+                                        decoration: const BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(10),
+                                          ),
+                                        ),
+                                        child: Image.file(
+                                          File(e),
+
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
+
+                            GptMarkdown(
+                              message,
+                              style: CupertinoTheme.of(context)
+                                  .textTheme
+                                  .textStyle
+                                  .copyWith(fontWeight: FontWeight.normal),
+                            ),
+                          ],
+                        ),
+                      );
               },
             ),
           ),

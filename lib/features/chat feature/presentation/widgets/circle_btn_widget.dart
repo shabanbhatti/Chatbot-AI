@@ -15,7 +15,7 @@ class CircleBtnWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     var butnTheme = CupertinoDynamicColor.withBrightness(
       color: CupertinoColors.systemGrey6,
-      darkColor: CupertinoColors.systemGrey6.withAlpha(40),
+      darkColor: CupertinoColors.darkBackgroundGray,
     );
     return GestureDetector(
       onTap: onTap,

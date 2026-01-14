@@ -16,11 +16,13 @@ class ChatRemoteDatasourceImpl implements ChatRemoteDatasource {
 
   @override
   Future<ChatModel> sendPrompt(ChatModel chatModel) async {
-    String? img;
-    if (chatModel.imgPath != null) {
-      File file = File(chatModel.imgPath ?? '');
-      final bytes = await file.readAsBytes();
-      img = base64Encode(bytes);
+    List<String> imgList = [];
+    if (chatModel.imgPaths.isNotEmpty) {
+      for (var element in chatModel.imgPaths) {
+        File file = File(element);
+        final bytes = await file.readAsBytes();
+        imgList.add(base64Encode(bytes));
+      }
     }
 
     var responce = await dio.post(
@@ -31,10 +33,12 @@ class ChatRemoteDatasourceImpl implements ChatRemoteDatasource {
             "role": "user",
             "parts": [
               {"text": chatModel.message},
-              if (img != null)
-                {
-                  "inlineData": {"mimeType": "image/jpeg", "data": img},
-                },
+              if (imgList.isNotEmpty)
+                ...imgList.map(
+                  (e) => {
+                    "inlineData": {"mimeType": "image/jpeg", "data": e},
+                  },
+                ),
             ],
           },
         ],
@@ -50,8 +54,8 @@ class ChatRemoteDatasourceImpl implements ChatRemoteDatasource {
       message: reply,
       createdAt: DateTime.now().toString(),
       role: ChatRoleConstants.model,
-      imgPath: null,
       isFav: false,
+      imgPaths: [],
       id: DateTime.now().microsecondsSinceEpoch,
     );
   }

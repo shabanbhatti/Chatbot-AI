@@ -46,6 +46,7 @@ class _ChatPageState extends State<ChatPage> {
   late ChatApiBloc chatApiBloc;
   TextEditingController chatController = TextEditingController();
   ValueNotifier<String> chatNotifier = ValueNotifier('');
+  ValueNotifier<List<String>> multiImagesNotifier = ValueNotifier([]);
   final ScrollController _scrollController = ScrollController();
   late AdvancedDrawerController advancedDrawerController;
   @override
@@ -128,65 +129,116 @@ class _ChatPageState extends State<ChatPage> {
             }
           },
           child: CupertinoPageScaffold(
-            navigationBar: _appBar(
-              advancedDrawerController: advancedDrawerController,
-            ),
+            // navigationBar: _appBar(
+            //   advancedDrawerController: advancedDrawerController,
+            // ),
             child: Center(
-              child: SafeArea(
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Stack(
+              child: Stack(
+                children: [
+                  SizedBox(
+                    height: double.infinity,
+                    width: double.infinity,
+                    child: _backgroundTheme(),
+                  ),
+                  SizedBox(
+                    height: double.infinity,
+                    width: double.infinity,
+                    child: SafeArea(
+                      child: Column(
                         children: [
-                          _backgroundTheme(),
-                          CupertinoScrollbar(
-                            controller: _scrollController,
-                            child: CustomScrollView(
+                          /*
+                           CupertinoNavigationBar(
+                                        leading: GestureDetector(
+                      onTap: () {
+                        advancedDrawerController.showDrawer();
+                      },
+                      child: const Icon(CupertinoIcons.line_horizontal_3_decrease, size: 25),
+                                        ),
+                                        middle: const Text(
+                      'Ai Chatbot',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                                        ),
+                                      );
+                           */
+                          CupertinoListTile(
+                            leading: GestureDetector(
+                              onTap: () {
+                                advancedDrawerController.showDrawer();
+                              },
+                              child: const Icon(
+                                CupertinoIcons.line_horizontal_3_decrease,
+                                size: 30,
+                              ),
+                            ),
+                            title: Text(
+                              'Ai Chatbot',
+                              style: CupertinoTheme.of(context)
+                                  .textTheme
+                                  .textStyle
+                                  .copyWith(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Expanded(
+                            child: CupertinoScrollbar(
                               controller: _scrollController,
-                              slivers: [
-                                BlocBuilder<ChatBloc, ChatState>(
-                                  buildWhen: (previous, current) {
-                                    if (current is LoadingChat) {
-                                      return true;
-                                    } else if (previous is LoadingChat &&
-                                        current is LoadedChat) {
-                                      return true;
-                                    } else if (previous is LoadedChat &&
-                                        current is LoadedChat) {
-                                      return previous.chatsList !=
-                                          current.chatsList;
-                                    } else {
-                                      return false;
-                                    }
-                                  },
-                                  builder: (context, state) {
-                                    if (state is LoadingChat) {
-                                      return const SliverFillRemaining(
-                                        child: Center(
-                                          child: CupertinoActivityIndicator(),
-                                        ),
-                                      );
-                                    } else if (state is LoadedChat) {
-                                      var data = state.chatsList;
-                                      return _loadedChat(data, chatApiBloc);
-                                    } else if (state is ErrorChat) {
-                                      return SliverFillRemaining(
-                                        child: Center(
-                                          child: Text(state.message),
-                                        ),
-                                      );
-                                    } else {
-                                      return const SliverToBoxAdapter();
-                                    }
-                                  },
-                                ),
-                              ],
+                              child: CustomScrollView(
+                                controller: _scrollController,
+                                slivers: [
+                                  BlocBuilder<ChatBloc, ChatState>(
+                                    buildWhen: (previous, current) {
+                                      if (current is LoadingChat) {
+                                        return true;
+                                      } else if (previous is LoadingChat &&
+                                          current is LoadedChat) {
+                                        return true;
+                                      } else if (previous is LoadedChat &&
+                                          current is LoadedChat) {
+                                        return previous.chatsList !=
+                                            current.chatsList;
+                                      } else {
+                                        return false;
+                                      }
+                                    },
+                                    builder: (context, state) {
+                                      if (state is LoadingChat) {
+                                        return const SliverFillRemaining(
+                                          child: Center(
+                                            child: CupertinoActivityIndicator(),
+                                          ),
+                                        );
+                                      } else if (state is LoadedChat) {
+                                        var data = state.chatsList;
+                                        return SliverPadding(
+                                          padding: EdgeInsetsGeometry.only(
+                                            bottom: 60,
+                                          ),
+                                          sliver: _loadedChat(
+                                            data,
+                                            chatApiBloc,
+                                          ),
+                                        );
+                                      } else if (state is ErrorChat) {
+                                        return SliverFillRemaining(
+                                          child: Center(
+                                            child: Text(state.message),
+                                          ),
+                                        );
+                                      } else {
+                                        return const SliverToBoxAdapter();
+                                      }
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ],
                       ),
                     ),
-                    BlocSelector<ChatApiBloc, ChatApiState, String?>(
+                  ),
+                  Align(
+                    alignment: Alignment.center,
+                    child: BlocSelector<ChatApiBloc, ChatApiState, String?>(
                       selector: (state) {
                         if (state is ErrorChatApi) {
                           return state.message;
@@ -212,7 +264,7 @@ class _ChatPageState extends State<ChatPage> {
                                     message: chatController.text.trim(),
                                     createdAt: DateTime.now().toString(),
                                     role: ChatRoleConstants.user,
-                                    imgPath: null,
+                                    imgPaths: multiImagesNotifier.value,
                                     isFav: false,
                                   ),
                                 ),
@@ -224,8 +276,11 @@ class _ChatPageState extends State<ChatPage> {
                         }
                       },
                     ),
+                  ),
 
-                    BlocSelector<VoiceBloc, VoiceState, String>(
+                  Align(
+                    alignment: Alignment.center,
+                    child: BlocSelector<VoiceBloc, VoiceState, String>(
                       selector: (state) {
                         if (state is IsErrorVoice) {
                           return state.message;
@@ -248,79 +303,89 @@ class _ChatPageState extends State<ChatPage> {
                         }
                       },
                     ),
-                    Padding(
-                      padding: const EdgeInsetsGeometry.only(bottom: 10),
-                      child: BottomWidgets(
-                        chatApiBloc: chatApiBloc,
-                        chatNotifier: chatNotifier,
-                        chatController: chatController,
-                        onMic: () {
-                          var loading =
-                              context.read<VoiceBloc>().state
-                                  is IsSpeakingVoice;
-                          log(loading.toString());
-                          if (!loading) {
-                            context.read<VoiceBloc>().add(
-                              StartRecordingEvent(),
-                            );
-                          } else {
-                            context.read<VoiceBloc>().add(StopRecordingEvent());
-                          }
-                        },
-                        onSend: () async {
-                          widget.newChatNotifier.value = false;
+                  ),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: SafeArea(
+                      child: Padding(
+                        padding: EdgeInsetsGeometry.symmetric(vertical: 3),
+                        child: BottomWidgets(
+                          multiImagesNotifier: multiImagesNotifier,
+                          chatApiBloc: chatApiBloc,
+                          chatNotifier: chatNotifier,
+                          chatController: chatController,
 
-                          var id = context.read<ChatRoomIdPrefBloc>().state;
-                          widget.idNotifier.value = id;
-                          context.read<ChatBloc>().add(
-                            InsertEvent(
-                              chatEntity: ChatEntity(
-                                chatRoomId: id,
-                                id: DateTime.now().microsecondsSinceEpoch,
-                                message: chatController.text.trim(),
-                                createdAt: DateTime.now().toString(),
-                                role: ChatRoleConstants.user,
-                                imgPath: null,
-                                isFav: false,
-                              ),
-                            ),
-                          );
+                          onMic: () {
+                            var loading =
+                                context.read<VoiceBloc>().state
+                                    is IsSpeakingVoice;
+                            log(loading.toString());
+                            if (!loading) {
+                              context.read<VoiceBloc>().add(
+                                StartRecordingEvent(),
+                              );
+                            } else {
+                              context.read<VoiceBloc>().add(
+                                StopRecordingEvent(),
+                              );
+                            }
+                          },
+                          onSend: () async {
+                            widget.newChatNotifier.value = false;
 
-                          chatApiBloc.add(
-                            OnSendPromptEvent(
-                              chatEntity: ChatEntity(
-                                chatRoomId: id,
-                                id: null,
-                                message: chatController.text.trim(),
-                                createdAt: DateTime.now().toString(),
-                                role: ChatRoleConstants.user,
-                                imgPath: null,
-                                isFav: false,
-                              ),
-                            ),
-                          );
-
-                          var loaded =
-                              context.read<ChatRoomBloc>().state
-                                  as LoadedChatRoom;
-                          var chatRoomEntity = loaded.chatRoomEntities
-                              .where((element) => element.id == id)
-                              .toList();
-                          if (!chatRoomEntity[0].isTitleAssigned) {
-                            context.read<ChatRoomBloc>().add(
-                              UpdateChatRoomEvent(
-                                chatRoomEntity: chatRoomEntity[0].copyWith(
-                                  title: chatController.text.trim(),
-                                  isTitleAssigned: true,
+                            var id = context.read<ChatRoomIdPrefBloc>().state;
+                            widget.idNotifier.value = id;
+                            context.read<ChatBloc>().add(
+                              InsertEvent(
+                                chatEntity: ChatEntity(
+                                  chatRoomId: id,
+                                  id: DateTime.now().microsecondsSinceEpoch,
+                                  message: chatController.text.trim(),
+                                  createdAt: DateTime.now().toString(),
+                                  role: ChatRoleConstants.user,
+                                  imgPaths: multiImagesNotifier.value,
+                                  isFav: false,
                                 ),
                               ),
                             );
-                          }
-                        },
+
+                            chatApiBloc.add(
+                              OnSendPromptEvent(
+                                chatEntity: ChatEntity(
+                                  chatRoomId: id,
+                                  id: null,
+                                  message: chatController.text.trim(),
+                                  createdAt: DateTime.now().toString(),
+                                  role: ChatRoleConstants.user,
+                                  imgPaths: multiImagesNotifier.value,
+                                  isFav: false,
+                                ),
+                              ),
+                            );
+
+                            var loaded =
+                                context.read<ChatRoomBloc>().state
+                                    as LoadedChatRoom;
+                            var chatRoomEntity = loaded.chatRoomEntities
+                                .where((element) => element.id == id)
+                                .toList();
+                            if (!chatRoomEntity[0].isTitleAssigned) {
+                              context.read<ChatRoomBloc>().add(
+                                UpdateChatRoomEvent(
+                                  chatRoomEntity: chatRoomEntity[0].copyWith(
+                                    title: chatController.text.trim(),
+                                    isTitleAssigned: true,
+                                  ),
+                                ),
+                              );
+                            }
+                            multiImagesNotifier.value = [];
+                          },
+                        ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -330,22 +395,22 @@ class _ChatPageState extends State<ChatPage> {
   }
 }
 
-ObstructingPreferredSizeWidget _appBar({
-  required AdvancedDrawerController advancedDrawerController,
-}) {
-  return CupertinoNavigationBar(
-    leading: GestureDetector(
-      onTap: () {
-        advancedDrawerController.showDrawer();
-      },
-      child: const Icon(CupertinoIcons.line_horizontal_3_decrease, size: 25),
-    ),
-    middle: const Text(
-      'Ai Chatbot',
-      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-    ),
-  );
-}
+// ObstructingPreferredSizeWidget _appBar({
+//   required AdvancedDrawerController advancedDrawerController,
+// }) {
+//   return CupertinoNavigationBar(
+//     leading: GestureDetector(
+//       onTap: () {
+//         advancedDrawerController.showDrawer();
+//       },
+//       child: const Icon(CupertinoIcons.line_horizontal_3_decrease, size: 25),
+//     ),
+//     middle: const Text(
+//       'Ai Chatbot',
+//       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+//     ),
+//   );
+// }
 
 Widget _backgroundTheme() {
   return BlocBuilder<ChatBloc, ChatState>(
@@ -431,6 +496,7 @@ Widget _chatBox(
     isUser: isUser,
     message: chats.message,
     isFav: chats.isFav,
+    chatEntity: chats,
     onFavTap: () {
       if (chats.isFav) {
         context.read<ChatBloc>().add(

@@ -27,9 +27,9 @@ class ChatRepositoryImpl implements ChatRepository {
           message: chatEnity.message,
           createdAt: chatEnity.createdAt,
           role: chatEnity.role,
-          imgPath: chatEnity.imgPath,
+          imgPaths: chatEnity.imgPaths,
           isFav: chatEnity.isFav,
-          id: chatEnity.id
+          id: chatEnity.id,
         ),
       );
       return data.toEntity();
@@ -43,7 +43,16 @@ class ChatRepositoryImpl implements ChatRepository {
   Future<List<ChatEntity>> getChat(int id) async {
     try {
       var data = await chatLocalDatasource.getChat(id);
-      return data.map((e) => e.toEntity()).toList();
+      var chatEntityList = data.map((e) => e.toEntity()).toList();
+      List<ChatEntity> list = [];
+
+      for (var chat in chatEntityList) {
+        var imgPaths = await chatLocalDatasource.getImgsPath(chat.id ?? 0);
+        List<String> chatImgs = imgPaths.map((e) => e.imgPath).toList();
+        list.add(chat.copyWith(imgPaths: chatImgs));
+      }
+
+      return list;
     } on DatabaseException catch (e) {
       throw LocalDatabaseFailure(message: e.toString());
     }
@@ -52,15 +61,24 @@ class ChatRepositoryImpl implements ChatRepository {
   @override
   Future<bool> insertChat(ChatEntity chatEntity) async {
     try {
+      for (var element in chatEntity.imgPaths) {
+        await chatLocalDatasource.insertImages(
+          ImagePathsModel(
+            id: DateTime.now().microsecondsSinceEpoch,
+            imgPath: element,
+            wholeImgId: chatEntity.id ?? 0,
+          ),
+        );
+      }
       return await chatLocalDatasource.insertChat(
         ChatModel(
           chatRoomId: chatEntity.chatRoomId,
           message: chatEntity.message,
           createdAt: chatEntity.createdAt,
           role: chatEntity.role,
-          imgPath: chatEntity.imgPath ?? '',
+          imgPaths: [],
           isFav: chatEntity.isFav,
-          id: chatEntity.id
+          id: chatEntity.id,
         ),
       );
     } on DatabaseException catch (e) {
@@ -91,7 +109,7 @@ class ChatRepositoryImpl implements ChatRepository {
           createdAt: chatEntity.createdAt,
           role: chatEntity.role,
           id: chatEntity.id,
-          imgPath: chatEntity.imgPath,
+          imgPaths: [],
         ),
       );
     } on DatabaseException catch (e) {
@@ -108,7 +126,7 @@ class ChatRepositoryImpl implements ChatRepository {
           id: chatRoomEntity.id,
           createdAt: chatRoomEntity.createdAt,
           title: chatRoomEntity.title,
-          isPin: chatRoomEntity.isPin
+          isPin: chatRoomEntity.isPin,
         ),
       );
     } on DatabaseException catch (e) {
@@ -144,7 +162,32 @@ class ChatRepositoryImpl implements ChatRepository {
           id: chatRoomEntity.id,
           createdAt: chatRoomEntity.createdAt,
           title: chatRoomEntity.title,
-          isPin: chatRoomEntity.isPin
+          isPin: chatRoomEntity.isPin,
+        ),
+      );
+    } on DatabaseException catch (e) {
+      throw LocalDatabaseFailure(message: e.toString());
+    }
+  }
+
+  @override
+  Future<List<ImagePathsEntity>> getImgsPath(int id) async {
+    try {
+      var data = await chatLocalDatasource.getImgsPath(id);
+      return data.map((e) => e.toEntity()).toList();
+    } on DatabaseException catch (e) {
+      throw LocalDatabaseFailure(message: e.toString());
+    }
+  }
+
+  @override
+  Future<bool> insertImages(ImagePathsEntity imagePathsEntity) async {
+    try {
+      return await chatLocalDatasource.insertImages(
+        ImagePathsModel(
+          id: imagePathsEntity.id,
+          imgPath: imagePathsEntity.imgPath,
+          wholeImgId: imagePathsEntity.wholeImgId,
         ),
       );
     } on DatabaseException catch (e) {

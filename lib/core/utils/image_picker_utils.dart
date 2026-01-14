@@ -13,7 +13,7 @@ class ImagePickerUtils {
     required this.imageCropper,
   });
 
-  Future<String?> takeImage(ImageSource imageSource, ) async {
+  Future<String?> takeImage(ImageSource imageSource) async {
     try {
       final pickedFile = await imagePicker.pickImage(source: imageSource);
       if (pickedFile == null) return null;
@@ -36,6 +36,18 @@ class ImagePickerUtils {
     } catch (e) {
       log('Error picking/cropping image: $e');
       return null;
+    }
+  }
+
+  Future<List<String>> takeMultipleImage() async {
+    try {
+      final pickedFile = await imagePicker.pickMultiImage(limit: 2);
+      if (pickedFile.isEmpty) return [];
+      List<String> multiImages = pickedFile.map((e) => e.path).toList();
+      return multiImages;
+    } catch (e) {
+      log('Error picking/cropping image: $e');
+      return [];
     }
   }
 }

@@ -72,9 +72,10 @@ class ChatModel extends Equatable {
   final int chatRoomId;
   final String message;
   final String createdAt;
-  final String? imgPath;
+  final String? imageGeneratedPath;
   final String role;
   final bool isFav;
+  final List<String> imgPaths;
 
   const ChatModel({
     required this.chatRoomId,
@@ -82,21 +83,10 @@ class ChatModel extends Equatable {
     required this.message,
     required this.createdAt,
     required this.role,
-    this.imgPath,
+    required this.imgPaths,
+    this.imageGeneratedPath,
     required this.id,
   });
-
-  // factory ChatModel.fromJson(Map<String, dynamic> json, int chatRoomId) {
-  //   return ChatModel(
-  //     chatRoomId: chatRoomId,
-  //     message: json['message'] ?? '',
-  //     createdAt: json['created_at'] ?? '',
-  //     imgPath: json['img'] ?? '',
-  //     role: json['role'] ?? '',
-  //     isFav: json['isFavourite'] ?? false,
-  //     id: json['']??''
-  //   );
-  // }
 
   factory ChatModel.fromMap(Map<String, dynamic> map) {
     return ChatModel(
@@ -104,9 +94,10 @@ class ChatModel extends Equatable {
       chatRoomId: map[col_allChatId],
       message: map[col_message] ?? '',
       createdAt: map[col_createdAt] ?? '',
-      imgPath: map[col_imgPath] ?? '',
+      imageGeneratedPath: map[col_imgGeneratedPath] ?? '',
       role: map[col_role] ?? '',
-      isFav: map[col_Fav] == 1,
+      isFav: map[col_Fav] == 1 ? true : false,
+      imgPaths: [],
     );
   }
 
@@ -115,7 +106,7 @@ class ChatModel extends Equatable {
       col_allChatId: chatRoomId,
       col_message: message,
       col_createdAt: createdAt,
-      col_imgPath: imgPath ?? '',
+      col_imgGeneratedPath: imageGeneratedPath,
       col_role: role,
       col_Fav: isFav ? 1 : 0,
       col_id: id,
@@ -130,7 +121,8 @@ class ChatModel extends Equatable {
       createdAt: createdAt,
       role: role,
       isFav: isFav,
-      imgPath: imgPath ?? '',
+      imageGeneratedPath: imageGeneratedPath,
+      imgPaths: imgPaths ?? [],
     );
   }
 
@@ -140,17 +132,17 @@ class ChatModel extends Equatable {
   static const String col_allChatId = 'col_allChatId';
   static const String col_message = 'col_message';
   static const String col_createdAt = 'col_createdAt';
-  static const String col_imgPath = 'col_imgPath';
+  static const String col_imgGeneratedPath = 'col_imgPath';
   static const String col_role = 'col_role';
   static const String col_Fav = 'col_Fav';
 
   static const String createTable =
       '''
   CREATE TABLE $tableName(
-    $col_id INTEGER,
+    $col_id INTEGER PRIMARY KEY,
     $col_allChatId INTEGER,
     $col_message TEXT,
-    $col_imgPath TEXT,
+    $col_imgGeneratedPath TEXT,
     $col_createdAt TEXT,
     $col_role TEXT,
     $col_Fav INTEGER,
@@ -164,8 +156,52 @@ class ChatModel extends Equatable {
     chatRoomId,
     message,
     createdAt,
-    imgPath,
+    imageGeneratedPath,
     role,
     isFav,
   ];
+}
+
+class ImagePathsModel extends Equatable {
+  final String imgPath;
+  final int id;
+  final int wholeImgId;
+  const ImagePathsModel({
+    required this.id,
+    required this.imgPath,
+    required this.wholeImgId,
+  });
+
+  factory ImagePathsModel.fromMap(Map<String, dynamic> map) {
+    return ImagePathsModel(
+      id: map[col_id] ?? 0,
+      imgPath: map[col_imgPath] ?? '',
+      wholeImgId: map[col_wholeImgId] ?? 0,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {col_id: id, col_imgPath: imgPath, col_wholeImgId: wholeImgId};
+  }
+
+  ImagePathsEntity toEntity() {
+    return ImagePathsEntity(id: id, imgPath: imgPath, wholeImgId: wholeImgId);
+  }
+
+  static const String tableName = 'img_paths_table';
+  static const String col_imgPath = 'img_path_col';
+  static const String col_id = 'col_id';
+  static const String col_wholeImgId = 'col_whole_img_id';
+
+  static String createTable =
+      '''
+CREATE TABLE $tableName(
+$col_id INTEGER PRIMARY KEY AUTOINCREMENT,
+$col_imgPath TEXT,
+$col_wholeImgId INTEGER,
+FOREIGN KEY($col_wholeImgId) REFERENCES ${ChatModel.tableName}(${ChatModel.col_id}) ON DELETE CASCADE
+)''';
+
+  @override
+  List<Object?> get props => [imgPath, id, wholeImgId];
 }

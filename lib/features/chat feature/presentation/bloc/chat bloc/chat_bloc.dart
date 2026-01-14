@@ -23,9 +23,13 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final UpdateChatUsecase updateChatUsecase;
   final GetUserUsecase getUserUsecase;
   final GetChatImgsPathsUsecase getChatImgsPathsUsecase;
+  // final GetImagesPathsUsecase getImagesPathsUsecase;
+  // final InsertImagesPathsUsecase insertImagesPathsUsecase;
   ChatBloc({
     required this.sendPromptUsecase,
     required this.getUserUsecase,
+    // required this.getImagesPathsUsecase,
+    // required this.insertImagesPathsUsecase,
     required this.getChatImgsPathsUsecase,
     required this.insertChatUsecase,
     required this.updateChatUsecase,

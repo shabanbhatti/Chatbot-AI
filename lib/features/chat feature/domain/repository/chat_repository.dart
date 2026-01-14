@@ -12,4 +12,6 @@ abstract class ChatRepository {
   Future<bool> createChatRoom(ChatRoomEntity chatRoomEntity);
   Future<bool> updateChatRoom(ChatRoomEntity chatRoomEntity);
   Future<bool> deleteChatRoom(int id);
+  Future<List<ImagePathsEntity>> getImgsPath(int id);
+  Future<bool> insertImages(ImagePathsEntity imagePathsEntity);
 }

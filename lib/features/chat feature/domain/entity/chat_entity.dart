@@ -39,7 +39,8 @@ class ChatEntity extends Equatable {
   final String message;
   final String createdAt;
   final int chatRoomId;
-  final String? imgPath;
+  final List<String> imgPaths;
+  final String? imageGeneratedPath;
   final String role;
   final bool isFav;
 
@@ -47,19 +48,21 @@ class ChatEntity extends Equatable {
     required this.message,
     required this.chatRoomId,
     required this.isFav,
+    this.imageGeneratedPath,
     required this.id,
     required this.createdAt,
     required this.role,
-    this.imgPath,
+    required this.imgPaths,
   });
   ChatEntity copyWith({
     int? id,
     String? message,
     String? createdAt,
-    String? imgPath,
+    List<String>? imgPaths,
     String? role,
     bool? isFav,
     int? chatRoomId,
+    String? imageGeneratedPath,
   }) {
     return ChatEntity(
       chatRoomId: chatRoomId ?? this.chatRoomId,
@@ -67,8 +70,9 @@ class ChatEntity extends Equatable {
       createdAt: createdAt ?? this.createdAt,
       role: role ?? this.role,
       id: id ?? this.id,
-      imgPath: imgPath ?? this.imgPath,
+      imgPaths: imgPaths ?? this.imgPaths,
       isFav: isFav ?? this.isFav,
+      imageGeneratedPath: imageGeneratedPath ?? this.imageGeneratedPath,
     );
   }
 
@@ -76,10 +80,25 @@ class ChatEntity extends Equatable {
   List<Object?> get props => [
     message,
     createdAt,
-    imgPath,
+    imgPaths,
     role,
     id,
     isFav,
     chatRoomId,
+    imageGeneratedPath,
   ];
+}
+
+class ImagePathsEntity extends Equatable {
+  final String imgPath;
+  final int id;
+  final int wholeImgId;
+  const ImagePathsEntity({
+    required this.id,
+    required this.imgPath,
+    required this.wholeImgId,
+  });
+
+  @override
+  List<Object?> get props => [imgPath, id, wholeImgId];
 }

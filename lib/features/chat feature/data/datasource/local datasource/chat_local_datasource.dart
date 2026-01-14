@@ -9,6 +9,8 @@ abstract class ChatLocalDatasource {
   Future<bool> createChatRoom(ChatRoomModel chatRoomModel);
   Future<bool> updateChatRoom(ChatRoomModel chatRoomModel);
   Future<bool> deleteChatRoom(int id);
+  Future<List<ImagePathsModel>> getImgsPath(int id);
+  Future<bool> insertImages(ImagePathsModel imagePathsModel);
 }
 
 class ChatLocalDatasourceImpl implements ChatLocalDatasource {
@@ -87,5 +89,26 @@ class ChatLocalDatasourceImpl implements ChatLocalDatasource {
       whereArgs: [id],
     );
     return isDeleted > 0;
+  }
+
+  @override
+  Future<List<ImagePathsModel>> getImgsPath(int id) async {
+    var db = await appDatabase.database;
+    var data = await db.query(
+      ImagePathsModel.tableName,
+      where: '${ImagePathsModel.col_wholeImgId}=?',
+      whereArgs: [id],
+    );
+    return data.map((e) => ImagePathsModel.fromMap(e)).toList();
+  }
+
+  @override
+  Future<bool> insertImages(ImagePathsModel imagePathsModel) async {
+    var db = await appDatabase.database;
+    var isInserted = await db.insert(
+      ImagePathsModel.tableName,
+      imagePathsModel.toMap(),
+    );
+    return isInserted > 0;
   }
 }
