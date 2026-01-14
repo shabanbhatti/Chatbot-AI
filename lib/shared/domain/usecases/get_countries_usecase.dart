@@ -5,7 +5,7 @@ class GetCountriesUsecase {
   final CountriesRepository countryRepository;
   const GetCountriesUsecase({required this.countryRepository});
 
-  Future<List<CountriesEntity>> call(String country) async {
-    return await countryRepository.getCountries(country);
+  Future<List<CountriesEntity>> call() async {
+    return await countryRepository.getCountries();
   }
 }

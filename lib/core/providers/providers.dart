@@ -1,6 +1,8 @@
 import 'package:chatbot_ai/config/DI/injector.dart';
 import 'package:chatbot_ai/core/bloc/accent%20color%20SP%20bloc/accent_color_bloc.dart';
 import 'package:chatbot_ai/core/bloc/accent%20color%20SP%20bloc/accent_color_event.dart';
+import 'package:chatbot_ai/core/bloc/countries%20bloc/countries_bloc.dart';
+import 'package:chatbot_ai/core/bloc/countries%20bloc/countries_event.dart';
 import 'package:chatbot_ai/core/bloc/theme%20bloc/theme_bloc.dart';
 import 'package:chatbot_ai/core/bloc/theme%20bloc/theme_event.dart';
 import 'package:chatbot_ai/core/services/shared_preferences_service.dart';
@@ -31,6 +33,7 @@ import 'package:chatbot_ai/features/settings%20feature/domain/usecases/update_ch
 import 'package:chatbot_ai/features/settings%20feature/presentation/bloc/setting%20bloc/setting_bloc.dart';
 import 'package:chatbot_ai/features/settings%20feature/presentation/bloc/setting%20bloc/setting_event.dart';
 import 'package:chatbot_ai/features/settings%20feature/presentation/pages/settings_page.dart';
+import 'package:chatbot_ai/shared/domain/usecases/get_countries_usecase.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:record/record.dart';
@@ -62,6 +65,11 @@ abstract class Providers {
   static MultiBlocProvider mainFileGlobalProviders({required Widget child}) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider(
+          create: (context) =>
+              CountriesBloc(getCountriesUsecase: getIt<GetCountriesUsecase>())
+                ..add(GetCountriesEvent()),
+        ),
         BlocProvider(
           create: (context) => ChatBloc(
             getChatsUsecase: getIt<GetChatsUsecase>(),

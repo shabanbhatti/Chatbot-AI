@@ -146,7 +146,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           ),
                           const SizedBox(height: 5),
                           ThemeTextWidget(
-                            text: state.userEntity!.country,
+                            text: '📍${state.userEntity!.country}',
                             color: CupertinoColors.systemGrey,
                           ),
                         ],
@@ -174,7 +174,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
                   showCupertinoFullSheet(
                     context,
-                    sheetHeightThroughMediaQuery: 0.5,
+                    sheetHeightThroughMediaQuery: 0.7,
                     child: UpdateUserPage(userEntity: user),
 
                     pageName: 'Update profile',

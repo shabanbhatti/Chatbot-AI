@@ -1,3 +1,5 @@
+import 'package:awesome_shake_widget/enum/shake_preset.dart';
+import 'package:awesome_shake_widget/shake_widget.dart';
 import 'package:chatbot_ai/core/constants/image_path_constants.dart';
 import 'package:chatbot_ai/core/typedefs/typedefs.dart';
 import 'package:chatbot_ai/core/widgets/custom%20btns/custom_app_btn.dart';
@@ -10,9 +12,11 @@ class CreateUserNameWidget extends StatelessWidget {
     super.key,
     required this.controller,
     required this.onNext,
+    required this.shakeWidgetKey,
   });
   final TextEditingController controller;
   final OnPressed onNext;
+  final GlobalKey<ShakeWidgetState> shakeWidgetKey;
   @override
   Widget build(BuildContext context) {
     print('name widget called');
@@ -38,15 +42,20 @@ class CreateUserNameWidget extends StatelessWidget {
         SliverPadding(
           padding: const EdgeInsetsGeometry.symmetric(vertical: 20),
           sliver: SliverToBoxAdapter(
-            child: Column(
-              children: [
-                const TopTextfieldTitleWidget(title: 'Name'),
-                CustomBasicTextfield(
-                  controller: controller,
-                  title: 'Name',
-                  prefixIcon: CupertinoIcons.person_fill,
-                ),
-              ],
+            child: ShakeWidget(
+              key: shakeWidgetKey,
+              duration: const Duration(milliseconds: 500),
+              preset: ShakePreset.custom,
+              child: Column(
+                children: [
+                  const TopTextfieldTitleWidget(title: 'Name'),
+                  CustomBasicTextfield(
+                    controller: controller,
+                    title: 'Name',
+                    prefixIcon: CupertinoIcons.person_fill,
+                  ),
+                ],
+              ),
             ),
           ),
         ),

@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:awesome_shake_widget/shake_widget.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatbot_ai/core/bloc/countries%20bloc/countries_bloc.dart';
 import 'package:chatbot_ai/core/bloc/countries%20bloc/countries_event.dart';
 import 'package:chatbot_ai/core/bloc/countries%20bloc/countries_state.dart';
@@ -9,7 +11,6 @@ import 'package:chatbot_ai/core/utils/show_toast.dart';
 import 'package:chatbot_ai/core/widgets/custom%20btns/custom_app_btn.dart';
 import 'package:chatbot_ai/core/widgets/custom%20textfields/custom_basic_textfield.dart';
 import 'package:chatbot_ai/core/widgets/top_textfield_title_widget.dart';
-import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20bloc/chat_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -18,9 +19,11 @@ class SelectCountryWidget extends StatefulWidget {
     super.key,
     required this.controller,
     required this.onNext,
+    required this.shakeWidgetKey,
   });
   final TextEditingController controller;
   final OnPressed onNext;
+  final GlobalKey<ShakeWidgetState> shakeWidgetKey;
 
   @override
   State<SelectCountryWidget> createState() => _SelectCountryWidgetState();
@@ -67,26 +70,30 @@ class _SelectCountryWidgetState extends State<SelectCountryWidget> {
           SliverPadding(
             padding: const EdgeInsetsGeometry.only(top: 20, bottom: 10),
             sliver: SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  const TopTextfieldTitleWidget(title: 'Country'),
-                  CustomBasicTextfield(
-                    controller: widget.controller,
-                    title: 'Select country',
-                    prefixIcon: CupertinoIcons.placemark_fill,
-                    onChanged: (value) {
-                      if (value.isNotEmpty) {
-                        isShow.value = true;
-                      } else {
-                        isShow.value = false;
-                      }
+              child: ShakeWidget(
+                key: widget.shakeWidgetKey,
+                duration: const Duration(milliseconds: 500),
+                child: Column(
+                  children: [
+                    const TopTextfieldTitleWidget(title: 'Country'),
+                    CustomBasicTextfield(
+                      controller: widget.controller,
+                      title: 'Select country',
+                      prefixIcon: CupertinoIcons.placemark_fill,
+                      onChanged: (value) {
+                        if (value.isNotEmpty) {
+                          isShow.value = true;
+                        } else {
+                          isShow.value = false;
+                        }
 
-                      context.read<CountriesBloc>().add(
-                        GetCountriesEvent(name: value),
-                      );
-                    },
-                  ),
-                ],
+                        context.read<CountriesBloc>().add(
+                          OnChangedCountriesEvent(query: value),
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -108,10 +115,12 @@ class _SelectCountryWidgetState extends State<SelectCountryWidget> {
                       } else if (previous is CountriesLoading &&
                           current is CountriesLoaded) {
                         return true;
-                      }else if(current is CountriesError){
+                      } else if (current is CountriesError) {
                         return true;
-                      }else if(previous is CountriesLoaded && current is CountriesLoaded){
-                        return previous.countriesEntity!=current.countriesEntity;
+                      } else if (previous is CountriesLoaded &&
+                          current is CountriesLoaded) {
+                        return previous.filteredCountries !=
+                            current.filteredCountries;
                       }
                       return false;
                     },
@@ -122,20 +131,19 @@ class _SelectCountryWidgetState extends State<SelectCountryWidget> {
                           child: Center(child: CupertinoActivityIndicator()),
                         );
                       } else if (state is CountriesLoaded) {
-                        var data = state.countriesEntity;
+                        var data = state.filteredCountries;
                         return SliverList.builder(
                           itemCount: data.length,
                           itemBuilder: (context, index) {
                             return CupertinoListTile(
                               onTap: () {
                                 widget.controller.text =
-                                    '${data[index].country} ${data[index].flag} ';
+                                    '${data[index].country} ';
                                 isShow.value = false;
                               },
                               title: Text(data[index].country),
-                              leading: Text(
-                                data[index].flag,
-                                style: TextStyle(fontSize: 25),
+                              leading: CachedNetworkImage(
+                                imageUrl: data[index].flag,
                               ),
                               subtitle: Text(data[index].official),
                             );

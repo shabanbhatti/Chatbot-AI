@@ -1,3 +1,4 @@
+import 'package:awesome_shake_widget/shake_widget.dart';
 import 'package:chatbot_ai/config/DI/injector.dart';
 import 'package:chatbot_ai/core/typedefs/typedefs.dart';
 import 'package:chatbot_ai/core/utils/image_picker_utils.dart';
@@ -17,6 +18,8 @@ class ImgGenderAgeWidget extends StatelessWidget {
     required this.genderNotifier,
     required this.birthNotifier,
     required this.onCreate,
+    required this.radioBtnsKey,
+    required this.dateOfBirthKey,
   });
   final String name;
   final ValueNotifier<String?> imgPathNotifier;
@@ -24,6 +27,8 @@ class ImgGenderAgeWidget extends StatelessWidget {
   final TextEditingController birthController;
   final ValueNotifier<String> birthNotifier;
   final OnPressed onCreate;
+  final GlobalKey<ShakeWidgetState> radioBtnsKey;
+  final GlobalKey<ShakeWidgetState> dateOfBirthKey;
 
   @override
   Widget build(BuildContext context) {
@@ -61,24 +66,29 @@ class ImgGenderAgeWidget extends StatelessWidget {
         SelectBirthWidget(
           birthController: birthController,
           birthNotifier: birthNotifier,
+          dateOfBirthKey: dateOfBirthKey,
         ),
 
         SliverToBoxAdapter(
-          child: ValueListenableBuilder(
-            valueListenable: genderNotifier,
-            builder: (context, value, child) {
-              return CustomRadioBtns(
-                value: value,
-                onTap1: (value) {
-                  genderNotifier.value = value;
-                },
-                onTap2: (value) {
-                  genderNotifier.value = value;
-                },
-                title1: 'Male',
-                title2: 'Female',
-              );
-            },
+          child: ShakeWidget(
+            key: radioBtnsKey,
+            duration: const Duration(milliseconds: 500),
+            child: ValueListenableBuilder(
+              valueListenable: genderNotifier,
+              builder: (context, value, child) {
+                return CustomRadioBtns(
+                  value: value,
+                  onTap1: (value) {
+                    genderNotifier.value = value;
+                  },
+                  onTap2: (value) {
+                    genderNotifier.value = value;
+                  },
+                  title1: 'Male',
+                  title2: 'Female',
+                );
+              },
+            ),
           ),
         ),
 

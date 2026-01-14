@@ -8,7 +8,7 @@ class DioClient {
     final apiKey = dotenv.env['API_KEY'];
     countriesDio = Dio(
       BaseOptions(
-        baseUrl: 'https://restcountries.com/v3.1/name',
+        baseUrl: 'https://restcountries.com/v3.1',
         connectTimeout: const Duration(seconds: 3),
         receiveTimeout: const Duration(seconds: 3),
         sendTimeout: const Duration(seconds: 3),

@@ -13,12 +13,16 @@ class CountriesInitial extends CountriesState {}
 class CountriesLoading extends CountriesState {}
 
 class CountriesLoaded extends CountriesState {
-  final List<CountriesEntity> countriesEntity;
+  final List<CountriesEntity> allCountries;
+  final List<CountriesEntity> filteredCountries;
 
-  const CountriesLoaded(this.countriesEntity);
-
+  const CountriesLoaded({
+    required this.allCountries,
+    required this.filteredCountries,
+  });
   @override
-  List<Object?> get props => [countriesEntity];
+  // TODO: implement props
+  List<Object?> get props => [allCountries, filteredCountries];
 }
 
 class CountriesError extends CountriesState {

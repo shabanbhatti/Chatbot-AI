@@ -1,5 +1,5 @@
+import 'package:awesome_shake_widget/shake_widget.dart';
 import 'package:chatbot_ai/config/DI/injector.dart';
-import 'package:chatbot_ai/core/bloc/countries%20bloc/countries_bloc.dart';
 import 'package:chatbot_ai/core/constants/chat_background_img_paths_constants.dart';
 import 'package:chatbot_ai/core/services/shared_preferences_service.dart';
 import 'package:chatbot_ai/core/shared%20domain/entity/user_entity.dart';
@@ -16,7 +16,6 @@ import 'package:chatbot_ai/features/initial%20features/presentation/bloc/user%20
 import 'package:chatbot_ai/features/initial%20features/presentation/pages/create%20user%20page/widgets/create_username_widget.dart';
 import 'package:chatbot_ai/features/initial%20features/presentation/pages/create%20user%20page/widgets/img_gender_age_widget.dart';
 import 'package:chatbot_ai/features/initial%20features/presentation/pages/create%20user%20page/widgets/select_country_widget.dart';
-import 'package:chatbot_ai/shared/domain/usecases/get_countries_usecase.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -39,6 +38,10 @@ class _CreateUserPageState extends State<CreateUserPage> {
   ValueNotifier<String> birthNotifier = ValueNotifier('01 Jan 2000');
   late UserBloc userBloc;
   late List<Widget> pages;
+  GlobalKey<ShakeWidgetState> shakeWidgetKey1 = GlobalKey<ShakeWidgetState>();
+  GlobalKey<ShakeWidgetState> shakeWidgetKey2 = GlobalKey<ShakeWidgetState>();
+  GlobalKey<ShakeWidgetState> dateOfBirthKey = GlobalKey<ShakeWidgetState>();
+  GlobalKey<ShakeWidgetState> radioBtnKey = GlobalKey<ShakeWidgetState>();
   @override
   void initState() {
     super.initState();
@@ -55,6 +58,7 @@ class _CreateUserPageState extends State<CreateUserPage> {
     );
     pages = [
       CreateUserNameWidget(
+        shakeWidgetKey: shakeWidgetKey1,
         controller: nameController,
         onNext: () {
           if (nameController.text.isNotEmpty) {
@@ -64,6 +68,7 @@ class _CreateUserPageState extends State<CreateUserPage> {
               curve: Curves.easeInCirc,
             );
           } else {
+            shakeWidgetKey1.currentState?.shake();
             ShowToast.basicToast(
               message: 'Please type your name here!',
               color: CupertinoColors.destructiveRed,
@@ -71,33 +76,33 @@ class _CreateUserPageState extends State<CreateUserPage> {
           }
         },
       ),
-      BlocProvider(
-        create: (context) =>
-            CountriesBloc(getCountriesUsecase: getIt<GetCountriesUsecase>()),
-        child: SelectCountryWidget(
-          controller: countryController,
-          onNext: () {
-            if (countryController.text.isNotEmpty) {
-              nameNotifier.value = nameController.text.trim();
-              pageController.animateToPage(
-                2,
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInCirc,
-              );
-            } else {
-              ShowToast.basicToast(
-                message: 'Please select your country here!',
-                color: CupertinoColors.destructiveRed,
-              );
-            }
-          },
-        ),
+      SelectCountryWidget(
+        shakeWidgetKey: shakeWidgetKey2,
+        controller: countryController,
+        onNext: () {
+          if (countryController.text.isNotEmpty) {
+            nameNotifier.value = nameController.text.trim();
+            pageController.animateToPage(
+              2,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInCirc,
+            );
+          } else {
+            shakeWidgetKey2.currentState?.shake();
+            ShowToast.basicToast(
+              message: 'Please select your country here!',
+              color: CupertinoColors.destructiveRed,
+            );
+          }
+        },
       ),
 
       ValueListenableBuilder(
         valueListenable: nameNotifier,
         builder: (context, value, child) {
           return ImgGenderAgeWidget(
+            dateOfBirthKey: dateOfBirthKey,
+            radioBtnsKey: radioBtnKey,
             birthNotifier: birthNotifier,
             genderNotifier: genderNotifier,
             name: value,
@@ -123,11 +128,31 @@ class _CreateUserPageState extends State<CreateUserPage> {
                   true,
                 );
               } else {
-                ShowToast.basicToast(
-                  message:
-                      'Please check have you selected your gender & Date of birth correctly!',
-                  color: CupertinoColors.destructiveRed,
-                );
+                if (birthController.text.isEmpty &&
+                    genderNotifier.value.isEmpty) {
+                  dateOfBirthKey.currentState?.shake();
+                  radioBtnKey.currentState?.shake();
+                  ShowToast.basicToast(
+                    message:
+                        'Please check have you selected your gender & Date of birth correctly!',
+                    color: CupertinoColors.destructiveRed,
+                  );
+                } else if (birthController.text.isEmpty &&
+                    genderNotifier.value.isNotEmpty) {
+                  dateOfBirthKey.currentState?.shake();
+
+                  ShowToast.basicToast(
+                    message: 'Please enter your Date of birth',
+                    color: CupertinoColors.destructiveRed,
+                  );
+                } else if (genderNotifier.value.isEmpty &&
+                    birthController.text.isNotEmpty) {
+                  radioBtnKey.currentState?.shake();
+                  ShowToast.basicToast(
+                    message: 'Please select your gender',
+                    color: CupertinoColors.destructiveRed,
+                  );
+                }
               }
             },
           );

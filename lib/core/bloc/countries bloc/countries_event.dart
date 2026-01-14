@@ -7,8 +7,14 @@ abstract class CountriesEvent extends Equatable {
 }
 
 class GetCountriesEvent extends CountriesEvent {
-  final String name;
-  const GetCountriesEvent({required this.name});
+  const GetCountriesEvent();
   @override
-  List<Object?> get props => [name];
+  List<Object?> get props => [];
+}
+
+class OnChangedCountriesEvent extends CountriesEvent {
+  final String query;
+  const OnChangedCountriesEvent({required this.query});
+  @override
+  List<Object?> get props => [query];
 }

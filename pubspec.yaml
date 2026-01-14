@@ -58,6 +58,8 @@ dependencies:
   skeletonizer: ^2.1.2
   popover: ^0.4.0
   cupertino_native: ^0.1.1
+  awesome_shake_widget: ^1.1.0
+  cached_network_image: ^3.4.1
 
 dev_dependencies:
   flutter_test:

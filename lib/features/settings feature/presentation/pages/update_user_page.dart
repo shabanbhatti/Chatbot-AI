@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatbot_ai/config/DI/injector.dart';
 import 'package:chatbot_ai/core/bloc/countries%20bloc/countries_bloc.dart';
 import 'package:chatbot_ai/core/bloc/countries%20bloc/countries_event.dart';
@@ -13,7 +14,6 @@ import 'package:chatbot_ai/core/widgets/custom%20textfields/custom_basic_textfie
 import 'package:chatbot_ai/core/widgets/top_textfield_title_widget.dart';
 import 'package:chatbot_ai/features/settings%20feature/presentation/bloc/setting%20bloc/setting_bloc.dart';
 import 'package:chatbot_ai/features/settings%20feature/presentation/bloc/setting%20bloc/setting_event.dart';
-import 'package:chatbot_ai/shared/domain/usecases/get_countries_usecase.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -30,7 +30,6 @@ class _UpdateUserPageState extends State<UpdateUserPage> {
   late ValueNotifier<String> imgPathNotifier;
   late TextEditingController nameController;
   late TextEditingController countryController;
-  late CountriesBloc countriesBloc;
   ValueNotifier<bool> isShowNotifier = ValueNotifier(false);
   ValueNotifier<bool> isUpdateNotifier = ValueNotifier(false);
 
@@ -38,9 +37,6 @@ class _UpdateUserPageState extends State<UpdateUserPage> {
   void initState() {
     super.initState();
     imgPathNotifier = ValueNotifier(widget.userEntity.userImg);
-    countriesBloc = CountriesBloc(
-      getCountriesUsecase: getIt<GetCountriesUsecase>(),
-    );
 
     nameController = TextEditingController(text: widget.userEntity.name);
     countryController = TextEditingController(text: widget.userEntity.country);
@@ -49,7 +45,6 @@ class _UpdateUserPageState extends State<UpdateUserPage> {
 
   @override
   void dispose() {
-    countriesBloc.close();
     imgPathNotifier.dispose();
     isShowNotifier.dispose();
     isUpdateNotifier.dispose();
@@ -92,6 +87,7 @@ class _UpdateUserPageState extends State<UpdateUserPage> {
                     );
                   },
                 ),
+                const SizedBox(height: 10),
                 const TopTextfieldTitleWidget(title: 'Name'),
                 CustomBasicTextfield(
                   controller: nameController,
@@ -101,7 +97,7 @@ class _UpdateUserPageState extends State<UpdateUserPage> {
                     isUpdateNotifier.value = true;
                   },
                 ),
-
+                const SizedBox(height: 10),
                 const TopTextfieldTitleWidget(title: 'Country'),
                 CustomBasicTextfield(
                   controller: countryController,
@@ -115,7 +111,9 @@ class _UpdateUserPageState extends State<UpdateUserPage> {
                       isShowNotifier.value = false;
                     }
 
-                    countriesBloc.add(GetCountriesEvent(name: value));
+                    context.read<CountriesBloc>().add(
+                      OnChangedCountriesEvent(query: value),
+                    );
                   },
                 ),
               ],
@@ -129,14 +127,13 @@ class _UpdateUserPageState extends State<UpdateUserPage> {
                 return SliverVisibility(
                   visible: value,
                   sliver: BlocBuilder<CountriesBloc, CountriesState>(
-                    bloc: countriesBloc,
                     builder: (context, state) {
                       if (state is CountriesLoading) {
                         return const SliverToBoxAdapter(
                           child: Center(child: CupertinoActivityIndicator()),
                         );
                       } else if (state is CountriesLoaded) {
-                        var data = state.countriesEntity;
+                        var data = state.filteredCountries;
                         return SliverList.builder(
                           itemCount: data.length,
                           itemBuilder: (context, index) {
@@ -148,7 +145,9 @@ class _UpdateUserPageState extends State<UpdateUserPage> {
                                 isShowNotifier.value = false;
                               },
                               title: Text(data[index].country),
-                              leading: Text(data[index].flag),
+                              leading: CachedNetworkImage(
+                                imageUrl: data[index].flag,
+                              ),
                               subtitle: Text(data[index].official),
                             );
                           },
@@ -167,42 +166,46 @@ class _UpdateUserPageState extends State<UpdateUserPage> {
             ),
           ),
 
-          SliverToBoxAdapter(
-            child: ValueListenableBuilder(
-              valueListenable: isShowNotifier,
-              builder: (context, value, child) {
-                return Visibility(
-                  visible: value ? false : true,
-                  child: ValueListenableBuilder(
-                    valueListenable: isUpdateNotifier,
-                    builder: (context, isUpdated, child) {
-                      return CustomAppBtn(
-                        color: isUpdated
-                            ? ColorConstants.appColor
-                            : CupertinoColors.inactiveGray,
-                        title: 'Update profile',
-                        onTap: !isUpdated
-                            ? null
-                            : () {
-                                if (nameController.text.isNotEmpty &&
-                                    countryController.text.isNotEmpty) {
-                                  context.read<SettingBloc>().add(
-                                    UpdateUserInSettingEvent(
-                                      userEntity: userEntity.copyWith(
-                                        userImg: imgPathNotifier.value,
-                                        country: countryController.text.trim(),
-                                        name: nameController.text.trim(),
+          SliverPadding(
+            padding: const EdgeInsetsGeometry.symmetric(vertical: 15),
+            sliver: SliverToBoxAdapter(
+              child: ValueListenableBuilder(
+                valueListenable: isShowNotifier,
+                builder: (context, value, child) {
+                  return Visibility(
+                    visible: value ? false : true,
+                    child: ValueListenableBuilder(
+                      valueListenable: isUpdateNotifier,
+                      builder: (context, isUpdated, child) {
+                        return CustomAppBtn(
+                          color: isUpdated
+                              ? ColorConstants.appColor
+                              : CupertinoColors.inactiveGray,
+                          title: 'Update profile',
+                          onTap: !isUpdated
+                              ? null
+                              : () {
+                                  if (nameController.text.isNotEmpty &&
+                                      countryController.text.isNotEmpty) {
+                                    context.read<SettingBloc>().add(
+                                      UpdateUserInSettingEvent(
+                                        userEntity: userEntity.copyWith(
+                                          userImg: imgPathNotifier.value,
+                                          country: countryController.text
+                                              .trim(),
+                                          name: nameController.text.trim(),
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                  Navigator.pop(context);
-                                }
-                              },
-                      );
-                    },
-                  ),
-                );
-              },
+                                    );
+                                    Navigator.pop(context);
+                                  }
+                                },
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         ],
