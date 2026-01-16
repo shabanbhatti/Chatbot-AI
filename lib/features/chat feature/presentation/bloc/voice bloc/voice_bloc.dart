@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:chatbot_ai/core/constants/constant_colors.dart';
 import 'package:chatbot_ai/core/errors/failures/failures.dart';
@@ -72,14 +73,14 @@ class VoiceBloc extends Bloc<VoiceEvent, VoiceState> {
       // log('Path: $path');
       emit(IsLoadingVoice());
 
-      // var reply = await voiceToTextUsecase(File(path!));
+      var reply = await voiceToTextUsecase(File(path!));
       // throw ApiFailure(message: 'ERROR FOUND (hardcode)');
-      await Future.delayed(Duration(seconds: 2));
+      // await Future.delayed(Duration(seconds: 2));
 
       emit(
         IsLoadedVoice(
-          reply:
-              'Sorry! Currently, work is in progress on the app, so this service is temporarily disabled 😊',
+          reply: reply,
+          // 'Sorry! Currently, work is in progress on the app, so this service is temporarily disabled 😊',
         ),
       );
     } on Failures catch (e) {

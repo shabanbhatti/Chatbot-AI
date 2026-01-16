@@ -12,12 +12,11 @@ import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20room
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20room%20bloc/chat_room_state.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/pages/drawer/widgets/drawer_listTile_loading-widget.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/pages/drawer/widgets/drawer_list_tile_widget.dart';
-import 'package:chatbot_ai/features/chat%20feature/presentation/pages/drawer/widgets/theme_container.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/pages/search%20page/search_page.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/utils/delete_cancel_chat_room_sheet_utils.dart';
 import 'package:chatbot_ai/features/settings%20feature/presentation/pages/settings_page.dart';
+import 'package:cupertino_sidemenu/cupertino_sidemenu.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CupertinoDrawer extends StatefulWidget {
@@ -28,7 +27,7 @@ class CupertinoDrawer extends StatefulWidget {
     required this.idNotifier,
   });
   final ValueNotifier<bool> newChatNotifier;
-  final AdvancedDrawerController advancedDrawerController;
+  final CupertinoSidemenuController advancedDrawerController;
   final ValueNotifier<int> idNotifier;
   @override
   State<CupertinoDrawer> createState() => _CupertinoDrawerState();
@@ -47,9 +46,7 @@ class _CupertinoDrawerState extends State<CupertinoDrawer> {
   Widget build(BuildContext context) {
     log('DRAWER PAGE BUILD CALLED');
 
-    return ThemeContainer(
-      darkColor: CupertinoColors.darkBackgroundGray,
-      lightColor: CupertinoColors.inactiveGray.withAlpha(25),
+    return CupertinoPageScaffold(
       child: SafeArea(
         child: Column(
           children: [
@@ -78,7 +75,7 @@ class _CupertinoDrawerState extends State<CupertinoDrawer> {
             Expanded(
               child: Padding(
                 padding: const EdgeInsetsGeometry.only(
-                  top: 20,
+                  top: 0,
                   left: 10,
                   right: 10,
                 ),
@@ -108,66 +105,71 @@ class _CupertinoDrawerState extends State<CupertinoDrawer> {
                       return ValueListenableBuilder(
                         valueListenable: widget.idNotifier,
                         builder: (context, value, child) {
-                          return ListView.builder(
-                            itemCount: data.length,
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              return (data[index].title.isEmpty)
-                                  ? const SizedBox()
-                                  : Padding(
-                                      padding: EdgeInsetsGeometry.symmetric(
-                                        vertical: 5,
-                                      ),
-                                      child: GestureDetector(
-                                        onLongPress: () {
-                                          showDeleteSheetInChatRoom(
-                                            context,
-                                            isPin: data[index].isPin,
-                                            onDelete: () async {
-                                              context.read<ChatRoomBloc>().add(
-                                                DeleteChatRoomEvent(
-                                                  id: data[index].id,
-                                                ),
-                                              );
-                                            },
-                                            onPin: () {
-                                              if (!data[index].isPin) {
-                                                context
-                                                    .read<ChatRoomBloc>()
-                                                    .add(
-                                                      PinOrUnpinChatRoomEvent(
-                                                        chatRoomEntity:
-                                                            data[index]
-                                                                .copyWith(
-                                                                  isPin: true,
-                                                                ),
-                                                      ),
-                                                    );
-                                              } else {
-                                                context
-                                                    .read<ChatRoomBloc>()
-                                                    .add(
-                                                      PinOrUnpinChatRoomEvent(
-                                                        chatRoomEntity:
-                                                            data[index]
-                                                                .copyWith(
-                                                                  isPin: false,
-                                                                ),
-                                                      ),
-                                                    );
-                                              }
-                                            },
-                                          );
-                                        },
-                                        child: DrawerListTileWidget(
-                                          currentId: widget.idNotifier.value,
-                                          chatRoomEntity: data[index],
-                                          advancedDrawerController:
-                                              widget.advancedDrawerController,
+                          return CupertinoScrollbar(
+                            child: ListView.builder(
+                              itemCount: data.length,
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                return (data[index].title.isEmpty)
+                                    ? const SizedBox()
+                                    : Padding(
+                                        padding: EdgeInsetsGeometry.symmetric(
+                                          vertical: 5,
                                         ),
-                                      ),
-                                    );
-                            },
+                                        child: GestureDetector(
+                                          onLongPress: () {
+                                            showDeleteSheetInChatRoom(
+                                              context,
+                                              isPin: data[index].isPin,
+                                              onDelete: () async {
+                                                context
+                                                    .read<ChatRoomBloc>()
+                                                    .add(
+                                                      DeleteChatRoomEvent(
+                                                        id: data[index].id,
+                                                      ),
+                                                    );
+                                              },
+                                              onPin: () {
+                                                if (!data[index].isPin) {
+                                                  context
+                                                      .read<ChatRoomBloc>()
+                                                      .add(
+                                                        PinOrUnpinChatRoomEvent(
+                                                          chatRoomEntity:
+                                                              data[index]
+                                                                  .copyWith(
+                                                                    isPin: true,
+                                                                  ),
+                                                        ),
+                                                      );
+                                                } else {
+                                                  context
+                                                      .read<ChatRoomBloc>()
+                                                      .add(
+                                                        PinOrUnpinChatRoomEvent(
+                                                          chatRoomEntity:
+                                                              data[index]
+                                                                  .copyWith(
+                                                                    isPin:
+                                                                        false,
+                                                                  ),
+                                                        ),
+                                                      );
+                                                }
+                                              },
+                                            );
+                                          },
+                                          child: DrawerListTileWidget(
+                                            currentId: widget.idNotifier.value,
+                                            chatRoomEntity: data[index],
+                                            advancedDrawerController:
+                                                widget.advancedDrawerController,
+                                          ),
+                                        ),
+                                      );
+                              },
+                            ),
                           );
                         },
                       );
@@ -225,7 +227,7 @@ class _CupertinoDrawerState extends State<CupertinoDrawer> {
 Widget _topTextfieldWidget(
   BuildContext context,
   ValueNotifier<bool> newChatNotifier,
-  AdvancedDrawerController advancedDrawerController,
+  CupertinoSidemenuController advancedDrawerController,
   ValueNotifier<int> idNotifier,
 ) {
   return Hero(
@@ -259,7 +261,7 @@ Widget _topListTileWithLogo(
   BuildContext context,
   ValueNotifier<int> idNotifier,
   TextEditingController controller,
-  AdvancedDrawerController advancedDrawerController,
+  CupertinoSidemenuController advancedDrawerController,
   ValueNotifier<bool> newChatNotifier,
 ) {
   return ValueListenableBuilder(
@@ -267,7 +269,7 @@ Widget _topListTileWithLogo(
     builder: (context, value, child) {
       return CupertinoButton(
         onPressed: () async {
-          advancedDrawerController.hideDrawer();
+          advancedDrawerController.closeMenu();
           int id = DateTime.now().microsecondsSinceEpoch;
 
           context.read<ChatRoomBloc>().add(

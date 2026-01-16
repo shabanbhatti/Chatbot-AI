@@ -1,4 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+
+<!-- Android 12 and below -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
+<!-- Agar camera bhi use karni ho -->
+    <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 <!-- Optional: Add this permission if you want to use bluetooth telephony device like headset/earbuds -->
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />

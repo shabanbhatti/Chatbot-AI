@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:chatbot_ai/core/errors/failures/failures.dart';
 import 'package:chatbot_ai/features/chat%20feature/domain/usecases/send_prompt_usecase.dart';
@@ -12,6 +11,7 @@ class ChatApiBloc extends Bloc<ChatApiEvent, ChatApiState> {
   ChatApiBloc({required this.sendPromptUsecase}) : super(InitialChatApi()) {
     on<OnSendPromptEvent>(onSendPromptEvent);
     on<OnStopChatApiEvent>(onStopEvent);
+    on<OnCloseErrorApiEvent>(onCloseErrorEvent);
   }
 
   Future<void> onSendPromptEvent(
@@ -33,7 +33,11 @@ class ChatApiBloc extends Bloc<ChatApiEvent, ChatApiState> {
         //   imgPaths: [],
         // );
         var data = await sendPromptUsecase(event.chatEntity);
-        log('CHAT API BLOC: ${data.id} ');
+        // log('CHAT API BLOC: ${data.id} ');
+        // throw ApiFailure(
+        //   message: "You've reached today's limit. Please try again tomorrow.",
+        // );
+        // throw ApiFailure(message: "");
         emit(LoadedChatApi(chatEntity: data));
       }
     } on Failures catch (e) {
@@ -47,5 +51,12 @@ class ChatApiBloc extends Bloc<ChatApiEvent, ChatApiState> {
   ) async {
     emit(LoadedChatApi(chatEntity: null));
     emit(StopChatAPi());
+  }
+
+  Future<void> onCloseErrorEvent(
+    OnCloseErrorApiEvent event,
+    Emitter<ChatApiState> emit,
+  ) async {
+    emit(LoadedChatApi(chatEntity: null));
   }
 }

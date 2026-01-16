@@ -1,25 +1,25 @@
 import 'dart:io';
 
 import 'package:avatar_glow/avatar_glow.dart';
-import 'package:chatbot_ai/config/DI/injector.dart';
 import 'package:chatbot_ai/core/bloc/accent%20color%20SP%20bloc/accent_color_bloc.dart';
 import 'package:chatbot_ai/core/bloc/accent%20color%20SP%20bloc/accent_color_state.dart';
 import 'package:chatbot_ai/core/constants/constant_colors.dart';
 import 'package:chatbot_ai/core/typedefs/typedefs.dart';
 import 'package:chatbot_ai/core/utils/get_accent_colors_util.dart';
-import 'package:chatbot_ai/core/utils/image_picker_utils.dart';
-import 'package:chatbot_ai/core/utils/show_toast.dart';
+import 'package:chatbot_ai/core/utils/model%20bottom%20sheet/bottom_sheet_ios_utils.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20api%20bloc/chat_api_bloc.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20api%20bloc/chat_api_event.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20api%20bloc/chat_api_state.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/voice%20bloc/voice_bloc.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/voice%20bloc/voice_state.dart';
+import 'package:chatbot_ai/features/chat%20feature/presentation/pages/chat%20page/widgets/add_btn_detail_widget.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/widgets/chat_textfield_widget.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/widgets/circle_btn_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:photo_manager/photo_manager.dart';
 
-class BottomWidgets extends StatelessWidget {
+class BottomWidgets extends StatefulWidget {
   const BottomWidgets({
     super.key,
     required this.chatNotifier,
@@ -35,10 +35,18 @@ class BottomWidgets extends StatelessWidget {
   final OnPressed onMic;
   final ValueNotifier<List<String>> multiImagesNotifier;
   final ChatApiBloc chatApiBloc;
+
+  @override
+  State<BottomWidgets> createState() => _BottomWidgetsState();
+}
+
+class _BottomWidgetsState extends State<BottomWidgets> {
+  final ValueNotifier<List<AssetEntity>> assetsEntity = ValueNotifier([]);
+  final ValueNotifier<List<String>> selectedAssetIds = ValueNotifier([]);
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: multiImagesNotifier,
+      valueListenable: widget.multiImagesNotifier,
       builder: (context, value, child) {
         return SizedBox(
           width: double.infinity,
@@ -53,13 +61,13 @@ class BottomWidgets extends StatelessWidget {
           mainAxisSize: .min,
           children: [
             ValueListenableBuilder(
-              valueListenable: multiImagesNotifier,
+              valueListenable: widget.multiImagesNotifier,
               builder: (context, value, child) {
                 if (value.isNotEmpty) {
                   return Expanded(
                     flex: 10,
                     child: ValueListenableBuilder(
-                      valueListenable: multiImagesNotifier,
+                      valueListenable: widget.multiImagesNotifier,
                       builder: (context, value, child) {
                         return Padding(
                           padding: const EdgeInsetsGeometry.all(5),
@@ -72,7 +80,7 @@ class BottomWidgets extends StatelessWidget {
                                 ),
                             itemBuilder: (context, index) {
                               return Container(
-                                decoration:const BoxDecoration(
+                                decoration: const BoxDecoration(
                                   borderRadius: BorderRadius.all(
                                     Radius.circular(15),
                                   ),
@@ -99,14 +107,22 @@ class BottomWidgets extends StatelessWidget {
                                     Align(
                                       alignment: Alignment.topRight,
                                       child: GestureDetector(
-                                        onTap: () {
+                                        onTap: () async {
                                           var updated = value
                                               .where(
                                                 (element) =>
                                                     element != value[index],
                                               )
                                               .toList();
-                                          multiImagesNotifier.value = updated;
+                                          widget.multiImagesNotifier.value =
+                                              updated;
+
+                                          List<String> list = [
+                                            ...selectedAssetIds.value,
+                                          ];
+                                          list.removeAt(index);
+
+                                          selectedAssetIds.value = list;
                                         },
                                         child: const Icon(
                                           CupertinoIcons.minus_circle_fill,
@@ -137,19 +153,16 @@ class BottomWidgets extends StatelessWidget {
                     flex: 2,
                     child: CircleBtnWidget(
                       onTap: () async {
-                        if (multiImagesNotifier.value.length != 2) {
-                          var list = await getIt<ImagePickerUtils>()
-                              .takeMultipleImage();
-                          multiImagesNotifier.value = [
-                            ...multiImagesNotifier.value,
-                            ...list,
-                          ];
-                        } else {
-                          ShowToast.basicToast(
-                            message: 'No more photo can be added',
-                            color: CupertinoColors.destructiveRed,
-                          );
-                        }
+                        showCupertinoFullSheet(
+                          context,
+                          child: AddBtnDetailWidget(
+                            multiImgsPaths: widget.multiImagesNotifier,
+                            assetsEntity: assetsEntity,
+                            selectedAssetIds: selectedAssetIds,
+                          ),
+                          sheetHeightThroughMediaQuery: 0.4,
+                          pageName: 'Ai Chatbot',
+                        );
                       },
                     ),
                   ),
@@ -175,14 +188,18 @@ class BottomWidgets extends StatelessWidget {
                               return false;
                             }
                           },
-                          bloc: chatApiBloc,
+                          bloc: widget.chatApiBloc,
                           builder: (context, state) {
                             if (state is LoadingChatApi) {
                               return Padding(
-                                padding:const EdgeInsetsGeometry.only(right: 2),
+                                padding: const EdgeInsetsGeometry.only(
+                                  right: 2,
+                                ),
                                 child: GestureDetector(
                                   onTap: () {
-                                    chatApiBloc.add(OnStopChatApiEvent());
+                                    widget.chatApiBloc.add(
+                                      OnStopChatApiEvent(),
+                                    );
                                   },
                                   child: const Icon(
                                     CupertinoIcons.stop_circle_fill,
@@ -266,17 +283,20 @@ class BottomWidgets extends StatelessWidget {
                             }
                           },
                         ),
-                        controller: chatController,
+                        controller: widget.chatController,
 
                         onChanged: (value) {
-                          chatNotifier.value = value;
+                          widget.chatNotifier.value = value;
                         },
                         onMic:
                             (context.read<VoiceBloc>().state is IsLoadingVoice)
                             ? () {}
-                            : onMic,
-                        onSend: onSend,
-                        chatNotifier: chatNotifier,
+                            : widget.onMic,
+                        onSend: () {
+                          widget.onSend();
+                          selectedAssetIds.value = [];
+                        },
+                        chatNotifier: widget.chatNotifier,
                       ),
                     ),
                   ),

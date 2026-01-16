@@ -2,7 +2,6 @@ import 'package:chatbot_ai/config/DI/injector.dart';
 import 'package:chatbot_ai/config/routes/routes.dart';
 import 'package:chatbot_ai/core/bloc/theme%20bloc/theme_bloc.dart';
 import 'package:chatbot_ai/core/bloc/theme%20bloc/theme_state.dart';
-import 'package:chatbot_ai/core/observer/bloc_observer.dart';
 import 'package:chatbot_ai/core/providers/providers.dart';
 import 'package:chatbot_ai/features/initial%20features/presentation/pages/intro%20page/intro_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,7 +12,7 @@ void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
 
-  Bloc.observer = MyBlocObserver();
+  // Bloc.observer = MyBlocObserver();
   await initGetIt();
   runApp(Providers.mainFileGlobalProviders(child: const MyApp()));
 }

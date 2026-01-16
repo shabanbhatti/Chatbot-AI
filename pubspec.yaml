@@ -40,7 +40,6 @@ dependencies:
   dio: ^5.9.0
   shared_preferences: ^2.5.4
   shimmer: ^3.0.0
-  flutter_advanced_drawer: ^1.5.0
   gpt_markdown: ^1.1.5
   equatable: ^2.0.7
   get_it: ^9.2.0
@@ -60,6 +59,9 @@ dependencies:
   cupertino_native: ^0.1.1
   awesome_shake_widget: ^1.1.0
   cached_network_image: ^3.4.1
+  cupertino_sidemenu: ^0.0.3
+  photo_manager: ^3.8.3
+  photo_manager_image_provider: ^2.2.0
 
 dev_dependencies:
   flutter_test:

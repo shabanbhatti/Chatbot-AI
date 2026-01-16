@@ -3,8 +3,8 @@ import 'package:chatbot_ai/features/chat%20feature/presentation/pages/app_main_p
 import 'package:chatbot_ai/features/chat%20feature/presentation/pages/search%20page/search_page.dart';
 import 'package:chatbot_ai/features/initial%20features/presentation/pages/create%20user%20page/create_user_page.dart';
 import 'package:chatbot_ai/features/initial%20features/presentation/pages/intro%20page/intro_page.dart';
+import 'package:cupertino_sidemenu/cupertino_sidemenu.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 
 Route<dynamic> onGenerateRoute(RouteSettings rs) {
   switch (rs.name) {
@@ -31,8 +31,8 @@ Route<dynamic> onGenerateRoute(RouteSettings rs) {
         pageBuilder: (context, animation, secondaryAnimation) {
           Map<String, dynamic> data = rs.arguments as Map<String, dynamic>;
 
-          AdvancedDrawerController advancedDrawerController =
-              data['advanceDrawerController'] as AdvancedDrawerController;
+          CupertinoSidemenuController advancedDrawerController =
+              data['advanceDrawerController'] as CupertinoSidemenuController;
 
           return SearchPage(advancedDrawerController: advancedDrawerController);
         },

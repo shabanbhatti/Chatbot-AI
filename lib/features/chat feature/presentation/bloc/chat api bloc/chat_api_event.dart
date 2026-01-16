@@ -17,3 +17,7 @@ class OnSendPromptEvent extends ChatApiEvent {
 class OnStopChatApiEvent extends ChatApiEvent {
   const OnStopChatApiEvent();
 }
+
+class OnCloseErrorApiEvent extends ChatApiEvent {
+  const OnCloseErrorApiEvent();
+}

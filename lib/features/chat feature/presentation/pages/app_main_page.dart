@@ -14,9 +14,8 @@ import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/new%20chat%
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/new%20chat%20pref%20bloc/new_chat_pref_event.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/pages/chat%20page/chat_page.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/pages/drawer/cupertino_drawer.dart';
-import 'package:chatbot_ai/features/chat%20feature/presentation/pages/drawer/widgets/theme_container.dart';
+import 'package:cupertino_sidemenu/cupertino_sidemenu.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AppMainPage extends StatefulWidget {
@@ -28,11 +27,11 @@ class AppMainPage extends StatefulWidget {
 }
 
 class _AppMainPageState extends State<AppMainPage> {
-  late AdvancedDrawerController advancedDrawerController;
+  // late AdvancedDrawerController advancedDrawerController;
   @override
   void initState() {
     super.initState();
-    advancedDrawerController = AdvancedDrawerController();
+    // advancedDrawerController = AdvancedDrawerController();
     context.read<AccentColorBloc>().add(GetColorEvent());
     context.read<ChatRoomBloc>().add(
       CreateFirstChatRoomEvent(
@@ -49,10 +48,10 @@ class _AppMainPageState extends State<AppMainPage> {
 
   ValueNotifier<bool> newChatNotifier = ValueNotifier(false);
   ValueNotifier<int> idNotifier = ValueNotifier(0);
-
+  final advancedDrawerController = CupertinoSidemenuController();
   @override
   void dispose() {
-    advancedDrawerController.dispose();
+    // advancedDrawerController.dispose();
     newChatNotifier.dispose();
     idNotifier.dispose();
     super.dispose();
@@ -117,7 +116,54 @@ class _AppMainPageState extends State<AppMainPage> {
           },
         ),
       ],
-      child: AdvancedDrawer(
+      child: CupertinoSidemenu(
+        controller: advancedDrawerController,
+        centerPage: CupertinoPageScaffold(
+          // navigationBar: CupertinoNavigationBar(
+          //   leading: CupertinoButton(
+          //     padding: const EdgeInsets.all(8.0),
+          //     onPressed: advancedDrawerController.openLeftMenu,
+          //     child: const Icon(
+          //       CupertinoIcons.sidebar_left,
+          //       size: 25,
+          //       color: CupertinoColors.black,
+          //     ),
+          //   ),
+          //   middle: const Text("Cupertino Sidemenu"),
+          //   trailing: CupertinoButton(
+          //     padding: const EdgeInsets.all(8.0),
+          //     onPressed: advancedDrawerController.openRightMenu,
+          //     child: const Icon(
+          //       CupertinoIcons.sidebar_right,
+          //       size: 25,
+          //       color: CupertinoColors.black,
+          //     ),
+          //   ),
+          // ),
+          child: ChatPage(
+            advancedDrawerController: advancedDrawerController,
+            newChatNotifier: newChatNotifier,
+            idNotifier: idNotifier,
+          ),
+        ),
+        leftMenu: CupertinoDrawer(
+          idNotifier: idNotifier,
+          advancedDrawerController: advancedDrawerController,
+          newChatNotifier: newChatNotifier,
+        ),
+        // rightMenu: const CupertinoPageScaffold(
+        //   navigationBar: CupertinoNavigationBar(middle: Text("Right Page")),
+        //   child: Center(child: Text("Right Menu Content")),
+        // ),
+      ),
+    );
+  }
+}
+
+
+/*
+
+ AdvancedDrawer(
         initialDrawerScale: 5,
         openRatio: 0.7,
         drawer: CupertinoDrawer(
@@ -144,6 +190,4 @@ class _AppMainPageState extends State<AppMainPage> {
           idNotifier: idNotifier,
         ),
       ),
-    );
-  }
-}
+ */

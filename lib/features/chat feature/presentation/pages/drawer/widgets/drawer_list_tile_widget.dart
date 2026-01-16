@@ -5,8 +5,8 @@ import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20room
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/chat%20room%20ID%20pref%20bloc/chat_room_id_pref_event.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/new%20chat%20pref%20bloc/new_chat_pref_bloc.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/new%20chat%20pref%20bloc/new_chat_pref_event.dart';
+import 'package:cupertino_sidemenu/cupertino_sidemenu.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DrawerListTileWidget extends StatelessWidget {
@@ -19,7 +19,7 @@ class DrawerListTileWidget extends StatelessWidget {
   });
   final int currentId;
   final ChatRoomEntity chatRoomEntity;
-  final AdvancedDrawerController advancedDrawerController;
+  final CupertinoSidemenuController advancedDrawerController;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,7 @@ class DrawerListTileWidget extends StatelessWidget {
       ),
       child: CupertinoListTile(
         onTap: () async {
-          advancedDrawerController.hideDrawer();
+          advancedDrawerController.closeMenu();
 
           context.read<ChatRoomIdPrefBloc>().add(
             SetChatRoomIdPrefEvent(value: chatRoomEntity.id),

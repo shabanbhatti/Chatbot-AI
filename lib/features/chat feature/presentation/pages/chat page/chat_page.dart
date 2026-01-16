@@ -23,8 +23,8 @@ import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/voice%20blo
 import 'package:chatbot_ai/features/chat%20feature/presentation/pages/chat%20page/widgets/bottom_widgets.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/pages/chat%20page/widgets/chat_box_widget.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/pages/chat%20page/widgets/model_loading_widget.dart';
+import 'package:cupertino_sidemenu/cupertino_sidemenu.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChatPage extends StatefulWidget {
@@ -34,7 +34,7 @@ class ChatPage extends StatefulWidget {
     required this.newChatNotifier,
     required this.idNotifier,
   });
-  final AdvancedDrawerController advancedDrawerController;
+  final CupertinoSidemenuController advancedDrawerController;
   final ValueNotifier<bool> newChatNotifier;
   final ValueNotifier<int> idNotifier;
 
@@ -48,7 +48,7 @@ class _ChatPageState extends State<ChatPage> {
   ValueNotifier<String> chatNotifier = ValueNotifier('');
   ValueNotifier<List<String>> multiImagesNotifier = ValueNotifier([]);
   final ScrollController _scrollController = ScrollController();
-  late AdvancedDrawerController advancedDrawerController;
+  late CupertinoSidemenuController advancedDrawerController;
   @override
   void initState() {
     super.initState();
@@ -146,24 +146,10 @@ class _ChatPageState extends State<ChatPage> {
                     child: SafeArea(
                       child: Column(
                         children: [
-                          /*
-                           CupertinoNavigationBar(
-                                        leading: GestureDetector(
-                      onTap: () {
-                        advancedDrawerController.showDrawer();
-                      },
-                      child: const Icon(CupertinoIcons.line_horizontal_3_decrease, size: 25),
-                                        ),
-                                        middle: const Text(
-                      'Ai Chatbot',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                                        ),
-                                      );
-                           */
                           CupertinoListTile(
                             leading: GestureDetector(
                               onTap: () {
-                                advancedDrawerController.showDrawer();
+                                advancedDrawerController.openLeftMenu();
                               },
                               child: const Icon(
                                 CupertinoIcons.line_horizontal_3_decrease,
@@ -175,7 +161,10 @@ class _ChatPageState extends State<ChatPage> {
                               style: CupertinoTheme.of(context)
                                   .textTheme
                                   .textStyle
-                                  .copyWith(fontWeight: FontWeight.bold),
+                                  .copyWith(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                             ),
                           ),
                           Expanded(
@@ -215,6 +204,8 @@ class _ChatPageState extends State<ChatPage> {
                                           sliver: _loadedChat(
                                             data,
                                             chatApiBloc,
+                                            chatController,
+                                            multiImagesNotifier,
                                           ),
                                         );
                                       } else if (state is ErrorChat) {
@@ -236,50 +227,9 @@ class _ChatPageState extends State<ChatPage> {
                       ),
                     ),
                   ),
-                  Align(
-                    alignment: Alignment.center,
-                    child: BlocSelector<ChatApiBloc, ChatApiState, String?>(
-                      selector: (state) {
-                        if (state is ErrorChatApi) {
-                          return state.message;
-                        } else {
-                          return null;
-                        }
-                      },
-                      bloc: chatApiBloc,
-                      builder: (context, state) {
-                        if (state != null) {
-                          return CustomErrorBoxWidget(
-                            exceptionMessage: state,
-                            onRetry: () {
-                              chatApiBloc.add(
-                                OnSendPromptEvent(
-                                  chatEntity: ChatEntity(
-                                    id: null,
-                                    chatRoomId:
-                                        (context.read<ChatRoomBloc>().state
-                                                as LoadedChatRoom)
-                                            .chatRoomEntities[0]
-                                            .id,
-                                    message: chatController.text.trim(),
-                                    createdAt: DateTime.now().toString(),
-                                    role: ChatRoleConstants.user,
-                                    imgPaths: multiImagesNotifier.value,
-                                    isFav: false,
-                                  ),
-                                ),
-                              );
-                            },
-                          );
-                        } else {
-                          return const SizedBox();
-                        }
-                      },
-                    ),
-                  ),
 
                   Align(
-                    alignment: Alignment.center,
+                    alignment: Alignment.bottomCenter,
                     child: BlocSelector<VoiceBloc, VoiceState, String>(
                       selector: (state) {
                         if (state is IsErrorVoice) {
@@ -292,6 +242,7 @@ class _ChatPageState extends State<ChatPage> {
                         if (state.isNotEmpty) {
                           return CustomErrorBoxWidget(
                             exceptionMessage: state,
+                            onClose: () {},
                             onRetry: () {
                               context.read<VoiceBloc>().add(
                                 StartRecordingEvent(),
@@ -308,7 +259,9 @@ class _ChatPageState extends State<ChatPage> {
                     alignment: Alignment.bottomCenter,
                     child: SafeArea(
                       child: Padding(
-                        padding: EdgeInsetsGeometry.symmetric(vertical: 3),
+                        padding: EdgeInsetsGeometry.symmetric(
+                          vertical: (Platform.isAndroid) ? 15 : 0,
+                        ),
                         child: BottomWidgets(
                           multiImagesNotifier: multiImagesNotifier,
                           chatApiBloc: chatApiBloc,
@@ -332,7 +285,6 @@ class _ChatPageState extends State<ChatPage> {
                           },
                           onSend: () async {
                             widget.newChatNotifier.value = false;
-
                             var id = context.read<ChatRoomIdPrefBloc>().state;
                             widget.idNotifier.value = id;
                             context.read<ChatBloc>().add(
@@ -395,23 +347,6 @@ class _ChatPageState extends State<ChatPage> {
   }
 }
 
-// ObstructingPreferredSizeWidget _appBar({
-//   required AdvancedDrawerController advancedDrawerController,
-// }) {
-//   return CupertinoNavigationBar(
-//     leading: GestureDetector(
-//       onTap: () {
-//         advancedDrawerController.showDrawer();
-//       },
-//       child: const Icon(CupertinoIcons.line_horizontal_3_decrease, size: 25),
-//     ),
-//     middle: const Text(
-//       'Ai Chatbot',
-//       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-//     ),
-//   );
-// }
-
 Widget _backgroundTheme() {
   return BlocBuilder<ChatBloc, ChatState>(
     buildWhen: (previous, current) {
@@ -451,28 +386,71 @@ Widget _backgroundTheme() {
   );
 }
 
-Widget _loadedChat(List<ChatEntity> data, ChatApiBloc chatApiBloc) {
+Widget _loadedChat(
+  List<ChatEntity> data,
+  ChatApiBloc chatApiBloc,
+  TextEditingController controller,
+  ValueNotifier<List<String>> multiImgsPath,
+) {
   return SliverPadding(
     padding: const EdgeInsetsGeometry.symmetric(horizontal: 10, vertical: 5),
     sliver: BlocBuilder<ChatApiBloc, ChatApiState>(
       buildWhen: (previous, current) {
+        print(
+          'PREVIOUS: ${previous.runtimeType} | CURRENT: ${current.runtimeType}',
+        );
         if (current is LoadingChatApi) {
           return true;
-        } else if (current is LoadedChatApi) {
+        } else if (previous is LoadingChatApi && current is LoadedChatApi) {
+          return true;
+        } else if (previous is LoadedChatApi && current is LoadedChatApi) {
+          return previous.chatEntity != current.chatEntity;
+        } else if (previous is ErrorChatApi && current is LoadedChatApi) {
           return true;
         } else if (current is ErrorChatApi) {
+          return true;
+        } else {
           return false;
         }
-        return false;
       },
       bloc: chatApiBloc,
       builder: (context, chatState) {
         return SliverList.builder(
-          itemCount: data.length + (chatState is LoadingChatApi ? 1 : 0),
+          itemCount:
+              data.length +
+              (chatState is LoadingChatApi || chatState is ErrorChatApi
+                  ? 1
+                  : 0),
 
           itemBuilder: (context, index) {
             if (chatState is LoadingChatApi && index == data.length) {
               return const ModelLoadingWidget();
+            } else if (chatState is ErrorChatApi && index == data.length) {
+              return CustomErrorBoxWidget(
+                onClose: () {
+                  chatApiBloc.add(OnCloseErrorApiEvent());
+                },
+                exceptionMessage: chatState.message,
+                onRetry: () {
+                  chatApiBloc.add(
+                    OnSendPromptEvent(
+                      chatEntity: ChatEntity(
+                        id: null,
+                        chatRoomId:
+                            (context.read<ChatRoomBloc>().state
+                                    as LoadedChatRoom)
+                                .chatRoomEntities[0]
+                                .id,
+                        message: controller.text.trim(),
+                        createdAt: DateTime.now().toString(),
+                        role: ChatRoleConstants.user,
+                        imgPaths: multiImgsPath.value,
+                        isFav: false,
+                      ),
+                    ),
+                  );
+                },
+              );
             } else {
               final chats = data[index];
               final isUser = chats.role == ChatRoleConstants.user;

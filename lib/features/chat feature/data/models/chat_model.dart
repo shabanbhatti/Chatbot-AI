@@ -122,7 +122,7 @@ class ChatModel extends Equatable {
       role: role,
       isFav: isFav,
       imageGeneratedPath: imageGeneratedPath,
-      imgPaths: imgPaths ?? [],
+      imgPaths: imgPaths,
     );
   }
 
