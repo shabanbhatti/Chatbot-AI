@@ -7,6 +7,8 @@ import 'package:chatbot_ai/core/widgets/shimmer%20effects%20widgets/text_shimmer
 import 'package:chatbot_ai/features/chat%20feature/presentation/pages/app_main_page.dart';
 import 'package:chatbot_ai/features/initial%20features/presentation/pages/create%20user%20page/create_user_page.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class IntroPage extends StatefulWidget {
   const IntroPage({super.key});
@@ -21,6 +23,19 @@ class _IntroPageState extends State<IntroPage> {
   void initState() {
     super.initState();
     isNewUser();
+    configEasyLoading();
+  }
+
+  void configEasyLoading() {
+    EasyLoading.instance
+      ..indicatorType = EasyLoadingIndicatorType.fadingCircle
+      ..loadingStyle = EasyLoadingStyle.custom
+      ..indicatorSize = 45.0
+      ..radius = 10.0
+      ..backgroundColor = const Color.fromARGB(40, 154, 154, 167)
+      ..indicatorColor = Colors.white
+      ..textColor = Colors.white
+      ..dismissOnTap = false;
   }
 
   void isNewUser() async {

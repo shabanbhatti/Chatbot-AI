@@ -7,6 +7,7 @@ import 'package:chatbot_ai/features/initial%20features/presentation/pages/intro%
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
       },
       builder: (context, state) {
         return CupertinoApp(
+          builder: EasyLoading.init(),
           theme: state.theme,
           debugShowCheckedModeBanner: false,
           initialRoute: IntroPage.pageName,

@@ -44,7 +44,8 @@ class ChatTextfieldWidget extends StatelessWidget {
         suffix: ValueListenableBuilder(
           valueListenable: chatNotifier,
           builder: (context, value, child) {
-            return (value.isEmpty)
+            String myValue = value.trim();
+            return (myValue.isEmpty)
                 ? Padding(
                     padding: const EdgeInsetsGeometry.only(right: 0, bottom: 0),
                     child: GestureDetector(onTap: onMic, child: micWidget),

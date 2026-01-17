@@ -16,27 +16,30 @@ void showCupertinoFullSheet(
 
       final height = mediaQuery.size.height * sheetHeightThroughMediaQuery;
 
-      return AnimatedPadding(
-        duration: const Duration(milliseconds: 250),
-        curve: Curves.easeOut,
-        padding: EdgeInsets.only(bottom: mediaQuery.viewInsets.bottom),
-        child: Align(
-          alignment: Alignment.bottomCenter,
-          child: CupertinoPopupSurface(
-            child: Container(
-              height: height,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: CupertinoDynamicColor.resolve(
-                  CustomThemeControl.bottomSheetColor,
-                  context,
+      return SafeArea(
+        bottom: false,
+        child: AnimatedPadding(
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeOut,
+          padding: EdgeInsets.only(bottom: mediaQuery.viewInsets.bottom),
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: CupertinoPopupSurface(
+              child: Container(
+                height: height,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: CupertinoDynamicColor.resolve(
+                    CustomThemeControl.bottomSheetColor,
+                    context,
+                  ),
                 ),
-              ),
-              child: Column(
-                children: [
-                  _topBarWidget(context, pageName),
-                  Expanded(child: child),
-                ],
+                child: Column(
+                  children: [
+                    _topBarWidget(context, pageName),
+                    Expanded(child: child),
+                  ],
+                ),
               ),
             ),
           ),

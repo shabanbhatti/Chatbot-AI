@@ -9,9 +9,9 @@ class DioClient {
     countriesDio = Dio(
       BaseOptions(
         baseUrl: 'https://restcountries.com/v3.1',
-        connectTimeout: const Duration(seconds: 3),
-        receiveTimeout: const Duration(seconds: 3),
-        sendTimeout: const Duration(seconds: 3),
+        connectTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(seconds: 30),
+        sendTimeout: const Duration(seconds: 30),
         contentType: 'application/json',
       ),
     );

@@ -35,164 +35,245 @@ class _AddBtnDetailWidgetState extends State<AddBtnDetailWidget> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      top: false,
-      child: Column(
-        children: [
-          Expanded(
-            child: ValueListenableBuilder<List<AssetEntity>>(
-              valueListenable: widget.assetsEntity,
-              builder: (context, assets, _) {
-                return ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: assets.length + 1,
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  itemBuilder: (context, index) {
-                    if (index == 0) {
-                      return GestureDetector(
-                        onTap: () async {
-                          var list = await getIt<ImagePickerUtils>()
-                              .takeMultipleImage();
-                          if (list.isNotEmpty) {
-                            widget.multiImgsPaths.value = [
-                              ...widget.multiImgsPaths.value,
-                              ...list,
-                            ];
-                          }
-                          Navigator.pop(context);
-                        },
-                        child: Padding(
-                          padding: EdgeInsetsGeometry.only(bottom: 112),
-                          child: Stack(
-                            children: [
-                              Container(
+    return CustomScrollView(
+      slivers: [
+        SliverPadding(
+          padding: EdgeInsetsGeometry.only(top: 10),
+          sliver: SliverToBoxAdapter(
+            child: Column(
+              mainAxisSize: .min,
+              children: [
+                ValueListenableBuilder<List<AssetEntity>>(
+                  valueListenable: widget.assetsEntity,
+                  builder: (context, assets, _) {
+                    return SizedBox(
+                      height: 130,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: (assets.isNotEmpty) ? assets.length + 1 : 2,
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        itemBuilder: (context, index) {
+                          if (index == 0) {
+                            return GestureDetector(
+                              onTap: () async {
+                                var list = await getIt<ImagePickerUtils>()
+                                    .takeMultipleImage();
+                                if (list.isNotEmpty) {
+                                  widget.multiImgsPaths.value = [
+                                    ...widget.multiImgsPaths.value,
+                                    ...list,
+                                  ];
+                                }
+                                Navigator.pop(context);
+                              },
+                              child: Container(
                                 width: 100,
                                 height: 130,
                                 margin: const EdgeInsets.symmetric(
                                   horizontal: 4,
                                 ),
-                                color: CupertinoColors.secondarySystemFill,
+                                clipBehavior: Clip.antiAliasWithSaveLayer,
+                                decoration: BoxDecoration(
+                                  color: CupertinoColors.secondarySystemFill,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                ),
                                 child: const Icon(
-                                  CupertinoIcons.camera_fill,
+                                  CupertinoIcons.camera,
                                   size: 30,
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }
+                            );
+                          }
 
-                    final asset = assets[index - 1];
+                          if (assets.isNotEmpty) {
+                            final asset = assets[index - 1];
 
-                    return ValueListenableBuilder(
-                      valueListenable: widget.selectedAssetIds,
-                      builder: (context, selectedIds, _) {
-                        final selectiveIndex = selectedIds.indexOf(asset.id);
-                        return Opacity(
-                          opacity:
-                              (selectedIds.length == 2 &&
-                                  !selectedIds.contains(asset.id))
-                              ? 0.5
-                              : 1.0,
-                          child: GestureDetector(
-                            onTap:
-                                (selectedIds.length == 2 &&
-                                    !selectedIds.contains(asset.id))
-                                ? null
-                                : () async {
-                                    if (widget.selectedAssetIds.value.length >=
-                                            2 &&
-                                        !widget.selectedAssetIds.value.contains(
-                                          asset.id,
-                                        )) {
-                                      ShowToast.basicToast(
-                                        message: 'Max 3 images allowed',
-                                        color: CupertinoColors.destructiveRed,
-                                      );
-                                    } else if (widget.selectedAssetIds.value
-                                        .contains(asset.id)) {
-                                      final file = await asset.getFile();
-                                      widget.multiImgsPaths.value = widget
-                                          .multiImgsPaths
-                                          .value
-                                          .where(
-                                            (element) => element != file!.path,
-                                          )
-                                          .toList();
-                                      widget.selectedAssetIds.value = widget
-                                          .selectedAssetIds
-                                          .value
-                                          .where(
-                                            (element) => element != asset.id,
-                                          )
-                                          .toList();
-                                    } else {
-                                      final file = await asset.getFile();
-                                      if (file == null) return;
+                            return ValueListenableBuilder(
+                              valueListenable: widget.selectedAssetIds,
+                              builder: (context, selectedIds, _) {
+                                final selectiveIndex = selectedIds.indexOf(
+                                  asset.id,
+                                );
+                                return Opacity(
+                                  opacity:
+                                      (selectedIds.length == 2 &&
+                                          !selectedIds.contains(asset.id))
+                                      ? 0.5
+                                      : 1.0,
+                                  child: GestureDetector(
+                                    onTap:
+                                        (selectedIds.length == 2 &&
+                                            !selectedIds.contains(asset.id))
+                                        ? null
+                                        : () async {
+                                            if (widget
+                                                        .selectedAssetIds
+                                                        .value
+                                                        .length >=
+                                                    2 &&
+                                                !widget.selectedAssetIds.value
+                                                    .contains(asset.id)) {
+                                              ShowToast.basicToast(
+                                                message: 'Max 3 images allowed',
+                                                color: CupertinoColors
+                                                    .destructiveRed,
+                                              );
+                                            } else if (widget
+                                                .selectedAssetIds
+                                                .value
+                                                .contains(asset.id)) {
+                                              final file = await asset
+                                                  .getFile();
+                                              widget
+                                                  .multiImgsPaths
+                                                  .value = widget
+                                                  .multiImgsPaths
+                                                  .value
+                                                  .where(
+                                                    (element) =>
+                                                        element != file!.path,
+                                                  )
+                                                  .toList();
+                                              widget.selectedAssetIds.value =
+                                                  widget.selectedAssetIds.value
+                                                      .where(
+                                                        (element) =>
+                                                            element != asset.id,
+                                                      )
+                                                      .toList();
+                                            } else {
+                                              final file = await asset
+                                                  .getFile();
+                                              if (file == null) return;
 
-                                      widget.selectedAssetIds.value = [
-                                        ...widget.selectedAssetIds.value,
-                                        asset.id,
-                                      ];
+                                              widget.selectedAssetIds.value = [
+                                                ...widget
+                                                    .selectedAssetIds
+                                                    .value,
+                                                asset.id,
+                                              ];
 
-                                      widget.multiImgsPaths.value = [
-                                        ...widget.multiImgsPaths.value,
-                                        file.path,
-                                      ];
-                                    }
-                                  },
-                            child: Stack(
-                              children: [
-                                Container(
-                                  width: 100,
-                                  height: 130,
-                                  margin: const EdgeInsets.symmetric(
-                                    horizontal: 4,
-                                  ),
-                                  color: CupertinoColors.inactiveGray,
-                                  child: AssetEntityImage(
-                                    asset,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                                if (selectiveIndex == -1)
-                                  const SizedBox()
-                                else
-                                  Positioned(
-                                    top: 4,
-                                    right: 4,
-                                    child: CircleAvatar(
-                                      radius: 13,
-                                      backgroundColor: CupertinoColors.white,
-                                      child: Text(
-                                        '${selectiveIndex + 1}',
-                                        style: const TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
+                                              widget.multiImgsPaths.value = [
+                                                ...widget.multiImgsPaths.value,
+                                                file.path,
+                                              ];
+                                            }
+                                          },
+                                    child: Stack(
+                                      children: [
+                                        Container(
+                                          width: 100,
+                                          height: 130,
+                                          margin: const EdgeInsets.symmetric(
+                                            horizontal: 4,
+                                          ),
+                                          clipBehavior:
+                                              Clip.antiAliasWithSaveLayer,
+                                          decoration: BoxDecoration(
+                                            color: CupertinoColors
+                                                .secondarySystemFill,
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(10),
+                                            ),
+                                          ),
+
+                                          child: AssetEntityImage(
+                                            asset,
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
-                                      ),
+                                        if (selectiveIndex == -1)
+                                          const SizedBox()
+                                        else
+                                          Positioned(
+                                            top: 3,
+                                            right: 7,
+                                            child: CircleAvatar(
+                                              radius: 12,
+                                              backgroundColor:
+                                                  CupertinoColors.white,
+                                              child: Text(
+                                                '${selectiveIndex + 1}',
+                                                style:
+                                                    CupertinoTheme.of(context)
+                                                        .textTheme
+                                                        .textStyle
+                                                        .copyWith(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: CupertinoColors
+                                                              .black,
+                                                        ),
+                                              ),
+                                            ),
+                                          ),
+                                      ],
                                     ),
                                   ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
+                                );
+                              },
+                            );
+                          } else {
+                            return Padding(
+                              padding: EdgeInsetsGeometry.only(left: 10),
+                              child: Container(
+                                height: 130,
+
+                                clipBehavior: Clip.antiAliasWithSaveLayer,
+                                decoration: BoxDecoration(
+                                  color: CupertinoColors.secondarySystemFill,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                ),
+                                width: MediaQuery.of(context).size.width * 0.65,
+                                child: Column(
+                                  mainAxisAlignment: .spaceEvenly,
+                                  children: [
+                                    const Icon(CupertinoIcons.photo, size: 35),
+                                    const Text(
+                                      'Permission denied! To allow permission please click the button below.',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: CupertinoColors.inactiveGray,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      child: const Text(
+                                        'Allow access to photos',
+                                        style: TextStyle(
+                                          color: Color.fromARGB(
+                                            255,
+                                            38,
+                                            152,
+                                            64,
+                                          ),
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                      onTap: () async {
+                                        await PhotoManagerUtils.requestPermission();
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                      ),
                     );
                   },
-                );
-              },
+                ),
+              ],
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

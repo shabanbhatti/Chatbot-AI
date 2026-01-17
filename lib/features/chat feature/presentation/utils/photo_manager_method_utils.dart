@@ -1,7 +1,7 @@
 import 'package:photo_manager/photo_manager.dart';
 
 abstract class PhotoManagerUtils {
- static Future<List<AssetEntity>> loadImages() async {
+  static Future<List<AssetEntity>> loadImages() async {
     final permission = await PhotoManager.requestPermissionExtend();
     if (!permission.isAuth) return [];
 
@@ -12,12 +12,17 @@ abstract class PhotoManagerUtils {
 
     final recentAlbum = albums.first;
 
-    final recentImages = await recentAlbum.getAssetListRange(
-      start: 0,
-      end: 5, 
-    );
-return recentImages;
-    
+    final recentImages = await recentAlbum.getAssetListRange(start: 0, end: 5);
+    return recentImages;
   }
 
+  static Future<void> requestPermission() async {
+    final PermissionState ps = await PhotoManager.requestPermissionExtend();
+
+    if (!ps.isAuth) {
+      await PhotoManager.openSetting();
+    } else {
+      await loadImages();
+    }
+  }
 }

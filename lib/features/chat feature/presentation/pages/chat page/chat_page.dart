@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
@@ -23,9 +24,11 @@ import 'package:chatbot_ai/features/chat%20feature/presentation/bloc/voice%20blo
 import 'package:chatbot_ai/features/chat%20feature/presentation/pages/chat%20page/widgets/bottom_widgets.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/pages/chat%20page/widgets/chat_box_widget.dart';
 import 'package:chatbot_ai/features/chat%20feature/presentation/pages/chat%20page/widgets/model_loading_widget.dart';
+import 'package:chatbot_ai/features/chat%20feature/presentation/utils/voice_recording_time_stramp_util.dart';
 import 'package:cupertino_sidemenu/cupertino_sidemenu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({
@@ -64,18 +67,58 @@ class _ChatPageState extends State<ChatPage> {
     chatController.dispose();
     chatNotifier.dispose();
     super.dispose();
+    seconds.dispose();
+    timer?.cancel();
   }
+
+  Timer? timer;
+  ValueNotifier<int> seconds = ValueNotifier(1);
 
   @override
   Widget build(BuildContext context) {
     log('Chat page build called');
     return BlocListener<VoiceBloc, VoiceState>(
       listener: (context, state) {
+        if (state is IsSpeakingVoice) {
+          timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+            seconds.value += 1;
+          });
+
+          EasyLoading.show(
+            indicator: ValueListenableBuilder(
+              valueListenable: seconds,
+              builder: (context, value, child) {
+                return Row(
+                  mainAxisSize: .min,
+                  children: [
+                    Icon(
+                      CupertinoIcons.mic,
+                      color: CupertinoColors.destructiveRed,
+                    ),
+                    Text(
+                      '  REC: ${VoiceRecordingTimeStrampUtil.timerString(value)}',
+                      style: const TextStyle(color: CupertinoColors.white),
+                    ),
+                  ],
+                );
+              },
+            ),
+          );
+        }
+        if (state is IsLoadingVoice) {
+          timer?.cancel();
+          seconds.value = 0;
+          EasyLoading.dismiss();
+        }
         if (state is IsLoadedVoice) {
+          timer?.cancel();
+          seconds.value = 0;
           chatController.text = state.reply;
           chatNotifier.value = state.reply;
         }
         if (state is IsErrorVoice) {
+          timer?.cancel();
+          seconds.value = 0;
           ShowToast.basicToast(
             message: state.message,
             color: CupertinoColors.destructiveRed,
